@@ -1,0 +1,10086 @@
+%==================================================
+% 文書クラス
+%==================================================
+
+%\documentclass[dvipdfmx,a4paper,12pt]{amsart} % amsart を使いたい場合はこちら
+\documentclass[dvipdfmx,a4paper,11pt]{article} % 通常はこちら
+
+%==================================================
+% 基本設定
+%==================================================
+
+\setlength{\lineskip}{0pt} % 行送りの余分なずれを抑える
+
+%==================================================
+% 和文フォント・日本語まわり
+%==================================================
+
+\renewcommand{\kanjifamilydefault}{\gtdefault} % 和文既定フォントをゴシック体に
+\usepackage{otf}       % min10 を避けるため
+\usepackage{pxrubrica} % 和文ルビ
+
+%==================================================
+% 図・色・図式
+%==================================================
+
+\usepackage{graphicx}    % 画像挿入
+\usepackage[all]{xy}     % 可換図式
+\usepackage{amscd}       % 可換図式（簡易版）
+\usepackage{wrapfig}     % 回り込み図
+\usepackage{pgfplots}    % グラフ描画
+\usepackage{tikz}        % TikZ
+\usetikzlibrary{positioning,arrows.meta,fit,calc,backgrounds}
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+\usepackage{tikz-cd}     % TikZ による可換図式
+\usepackage{color}       % 色指定（旧来）
+\usepackage[dvipsnames]{xcolor} % 拡張色指定
+
+%==================================================
+% 数学
+%==================================================
+
+\usepackage{amsmath,amssymb,amsthm,amsfonts,mathtools} % 基本数学パッケージ
+\renewcommand{\proofname}{証明}
+\usepackage{braket,physics}   % 物理・線形代数系で便利
+\usepackage{bm}               % 太字数式
+\usepackage{mathrsfs}         % \mathscr
+\usepackage{dsfont}           % \mathds
+\usepackage{bigdelim}         % 大きい区切り記号
+\allowdisplaybreaks[4]        % 複数行数式の改ページを許可
+
+%==================================================
+% 書式・表・箇条書き
+%==================================================
+
+\usepackage{latexsym}   % 補助記号
+\usepackage{setspace}   % 行間調整
+\usepackage{multirow}   % 表の複数行結合
+\usepackage{enumerate}  % 古い enumerate 環境拡張
+\usepackage{enumitem}   % 箇条書きの細かい調整
+
+%==================================================
+% コメント・取消線など
+%==================================================
+
+\usepackage{comment}          % コメントアウト環境
+\usepackage[normalem]{ulem}   % 取消線など（\emph を下線化しない）
+
+%==================================================
+% URL
+%==================================================
+
+\usepackage{url} % URL 表示
+
+%==================================================
+% 文字コード
+%==================================================
+
+% uplatex を使うなら通常不要
+% pdflatex を使う場合は必要になることがある
+% \usepackage[utf8]{inputenc}
+
+%==================================================
+% レイアウト
+%==================================================
+
+\usepackage[
+  top=25mm,        % 上余白
+  bottom=30mm,     % 下余白
+  left=25mm,       % 左余白
+  right=25mm,      % 右余白
+  headheight=12pt, % ヘッダー高さ
+  headsep=10mm,    % ヘッダーと本文の間
+  footskip=32pt,   % 本文とフッターの間
+  includehead,     % ヘッダー分を本文高さ計算に含める
+  includefoot      % フッター分を本文高さ計算に含める
+]{geometry}
+
+\setstretch{1.1}        % 行間
+\setlength{\parskip}{5pt}   % 段落間の空き
+\setlength{\parindent}{0pt} % 段落頭の字下げをしない
+
+%==================================================
+% 目次
+%==================================================
+
+\usepackage{tocloft} % 目次体裁の調整
+%\renewcommand{\contentsname}{目次} % 目次名を明示的に変えたい場合
+\setlength{\cftbeforesecskip}{0pt}
+\setlength{\cftbeforesubsecskip}{0pt}
+\setlength{\cftbeforesubsubsecskip}{0pt}
+\setcounter{tocdepth}{2} % 目次に出す深さ
+
+%==================================================
+% 箇条書きの詰め方
+%==================================================
+
+\setlist[itemize]{itemsep=0pt,parsep=0pt}
+\setlist[enumerate]{itemsep=0pt,parsep=0pt}
+\setlist[enumerate]{label=$(\arabic*).$}
+
+%==================================================
+% 脚注
+%==================================================
+
+\interfootnotelinepenalty=10000 % 脚注がページをまたがるのを防ぐ
+
+%==================================================
+% 定理環境の箱
+%==================================================
+
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable,skins,theorems}
+\usepackage{etoolbox} % \AtBeginEnvironment を使うため
+
+\tcbset{
+  mybox/.style={
+    colback=white,
+    colframe=green!35!black,
+    fonttitle=\bfseries,
+    breakable=true
+  }
+}
+
+%==================================================
+% showkeys（ラベル表示）
+%==================================================
+
+% 下の真偽を切り替えることで，showkeys の有無を変更できる
+\newif\ifshowkeylabels
+\showkeylabelsfalse
+%\showkeylabelstrue % 校正時にラベルを見たいときはこちらを有効化
+
+\ifshowkeylabels
+  \usepackage{showkeys}
+  \renewcommand*{\showkeyslabelformat}[1]{%
+    \fbox{\parbox{1.6cm}{\normalfont\tiny\sffamily#1\vspace{6mm}}}%
+  }
+\fi
+
+%==================================================
+% hyperref（原則として最後）
+%==================================================
+
+\usepackage[dvipdfmx,colorlinks]{hyperref}
+% 色は用途に応じて blue / red などへ変更可能
+\hypersetup{
+  linkcolor=blue,
+  anchorcolor=blue,
+  citecolor=blue,
+  urlcolor=blue
+}
+
+% 日本語しおりの文字化け対策
+\usepackage{pxjahyper}
+
+%==================================================
+% よく使う記号・演算子
+%==================================================
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\F}{\mathbb{F}}
+
+\newcommand{\Sin}{\text{Sin}^{-1}}
+\newcommand{\Cos}{\text{Cos}^{-1}}
+\newcommand{\Tan}{\text{Tan}^{-1}}
+\newcommand{\invsin}{\text{Sin}^{-1}}
+\newcommand{\invcos}{\text{Cos}^{-1}}
+\newcommand{\invtan}{\text{Tan}^{-1}}
+
+\newcommand{\Area}{S}
+\newcommand{\vol}{\text{Vol}}
+\newcommand{\maru}[1]{\raise0.2ex\hbox{\textcircled{\tiny{#1}}}}
+\newcommand{\sgn}{{\rm sgn}}
+% \newcommand{\rank}{{\rm rank}} % 必要なら有効化
+
+\DeclareMathOperator{\Ric}{Ric}
+\DeclareMathOperator{\Vol}{Vol}
+
+\newcommand{\pdrv}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\drv}[2]{\frac{d #1}{d#2}}
+\newcommand{\ppdrv}[3]{\frac{\partial #1}{\partial #2 \partial #3}}
+
+\newcommand{\xb}[1]{\textcolor{blue}{#1}}
+\newcommand{\xr}[1]{\textcolor{red}{#1}}
+\newcommand{\xm}[1]{\textcolor{magenta}{#1}}
+
+
+
+\newcommand{\En}{E_n}
+\newcommand{\On}{O_n}
+\newcommand{\bvec}{\boldsymbol{b}}
+\newcommand{\xvec}{\boldsymbol{x}}
+
+\newcommand{\underalign}[2]{%
+  \quad
+  \underset{\mathclap{\raisebox{-1.6ex}{\ensuremath{\scriptstyle #1}}}}{#2}
+  \quad
+}
+
+
+%==================================================
+% 定理環境
+%==================================================
+
+\theoremstyle{definition}
+
+\newtheorem{thm}{定理}[section]
+\newtheorem{lem}[thm]{補題}
+\newtheorem{prop}[thm]{命題}
+\newtheorem{cor}[thm]{系}
+\newtheorem{claim}[thm]{主張}
+\newtheorem{dfn}[thm]{定義}
+\newtheorem{defn}[thm]{定義}
+\newtheorem{rem}[thm]{補足}
+\newtheorem{exa}[thm]{例}
+\newtheorem{eg}[thm]{例}
+\newtheorem{ex}[thm]{例}
+\newtheorem{conj}[thm]{予想}
+\newtheorem{prob}[thm]{問題}
+\newtheorem{rema}[thm]{補足}
+\newtheorem{cau}[thm]{注意}
+\newtheorem{dfnthm}[thm]{定義・定理}
+\newtheorem{ques}[thm]{問題}
+\newtheorem{suma}[thm]{まとめ}
+
+
+%==================================================
+% 定理環境を自動で tcolorbox で囲む
+%==================================================
+
+\AtBeginEnvironment{prop}{\begin{tcolorbox}[mybox]}
+\AtEndEnvironment{prop}{\end{tcolorbox}}
+
+\AtBeginEnvironment{lem}{\begin{tcolorbox}[mybox]}
+\AtEndEnvironment{lem}{\end{tcolorbox}}
+
+\AtBeginEnvironment{thm}{\begin{tcolorbox}[mybox]}
+\AtEndEnvironment{thm}{\end{tcolorbox}}
+
+\AtBeginEnvironment{dfn}{\begin{tcolorbox}[mybox]}
+\AtEndEnvironment{dfn}{\end{tcolorbox}}
+
+\AtBeginEnvironment{defn}{\begin{tcolorbox}[mybox]}
+\AtEndEnvironment{defn}{\end{tcolorbox}}
+
+\AtBeginEnvironment{cor}{\begin{tcolorbox}[mybox]}
+\AtEndEnvironment{cor}{\end{tcolorbox}}
+
+\AtBeginEnvironment{ques}{\begin{tcolorbox}[mybox]}
+\AtEndEnvironment{ques}{\end{tcolorbox}}
+
+\AtBeginEnvironment{conj}{\begin{tcolorbox}[mybox]}
+\AtEndEnvironment{conj}{\end{tcolorbox}}
+
+\AtBeginEnvironment{suma}{\begin{tcolorbox}[mybox]}
+\AtEndEnvironment{suma}{\end{tcolorbox}}
+%==================================================
+% 必要に応じて使うが，普段はコメントアウトしておいてよいもの
+%==================================================
+
+% --- セクション見出しの体裁調整 ---
+% \usepackage{titlesec}
+% \titleformat*{\section}{\Large\bfseries}
+% \titleformat*{\subsection}{\large\bfseries}
+% \titlespacing*{\section}{0pt}{1.5ex plus .2ex minus .2ex}{0.8ex plus .1ex}
+% \titlespacing*{\subsection}{0pt}{1.0ex plus .2ex minus .2ex}{0.5ex plus .1ex}
+
+% --- ヘッダー／フッター ---
+% \usepackage{fancyhdr}
+% \pagestyle{fancy}
+% \fancyhf{}
+% \rhead{岩井 雅崇}
+% \lhead{大阪大学 数学専攻}
+% \cfoot{\thepage}
+
+
+
+
+\title{2026年度秋冬学期 大阪大学 全学共通教育科目 \\ 線形代数学II (工（環）)}
+\author{岩井雅崇 (大阪大学)}
+\date{\today \, ver 1.01}
+%ここから本文．
+\begin{document}
+
+\maketitle
+\setcounter{tocdepth}{2}
+\tableofcontents
+\newpage
+
+\begin{center}
+\setcounter{section}{-1}
+\section{ガイダンス}
+\label{sec-guide}
+\end{center}
+
+\begin{center}
+{\Large 2026年度秋冬学期 \\ 大阪大学 全学共通教育科目 線形代数学II 工(環）} \\
+水曜3限(13:30-15:00) 場所 共B107
+ \end{center}
+\begin{flushright}
+ 岩井雅崇(いわいまさたか) \\
+\end{flushright}
+
+\hspace{-18pt}{\Large \underline{基本的事項}}
+\begin{itemize}
+  \setlength{\parskip}{0cm} % 段落間
+  \setlength{\itemsep}{0cm} % 項目間
+\item この授業は\underline{対面授業}です. \underline{水曜3限(13:30-15:00) に共B107}にて授業を行います.
+\item 教科書は三宅敏恒著 「線形代数学　初歩からジョルダン標準形へ」(培風館)です. 
+\item CLEに「授業の資料・授業の板書」などをアップロードしていきます. CLEが使えない場合でも授業ホームページ(\url{https://masataka123.github.io/2026_winter_linear_algebra/})にアップロードしてます.
+\end{itemize}
+
+\hspace{-18pt}{\Large \underline{成績に関して}}
+
+\underline{演習(後述)と期末試験(後述)で成績をつける予定です. } 内訳は次の予定です.
+
+\begin{itemize}
+\item 演習2回. 20点. 出席すれば点数を与えるつもりなので, 必ず出席してください. なお演習は期末の練習も兼ねています.
+\item 期末試験 80点(以上). 点数はまだ考えていません. これは成績の平均をある程度に収めないといけない都合上, 試験の点数を今の時点であまり決められないためです.
+\end{itemize}
+
+単位が欲しい方はこの二つに必ず出席するようにしてください. 
+
+なお通常時の授業(演習や期末試験以外の授業)に出席点はございません. そのため授業への出席は任意となります. 
+
+
+\medskip
+\hspace{-18pt}{\Large \underline{1. 演習に関して}}
+
+次の日時に演習の授業を行います. 
+\begin{itemize}
+  \setlength{\parskip}{0cm} 
+  \setlength{\itemsep}{0cm}
+\item 日時: 2026年11月18日と 2027年1月20日 水曜3限(13:30-15:00)
+\item 場所: 共B107
+\item 演習内容: 配布したプリントの問題を解いて提出してください. なお協力して解いても構いません. AIの利用もして良いです. 具体的なことは演習の時間に言います. 
+\end{itemize}
+\underline{以上は予定であるため, 変更の可能性があります.} もし変更する場合はホームページやCLEで連絡します. 
+なお代理出席などの行為は不正行為とみなし, 加担した人全員の単位を不可にします.
+欠席する場合はあらかじめCLEやmasataka@math.sci.osaka-u.ac.jpにご連絡いただければ幸いです.\footnote{その場合は欠席理由をきちんとお伝えください. ただし正当な理由以外での欠席は認められません. (成績に関わるからです.) よくわからない場合はとりあえずメールしてください. }
+
+\newpage
+\hspace{-18pt}{\Large \underline{2. 期末試験に関して}}
+
+現時点での期末試験の予定は次のとおりです. 
+\begin{itemize}
+  \setlength{\parskip}{0cm} 
+  \setlength{\itemsep}{0cm}
+\item 日時:2027年1月27日(予定) 水曜3限(13:30-15:00)
+\item 場所: 共B107
+\item 持ち込みに関して: A4用紙4枚(裏表使用可)まで持ち込み可. 工夫を凝らしてA4用紙4枚に今までの内容をまとめてください.
+\item 試験内容 : 授業でやった範囲. (教科書4章から6章)
+\end{itemize}
+
+\underline{以上は予定であるため, 変更の可能性があります.} もし変更する場合はホームページやCLEで連絡します. 
+
+また\underline{演習問題の何問かを数値や表現など少し変えて出す予定}です. そのため最低限として演習問題を解けるようにしてください. 
+
+
+\medskip
+\hspace{-18pt}{\Large \underline{まとめ}}
+\begin{enumerate}
+  \setlength{\parskip}{0cm} 
+  \setlength{\itemsep}{0cm} 
+\item \underline{単位が欲しい方は演習に必ず出席し, 期末試験で成績が取れるくらいの点を取ってください.} なお演習問題で出した問題を少し変えて期末試験でも出す予定です. 
+\item 単位を認定するくらいの成績が取れていない場合, 容赦無く不可を出します. 
+\item 講義への出席は自由です. 授業資料・授業の板書をCLEやホームページにアップロードするので, 自分の好きな方法で線形代数への理解を進めてください.\footnote{理由としては「私は講義をするのが上手くない」のと「もっと効率的な理解の方法があると思う」からです. この授業内容を理解するのに$1.5 \times 14 = 21$時間も本当にかかるのかと思います. (というか今の私は90分じっと講義を受けるのが好きではないです.  14週に分けて講義を聞くのも好きではないです. ) そして世の中には私よりもわかりやすい授業をする人もいるので, そちらで理解を進めても良いと思います. 学び方は自由であり, その方法を制限するのは好きではありません. (つまり出席を取るのも好きではないです). }
+\footnote{YouTubeとかYouTube Shortsなどに線形代数の動画があると思います. ゆっくり線形代数もありました. 最近はChatGPTに教えてもらう方法もあると思います. }
+\item 岩井の板書スピードは速いです. 私にはこれを止める方法はないので, 皆さんの板書の量を少なくするようにしてください. (例えば資料にメモ書きするとか). なお後で授業の板書を上のホームページなどにアップロードします.
+\end{enumerate}
+
+
+\vspace{11pt}
+\hspace{-18pt}{\Large \underline{休講予定・その他}}
+\begin{itemize}
+  \setlength{\parskip}{0cm} % 段落間
+  \setlength{\itemsep}{0cm} % 項目間
+  \item 休講予定: 2026年11月25日. 2027年1月6日. ただし授業の進みが悪い場合は, オンライン教材の配布をする可能性があります. 
+  %\footnote{どちらも出張のため. 他にも授業が早く終われば休講にします.} 
+    %\item 演習問題と授業内容が噛み合ってない可能性があります.
+  \item 休講情報や資料の修正などをするので, こまめにCLEやホームページを確認してください.
+  %\item 参考書は用いず, 授業資料をCLEやホームページにて配布する. 参考書は「三宅敏恒著 入門線形代数」(培風館)である.
+   \item オフィスアワーを月曜16:00-17:00に設けています. この時間に私の研究室に来ても構いません(ただし来る場合は前もって連絡してくれると助かります.)
+   \item CLEを使ったメールには気づかない場合があります. そのため何かあればmasataka@\allowbreak math.\allowbreak sci.\allowbreak osaka-u.\allowbreak ac.\allowbreak jpにご連絡ください. 
+    %\item TAさんは演義の時間中に巡回しているので, 自由にご質問して構いません. 
+    %\item $\pi$-base \url{https://topology.jdabbs.com}も活用してください. 
+ \end{itemize}
+
+
+\newpage
+
+%%%%%%%%%%%%%
+\begin{comment}
+\subsection{この授業の目標}
+
+
+
+この授業を通して以下を理解してください
+ \begin{tcolorbox}[
+    colback = white,
+    colframe = green!35!black,
+    fonttitle = \bfseries,
+    breakable = true]
+    \begin{itemize}
+      \setlength{\parskip}{0cm} 
+  \setlength{\itemsep}{0cm}
+    \item 行列の定義と足し算・引き算・スカラー倍・掛け算.(\ref{subsec-2.2}節)
+    \item 連立1次方程式を基本変形でとく.
+    \item 正則行列と逆行列の基本変形での求め方.
+    \item 線形独立・基底・次元などの概念. (\ref{subsec-2.1}節, )
+    \item 線形写像の図形的意味(\ref{subsec-1.3}節), 線形写像の像と核.
+    \item 行列式とその計算.
+     \end{itemize}
+ \end{tcolorbox}
+\subsection{教科書と授業について}
+教科書「金子晃著 線形代数講義」(サイエンス社)を今回初めて用いるが, 何点か個人的に不満な点がある.
+    \begin{itemize}
+      \setlength{\parskip}{0cm} 
+  \setlength{\itemsep}{0cm}
+    \item 逆行列, 次元, 標準形(簡約行列?), など数学的な用語の定義がなされていない部分がある.
+    \item 一部理論が飛んでいて, 証明になっていないものがある. %特にガウスの消去法の部分は証明になっていない.
+    \item 連立1次方程式の説明の順番が明らかにおかしい. 具体的な物事と抽象的な物事が混ざっていてわかりづらい.
+    \item 行列式の存在を公理的に書いているのに, その後に具体的に定義している. (公理から出発するのなら, そのまま進んだ方が綺麗である. )
+    \item 意味のない文章が多く, 教科書というより本に近い気がする. その割に内容の難易度は高い.
+     \end{itemize}
+ただ悪いところだけではなく, 数学者が喜ぶような内容(ワイルの公理系や行列環)もあるので, この点は良いと思う.
+
+そのため一部教科書以外の内容を扱ったり, 教科書の内容の順番を入れ替えたりして授業を行う.
+要は授業・資料は教科書を解読したものだと思ってほしい. 
+ \end{comment}
+ %%%%%%%%%%%%%%%%%%%%
+ 
+ %\setcounter{section}{-1}
+%\section{はじめに}
+%このノートは岩井が授業する際に用いるメモです. この内容+教科書通りに説明していきます. \xr{\cite[例 2.2.2]{M}を見る.}など書いていますが, これは板書時のメモです. 
+
+%なお例に関しては, 前の授業で使った内容を書いております. 教科書の例はあまりフォローしていませんので, 授業の際に教科書を見てフォローしていきます. 
+
+%授業と文字が違うかもしれません. また$\alpha, \beta, \gamma, \delta, \lambda, \mu$などのギリシャ文字をしばしば用いる可能性があります. 
+
+
+
+\section{ベクトル空間  \cite[4章]{M}}
+
+\subsection{ベクトル空間 \cite[4.1節]{M}}
+
+\begin{cau}
+以下\cite[4章]{M}の内容は, 体(たい)と呼ばれる数の集合で四則がその中で行えるもので議論ができる. 
+例えば有理数全体$\Q$, 実数全体$\R$, 複素数全体$\C$などの体で議論ができる.\footnote{例えば$\{0, 1\}$の集合に足し算掛け算を入れることでできる体で考えることもある. これは情報系の人はよく用いると思う.} 
+しかしながら議論が過度に抽象化するのを避けるため,
+\begin{tcolorbox}[mybox]
+\begin{center}
+ほとんど全て実数体$\R$を考える. 
+ただし\cite[5章]{M}のほんの一部, \\ 具体的に行列の固有値に関してのみ複素数体$\C$を考える.
+\end{center}
+\end{tcolorbox}
+という方針でいく. おそらく数学科以外の学部で線形代数を利用する人ならこれでことが足りると思う.
+\end{cau}
+
+\begin{defn}[ベクトル空間]
+集合 $V$ に次のような二つの演算
+\[
+\begin{array}{lll}
+\text{（ベクトルの和）}&\bm{u}+\bm{v}&\quad (\bm{u},\bm{v}\in V),\\
+\text{（ベクトルのスカラー倍）}&a\bm{u}&\quad (\bm{u}\in V,\ a\in\mathbb{R})
+\end{array}
+\]
+が定義され, 次の (1)--(8) の性質を満たすとする. 
+(以下$\bm{u},\bm{v},\bm{w}\in V$, $a,b\in\mathbb{R}$ とする.)
+\begin{enumerate}
+\item $\bm{u}+\bm{v}=\bm{v}+\bm{u}$.
+\item $(\bm{u}+\bm{v})+\bm{w}=\bm{u}+(\bm{v}+\bm{w})$.
+\item $\bm{u}+\bm{0}=\bm{0}+\bm{u}=\bm{u}$ となるベクトル $\bm{0}$ が存在する. この$\bm{0}$ を $V$ の零(ゼロ)ベクトルという.
+\item $a(b\bm{u})=(ab)\bm{u}$.
+\item $(a+b)\bm{u}=a\bm{u}+b\bm{u}$.
+\item $a(\bm{u}+\bm{v})=a\bm{u}+a\bm{v}$.
+\item $1\bm{u}=\bm{u}$.
+\item $0\bm{u}=\bm{0}$.
+\end{enumerate}
+この時$V$ を ($\mathbb{R}$ 上の)ベクトル空間であるといい, $V$ の元をベクトルという.
+\end{defn}
+
+\underline{(1)～(8) の性質は暗記する必要はない.}
+自然なものなら成り立つと思って良い. 
+またベクトルを$\bm{v}$や$\overset{\rightarrow}{v}$とかく. 
+見やすさのため, 資料では$\bm{v}$を用いてかき, 板書では$\overset{\rightarrow}{v}$を用いる. 
+
+\begin{ex}
+実数を成分とする $n$ 次の列ベクトル全体を $\mathbb{R}^n$ と書く. 
+\[
+\mathbb{R}^n
+=
+\left\{
+\bm{a}=
+\begin{pmatrix}
+a_1\\
+\vdots\\
+a_n
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+a_1,\ldots,a_n\in\mathbb{R}
+\right\}.
+\]
+$\mathbb{R}^n$ は行列としての和およびスカラー倍によって $\mathbb{R}$ 上のベクトル空間となる.
+
+そして正直なことを言うと, 数学科以外の学部で線形代数を利用する人に関しては
+\begin{tcolorbox}[mybox]
+\begin{center}
+ベクトル空間 $\risingdotseq$ $\R^n$
+\end{center}
+\end{tcolorbox}
+と思って良い.
+これはかなりの暴論だが, 実用上は有限次元ベクトル空間しか扱わないので, この思い込みでことが足りる.\footnote{ちなみに以前であれば$n=3$でも良いと言っていたが, 最近のAIの発達で$n$が100万くらいのことを考えることが多くなった.}
+\end{ex}
+
+$\R^n$以外のベクトル空間もいっぱいある.
+代表的なものを書いておく.
+
+\begin{ex}
+実数を係数とする多項式全体を 
+$$
+\mathbb{R}[x]
+:=\left\{ f(x) = \sum_{i=0}^{n} a_i x^i \mid a_i\in \R\right\}
+$$ 
+とする. この $\mathbb{R}[x]$ は普通の多項式の和と定数倍
+$$
+\left(\sum_{i=0}^{n} a_i x^i\right)
++
+\left(\sum_{i=0}^{m} b_i x^i\right)
+:=
+\sum_{i=0}^{\max\{n,m\}}(a_i+b_i)x^i,
+\quad
+c\left(\sum_{i=0}^{n} a_i x^i\right)
+:=
+\sum_{i=0}^{n} ca_i x^i
+\quad (c\in\R)
+$$
+によって $\mathbb{R}$ 上のベクトル空間となる.
+
+また正の整数$k$について, $k$次以下の実数を係数とする多項式全体を
+$$
+\mathbb{R}[x]_{k}
+:=\left\{ f(x) = \sum_{i=0}^{k} a_i x^i \mid a_i\in \R\right\}
+$$
+とする. これも$\mathbb{R}$ 上のベクトル空間となる.
+\end{ex}
+
+\begin{ex}
+区間 $(a,b)$ で連続な実数値関数全体を\(C(a,b) =\{ f : (a,b) \to \R\mid \text{$f$は連続}\}\)とする. この \(C(a,b)\) は関数の和と関数の定数倍
+$$
+(f+g)(x)
+:=
+f(x)+g(x),
+\quad
+(cf)(x)
+:=
+cf(x)
+\quad
+(f,g\in C(a,b),\ c\in\R)
+$$
+によって $\mathbb{R}$ 上のベクトル空間となる.
+\end{ex}
+
+\begin{ex}
+実数の数列の集合\(\{ \{a_n\}_{n=0}^{\infty} \mid a_n\in \R\}\)は数列の和と数列の定数倍
+$$
+\{a_n\}_{n=0}^{\infty}+\{b_n\}_{n=0}^{\infty}
+:=
+\{a_n+b_n\}_{n=0}^{\infty},
+\quad 
+c\{a_n\}_{n=0}^{\infty}
+:=
+\{ca_n\}_{n=0}^{\infty}
+\quad (c\in\R)
+$$
+によって $\mathbb{R}$ 上のベクトル空間となる.
+\end{ex}
+
+次は教科書では定理で書かれていたが, 定義として扱った方が楽である. 
+\begin{defn}[{\cite[定理4.1.1]{M}}]
+ベクトル空間 $V$ の部分集合 $W$ が
+\begin{enumerate}
+\item[(i)] $\bm{0}\in W$.
+\item[(ii)] $\bm{u},\bm{v}\in W$ ならば $\bm{u}+\bm{v}\in W$.
+\item[(iii)] $\bm{u}\in W$, $c\in\mathbb{R}$ ならば $c\bm{u}\in W$.
+\end{enumerate}
+の全てを満たすとき, $W$を部分空間と言う. 
+\end{defn}
+要するに部分集合 $W \subset V$ が $V$ の和とスカラー倍によってベクトル空間となることを意味している. 
+
+\begin{eg}[{\cite[例題4.1.2]{M}}]
+\text{}
+\begin{enumerate}
+\item
+\(
+W=
+\left\{
+\bm{x}\in\mathbb{R}^3
+\mathrel{}\middle|\mathrel{}
+\begin{aligned}
+2x_1+3x_2-x_3&=0,\\
+x_1-2x_2+3x_3&=0
+\end{aligned}
+\right\}
+\)
+は$\mathbb{R}^3$ の部分空間となる. これは3つの条件を満たす. 
+\item
+\(
+W=
+\left\{
+\bm{x}\in\mathbb{R}^3
+\mathrel{}\middle|\mathrel{}
+\begin{aligned}
+2x_1+3x_2-x_3&=1,\\
+x_1-2x_2+3x_3&=2
+\end{aligned}
+\right\}
+\)
+は$\mathbb{R}^3$ の部分空間とならない. (i)の条件を満たさない.
+\item
+\(
+W=
+\left\{
+\bm{x}\in\mathbb{R}^3
+\mathrel{}\middle|\mathrel{}
+\begin{aligned}
+(x_1-1)^2=1
+\end{aligned}
+\right\}
+\)
+は$\mathbb{R}^3$ の部分空間とならない. (iii)の条件を満たさない.
+\end{enumerate}
+\end{eg}
+
+\begin{lem}[{\cite[例題4.1.1]{M}}]
+$A$ が $m\times n$ 行列のとき, 次の $W$ は $\mathbb{R}^n$ の部分空間となる. 
+\[
+W=\{\bm{x}\in\mathbb{R}^n\mid A\bm{x}=\bm{0}\}.
+\]
+この $W$ を同次形の連立1次方程式 $A\bm{x}=\bm{0}$ の解空間という.
+\end{lem}
+
+
+\begin{eg}[{\cite[例題4.1.3]{M}}]
+$3$次以下の実数を係数とする多項式全体を
+$$
+\mathbb{R}[x]_{3}
+:=\{ f(x) = \sum_{i=0}^{3} a_i x^i \mid a_i\in \R\}
+=
+\left\{a_0 + a_1 x^1 + a_2 x^2 + a_3 x^3 \mid a_0, a_1, a_2, a_3 \in \R 
+\right\}
+$$
+とする. これは$\R$ベクトル空間である. 
+\begin{enumerate}
+\item 
+\(
+W=\{f(x)\in\mathbb{R}[x]_3\mid f(1)=0,\ f(-1)=0\}
+\)
+は$\mathbb{R}[x]_{3}$ の部分空間となる. これは3つの条件を満たす. 
+\item
+\(
+W=\{f(x)\in\mathbb{R}[x]_3\mid f(1)=1\}
+\)
+は$\mathbb{R}[x]_{3}$ の部分空間とならない. これは(i)を満たさない.  
+%\item\[W=\{f(x)\in\mathbb{R}[x]_3\mid xf'(x)=2f(x)\}.\]
+\end{enumerate}
+\end{eg}
+
+
+\subsection{1次独立と1次従属 \cite[4.2節]{M}}
+
+\begin{defn}
+$V$を$\R$のベクトル空間とする.
+
+\begin{itemize}
+\item ベクトル $\bm{v} \in V$ が $\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_n \in V$ の1次結合で書けるとは, ある
+$c_1, \ldots, c_n \in\mathbb{R}$があって, 
+\[
+\bm{v}=c_1\bm{u}_1+c_2\bm{u}_2+\cdots+c_n\bm{u}_n
+\]
+と書けること. 
+\item  ある
+$c_1, \ldots, c_n \in\mathbb{R}$があって, ベクトル $\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_n$ が
+\[
+c_1\bm{u}_1+c_2\bm{u}_2+\cdots+c_n\bm{u}_n=\bm{0}
+%\tag{$*$}
+\]
+を満たすとき, これをベクトル $\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_n$ の1次関係という.
+\item  $\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_n$ が自明でない1次関係を持たない, つまり
+\[
+c_1\bm{u}_1+c_2\bm{u}_2+\cdots+c_n\bm{u}_n=\bm{0}
+\quad \text{ならば} \quad
+c_1= c_2=\cdots=c_n=0
+\]
+となる時, $\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_n$は1次独立であるという.
+\item $\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_n$ が1次独立でないとき, つまり
+$$
+(c_1, c_2, \ldots, c_n) \neq (0, 0, \ldots, 0)
+\quad \text{かつ} \quad
+c_1\bm{u}_1+c_2\bm{u}_2+\cdots+c_n\bm{u}_n=\bm{0}
+$$
+となる$c_1, \ldots, c_n \in\mathbb{R}$があるとき, $\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_n$ は1次従属であるという.
+\end{itemize}
+\end{defn}
+定義から$\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_n$ は1次独立か1次従属のどちらか一方が成り立つ. 
+
+\begin{ex}
+$V=\mathbb{R}^2$ とする.
+\[
+\bm{v}_1=
+\begin{pmatrix}
+1\\
+0
+\end{pmatrix},
+\quad
+\bm{v}_2=
+\begin{pmatrix}
+0\\
+1\\
+\end{pmatrix},
+\quad
+\bm{v}_3=
+\begin{pmatrix}
+1\\
+1\\
+\end{pmatrix},
+\quad
+\bm{v}_4=
+\begin{pmatrix}
+0\\
+0\\
+\end{pmatrix},
+\]
+とする. 以下が成り立つ. 
+\begin{itemize}
+\item $\bm{v}_1, \bm{v}_2$は一次独立である. 
+\item  $\bm{v}_2, \bm{v}_3$は一次独立である. 
+\item  $\bm{v}_1, \bm{v}_2, \bm{v}_3$は一次従属である. 
+\item  $\bm{v}_1, \bm{v}_4$は一次従属である. 
+\item  $\bm{v}_1$は一次独立である. 
+\item  $\bm{v}_4$は一次従属である. 
+\end{itemize}
+
+\end{ex}
+
+\begin{ex}[{\cite[例1]{M}}]%\paragraph{例1}
+$V=\mathbb{R}^n$ とする.
+%\S 2.4でも用いた次のベクトルは1次独立である。
+\[
+\bm{e}_1=
+\begin{pmatrix}
+1\\
+0\\
+\vdots\\
+0
+\end{pmatrix},
+\quad
+\bm{e}_2=
+\begin{pmatrix}
+0\\
+1\\
+\vdots\\
+0
+\end{pmatrix},
+\quad
+\ldots,
+\quad
+\bm{e}_n=
+\begin{pmatrix}
+0\\
+\vdots\\
+0\\
+1
+\end{pmatrix}.
+\]
+とする時, $\bm{e}_1, \ldots, \bm{e}_n$は1次独立である. 
+
+\begin{proof}
+示すことは
+$$
+c_1\bm{e}_1+c_2\bm{e}_2+\cdots+c_n\bm{e}_n=\bm{0} 
+\quad \text{ならば} \quad
+c_1= c_2=\cdots=c_n=0
+$$
+である. $\Rightarrow$で"ならば"を表すことにすると, 
+\[
+\begin{aligned}
+c_1\bm{e}_1+c_2\bm{e}_2+\cdots+c_n\bm{e}_n=\bm{0}
+&\underalign{\text{(定義)}}{\Rightarrow}
+\begin{pmatrix}
+c_1\\
+c_2\\
+\vdots\\
+c_n
+\end{pmatrix}
+=c_1\bm{e}_1+c_2\bm{e}_2+\cdots+c_n\bm{e}_n=\begin{pmatrix}
+0\\
+0\\
+\vdots\\
+0
+\end{pmatrix}
+\\
+&
+\underalign{\text{(各成分を見る)}}{\Rightarrow}
+c_1=c_2=\cdots=c_n=0.
+\end{aligned}
+\]
+よって一次独立である. 
+\end{proof}
+この$\bm{e}_1,\bm{e}_2,\ldots,\bm{e}_n$ を $\mathbb{R}^n$ の基本ベクトルという.
+\end{ex}
+
+\begin{ex}[{\cite[例2]{M}}]%\paragraph{例2}
+$n$次以下の多項式の集合
+$$
+V=\mathbb{R}[x]_n
+=
+\left\{ f(x) = \sum_{i=0}^{n} a_i x^i \mid a_i\in \R\right\}
+=
+\{a_0 + a_1 x^1 + \cdots + a_n x^n\mid a_0, a_1, \ldots, a_n\in \R 
+\}
+$$ とする. 次の $n+1$ 個のベクトル$1,x,\ldots,x^n \in V$は1次独立である.
+
+\begin{proof}
+示すことは
+$$
+c_0\cdot1+c_1x+\cdots+c_nx^n=0 
+\quad \text{ならば} \quad
+c_0=c_1= c_2=\cdots=c_n=0
+$$
+である. 
+\(
+c_0\cdot1+c_1x+\cdots+c_nx^n=0
+\)
+であると仮定する. この等式に $x=0$ を代入すると $c_0=0$. つぎにこの両辺を微分すると
+\[
+c_1\cdot1+2c_2x+\cdots+nc_nx^{n-1}=0.
+\]
+この等式に $x=0$ を代入し $c_1=0$. これを繰り返し
+\(
+c_0=c_1=\cdots=c_n=0.
+\)を得る. 
+\end{proof}
+\end{ex}
+
+
+\begin{eg}[{\cite[例題4.2.1]{M}}] 
+$\mathbb{R}^4$ の次のベクトルは1次独立である. 
+\[
+\bm{a}_1=
+\begin{pmatrix}
+2\\
+1\\
+-3\\
+1
+\end{pmatrix},
+\quad
+\bm{a}_2=
+\begin{pmatrix}
+1\\
+0\\
+1\\
+0
+\end{pmatrix},
+\quad
+\bm{a}_3=
+\begin{pmatrix}
+3\\
+1\\
+2\\
+2
+\end{pmatrix}.
+\]
+\begin{proof}
+示すことは
+$$
+c_1\bm{a}_1+c_2\bm{a}_2+c_3\bm{a}_3=\bm{0} 
+\quad \text{ならば} \quad
+c_1= c_2= c_3=0
+$$
+である. 
+$c_1\bm{a}_1+c_2\bm{a}_2+c_3\bm{a}_3=\bm{0}$とすると, これは
+\[
+c_1
+\begin{pmatrix}
+2\\
+1\\
+-3\\
+1
+\end{pmatrix}
++
+c_2
+\begin{pmatrix}
+1\\
+0\\
+1\\
+0
+\end{pmatrix}
++
+c_3
+\begin{pmatrix}
+3\\
+1\\
+2\\
+2
+\end{pmatrix}
+=\bm{0}
+\]
+と同値である. 
+これは
+\[
+\begin{pmatrix}
+2&1&3\\
+1&0&1\\
+-3&1&2\\
+1&0&2
+\end{pmatrix}
+\begin{pmatrix}
+c_1\\
+c_2\\
+c_3
+\end{pmatrix}
+=
+\begin{pmatrix}
+0\\
+0\\
+0\\
+0
+\end{pmatrix}.
+\]
+と同値である. 
+よって一次方程式の解を求めると, 
+\(
+c_1=c_2=c_3=0
+\)
+である. よって\(
+\bm{a}_1,\bm{a}_2,\bm{a}_3
+\)は1次独立である.
+\end{proof}
+\end{eg}
+
+この考え方は使えるので, 以下のようにまとめておく. 
+\begin{suma}
+\label{suma-linear-depend}
+$\bm{a}_1, \ldots, \bm{a}_k \in \mathbb{R}^n$とし, $n \times k$行列
+$A = 
+\begin{pmatrix}
+\bm{a}_1, \ldots, \bm{a}_k
+\end{pmatrix}$ 
+とする. 
+\begin{itemize}
+\item $\bm{a}_1, \ldots, \bm{a}_k$が 1次独立であることは, $A \bm{x} = \bm{0}$が$\bm{x}=\bm{0}$以外の解を持たないことと同値.
+\item $\bm{a}_1, \ldots, \bm{a}_k$が 1次従属であることは, $A \bm{x} = \bm{0}$が$\bm{x}=\bm{0}$以外の解を持つことと同値.
+\end{itemize}
+\end{suma}
+よって春夏学期にやった行列の簡約化や一次方程式の解法によって, 一次独立や一次従属がわかる. 
+
+
+\begin{thm}[{\cite[定理4.2.1]{M}}] 
+\(V\) のベクトル \(\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_n\) が \(1\) 次従属である必要十分条件は, 
+\(\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_n\) のうち少なくとも \(1\) 個のベクトルが他の \(n-1\) 個のベクトルの \(1\) 次結合で書けることである.
+\end{thm}
+
+\begin{thm}[{\cite[定理4.2.2]{M}}] 
+\(\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_n\) が \(1\) 次独立で, \(\bm{u},\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_n\) が \(1\) 次従属ならば, \(\bm{u}\) は \(\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_n\) の \(1\) 次結合で書ける.
+\end{thm}
+
+\begin{defn} %\paragraph{1次結合の記法}
+\(V\) の \(m\) 個のベクトルの組 \(\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_m\) と \(m\times n\) 行列
+\(
+A=[a_{ij}]
+\)
+に対し
+\[
+\begin{aligned}
+(\bm{u}_1,\ldots,\bm{u}_m)A
+&=(\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_m)
+\begin{pmatrix}
+a_{11}&\cdots&a_{1n}\\
+\vdots&&\vdots\\
+a_{m1}&\cdots&a_{mn}
+\end{pmatrix}\\
+&=(a_{11}\bm{u}_1+\cdots+a_{m1}\bm{u}_m,\ldots,
+a_{1n}\bm{u}_1+\cdots+a_{mn}\bm{u}_m)
+\end{aligned}
+\]
+と表記する. 
+これはベクトルの組 \((\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_m)\) をあたかもベクトルを成分とする行ベクトルであるかのように考えた, 行列の積である.
+\end{defn}
+
+\begin{eg}[{\cite[例3]{M}}] 
+\[
+(\bm{u}_1,\bm{u}_2)
+\begin{pmatrix}
+3&2&1\\
+1&-1&4
+\end{pmatrix}
+=(3\bm{u}_1+\bm{u}_2,\;2\bm{u}_1-\bm{u}_2,\;\bm{u}_1+4\bm{u}_2).
+\]
+\end{eg}
+
+
+\begin{thm}[{\cite[定理4.2.3]{M}}] 
+\label{thm-M-4.2.3}
+\(V\) のベクトルの \(2\) つの組 \(\bm{v}_1,\bm{v}_2,\ldots,\bm{v}_n\) と \(\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_m\) に対し, 
+\begin{enumerate}
+\item[(1)] \(\bm{v}_1,\bm{v}_2,\ldots,\bm{v}_n\) の各ベクトルは \(\{\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_m\}\) の \(1\) 次結合で書ける.
+\item[(2)] \(n>m\)
+\end{enumerate}
+ならば \(\bm{v}_1,\bm{v}_2,\ldots,\bm{v}_n\) は \(1\) 次従属である.
+\end{thm}
+
+\begin{eg}[例4]
+\(\mathbb{R}^2\) のベクトルを
+\[
+\bm{v}_1=\begin{pmatrix}2\\1\end{pmatrix},
+\quad
+\bm{v}_2=\begin{pmatrix}4\\3\end{pmatrix},
+\quad
+\bm{v}_3=\begin{pmatrix}5\\-1\end{pmatrix}
+\quad
+\bm{u}_1 =\begin{pmatrix}1\\0\end{pmatrix}
+\quad
+\bm{u}_2 =\begin{pmatrix}0\\1\end{pmatrix}
+\]
+とする.
+すると(1)と(2)の条件を満たすので, 
+$\bm{v}_1, \bm{v}_2, \bm{v}_3$は \(1\) 次従属である.
+
+この定理の証明をこの例で確かめてみよう. 
+今
+$$
+\bm{v}_1=2\bm{u}_1+\bm{u}_2, \bm{v}_2=4\bm{u}_1+3\bm{u}_2, \bm{v}_3=5\bm{u}_1-1\bm{u}_2
+$$
+であるので, 
+\begin{equation}
+\label{eq-Abc-matrix-1}
+(\bm{v}_1, \bm{v}_2, \bm{v}_3) =(2\bm{u}_1+\bm{u}_2, 4\bm{u}_1+3\bm{u}_2, 5\bm{u}_1-1\bm{u}_2)
+=(\bm{u}_1,\bm{u}_2)
+\underbrace{\begin{pmatrix}
+2&4&5\\
+1&3&-1
+\end{pmatrix}}_{=A}
+\end{equation}
+となる. ここで$A$は$2 \times 3$行列なので, 
+$c_1=c_2=c_3=0$以外の
+\begin{equation}
+\label{eq-Abc-matrix-2}
+A \bm{c}=
+\begin{pmatrix}
+2&4&5\\
+1&3&-1
+\end{pmatrix}
+\begin{pmatrix}
+c_1\\
+c_2\\
+c_3\\
+\end{pmatrix}
+=
+\begin{pmatrix}
+0\\
+0
+\end{pmatrix}
+\end{equation}
+となるものが存在する. 
+すると
+$$
+c_1\bm{v}_1 + c_2 \bm{v}_2 + c_3 \bm{v}_3
+\underalign{}{=}
+(\bm{v}_1, \bm{v}_2, \bm{v}_3)
+\begin{pmatrix}
+c_1\\
+c_2\\
+c_3\\
+\end{pmatrix}
+\underalign{\eqref{eq-Abc-matrix-1}}{=}
+(\bm{u}_1,\bm{u}_2)
+\underbrace{
+\begin{pmatrix}
+2&4&5\\
+1&3&-1
+\end{pmatrix}
+\begin{pmatrix}
+c_1\\
+c_2\\
+c_3\\
+\end{pmatrix}
+}_{=A \bm{c}=\bm{0} \text{ by \eqref{eq-Abc-matrix-2}}}
+=\bm{0}.
+$$
+
+\end{eg}
+
+
+\begin{thm}[{\cite[定理4.2.4, 定理4.2.5]{M}}] 
+\(\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_m\) は \(1\) 次独立なベクトルとする.
+\(m\times n\) 行列 \(A\) に対し
+\[
+(\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_m)A=0
+\]
+ならば \(A=O\)である. ここで$O$はゼロ行列とする.  
+
+特に\(m\times n\) 行列 \(A, B\) に対し$(\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_m)A=(\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_m)B$ならば$A=B$である. 
+\end{thm}
+
+\begin{eg}[{\cite[例題4.2.2]{M}}] 
+\(\mathbb{R}^4\) のベクトルを
+\[
+\bm{v}_1=
+\begin{pmatrix}
+1\\
+ -1\\ 
+ 3 \\
+ 0\\
+ \end{pmatrix},
+\quad
+\bm{v}_2=
+\begin{pmatrix}
+2\\
+ -1\\ 
+ 6 \\
+ 1\\
+ \end{pmatrix},
+\quad
+\bm{v}_3=
+\begin{pmatrix}
+2\\
+ -2\\ 
+ 1 \\
+ -1\\
+ \end{pmatrix},
+\quad
+\bm{v}_4 =
+\begin{pmatrix}
+1\\
+ 0\\ 
+ -1\\
+ 3\\
+ \end{pmatrix}
+\]
+とする. 
+また基本ベクトルを
+$$
+\bm{e}_1=
+\begin{pmatrix}
+1\\
+ 0\\ 
+ 0 \\
+ 0\\
+ \end{pmatrix},
+\quad
+\bm{e}_2=
+\begin{pmatrix}
+0\\
+ 1\\ 
+ 0 \\
+ 0\\
+ \end{pmatrix},
+\quad
+\bm{e}_3=
+\begin{pmatrix}
+0\\
+ 0\\ 
+ 1 \\
+ 0\\
+ \end{pmatrix},
+\quad
+\bm{e}_4 =
+\begin{pmatrix}
+0\\
+ 0\\ 
+ 0\\
+ 1\\
+ \end{pmatrix}
+$$
+とする.
+\begin{enumerate}
+\item \(\bm{v}_1,\bm{v}_2,\bm{v}_3,\bm{v}_4\) を行列を用いて \(\bm{e}_1,\bm{e}_2,\bm{e}_3,\bm{e}_4\) の \(1\) 次結合で表せ.
+\item \(\bm{v}_1,\bm{v}_2,\bm{v}_3,\bm{v}_4\) が \(1\) 次独立か \(1\) 次従属か調べよ.
+\end{enumerate}
+
+\begin{proof}
+(1). \[
+(\bm{v}_1,\bm{v}_2,\bm{v}_3,\bm{v}_4)
+=(\bm{e}_1,\bm{e}_2,\bm{e}_3,\bm{e}_4)
+\underbrace{
+\begin{pmatrix}
+1&2&2&1\\
+-1&-1&-2&0\\
+3&6&1&-1\\
+0&1&-1&3
+\end{pmatrix}
+}_{=A}.
+\]
+(2). まとめ\ref{suma-linear-depend}を用いる. 
+つまり$A \bm{x}=\bm{0}$が$ \bm{x}=\bm{0}$以外の解を持つか調べれば良い. 
+これは一次方程式を解けば, $ \bm{x}=\bm{0}$以外の解を持たないことがわかる. 
+よって一次独立である. 
+\end{proof}
+\end{eg}
+
+\begin{rem}
+上の例において$\bm{e}_1, \bm{e}_2, \bm{e}_3, \bm{e}_4$は基本ベクトルでなくても, 一次独立なベクトルであれば同様のことが成り立つ. 
+\end{rem}
+
+
+\subsection{ベクトルの1次独立な最大個数  \cite[4.3節]{M}}
+
+\begin{defn}[1次独立な最大個数]
+ベクトルの集合 \(X\) の中に 
+\begin{enumerate}
+\item \(r\) 個の \(1\) 次独立なベクトルがあり, 
+\item \(X\) のどの \(r+1\) 個のベクトルも \(1\) 次従属である.
+\end{enumerate}
+このとき\(r\) を集合 \(X\) のベクトルの \(1\) 次独立な最大個数という.
+\end{defn}
+
+\begin{eg}
+\label{ex-M-4.3.1}
+$\R^m$の基本ベクトルを$\bm{e}_1, \ldots, \bm{e}_m$とする. (ここだけ$\R^m$にしていることに注意.) 
+$X:=\{ \bm{e}_1,\bm{e}_2,\ldots,\bm{e}_m\}$とする. 
+このとき$m$が集合 \(X\) のベクトルの \(1\) 次独立な最大個数となる. 
+\end{eg}
+
+定理\ref{thm-M-4.2.3}から次がわかる. 
+\begin{thm}[{\cite[定理4.3.1]{M}}] 
+\label{thm-M-4.3.1}
+\(V\) のベクトルの \(2\) つの組を\(\{\bm{v}_1,\bm{v}_2,\ldots,\bm{v}_n\} \quad\allowbreak \{\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_m\}\)とする. 
+\(\bm{v}_1,\bm{v}_2,\ldots,\bm{v}_n\) の各ベクトルが \(\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_m\) の \(1\) 次結合で書けるならば
+\[
+\{\bm{v}_1,\bm{v}_2,\ldots,\bm{v}_n\}\text{ の \(1\) 次独立な最大個数}
+\leq
+\{\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_m\}\text{ の \(1\) 次独立な最大個数}.
+\]
+\end{thm}
+
+
+\begin{thm}[{\cite[定理4.3.2]{M}}] 
+\(
+\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_m\text{ の \(1\) 次独立な最大個数}=r
+\)
+であることは
+\begin{enumerate}
+\item[(1)] \(\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_m\) の中に \(r\) 個の \(1\) 次独立なベクトルがあり, 
+\item[(2')] 他の \(m-r\) 個のベクトルはこの \(r\) 個のベクトルの \(1\) 次結合で書ける
+\end{enumerate}
+ことと同値である.
+\end{thm}
+
+\begin{ex}
+$\R^m$のベクトルを$\bm{v}_1, \ldots, \bm{v}_n$とする.
+(ここだけ$\R^m$にしていることに注意.) 
+このとき
+$$
+\{\bm{v}_1,\bm{v}_2,\ldots,\bm{v}_n\}\text{ の \(1\) 次独立な最大個数}
+\le m
+$$
+である. 
+これは$\bm{u}_1=\bm{e}_1, \ldots, \bm{u}_m = \bm{e}_m$と基本ベクトルを取れば, 定理\ref{thm-M-4.3.1}の仮定を満たしていて
+$$
+\{\bm{v}_1,\bm{v}_2,\ldots,\bm{v}_n\}\text{ の \(1\) 次独立な最大個数}
+\!\underalign{\text{(定理 \ref{thm-M-4.3.1})}}{\le} 
+\{\bm{e}_1,\bm{e}_2,\ldots,\bm{e}_m\}\text{ の \(1\) 次独立な最大個数}
+\!\underalign{\text{(例. \ref{ex-M-4.3.1})}}{=}m.
+$$
+\end{ex}
+
+\begin{eg}[{\cite[例題4.3.1]{M}}] 
+\label{ex-M-4.3.1-1}
+次の列ベクトルの \(1\) 次独立な最大個数 \(r\) と \(r\) 個の \(1\) 次独立なベクトルを一組求め, 他のベクトルをこれらの \(1\) 次結合で表せ.
+\[
+\bm{a}_1=
+\begin{pmatrix}
+1\\1\\3\\0
+\end{pmatrix},
+\quad
+\bm{a}_2=
+\begin{pmatrix}
+1\\2\\0\\-1
+\end{pmatrix},
+\quad
+\bm{a}_3=
+\begin{pmatrix}
+1\\3\\-3\\-2
+\end{pmatrix},
+\quad
+\bm{a}_4=
+\begin{pmatrix}
+-2\\-4\\1\\-1
+\end{pmatrix},
+\quad
+\bm{a}_5=
+\begin{pmatrix}
+-1\\-4\\7\\0
+\end{pmatrix}.
+\]
+\begin{proof}
+\(
+A=[\bm{a}_1\ \bm{a}_2\ \bm{a}_3\ \bm{a}_4\ \bm{a}_5]
+\)
+とおき, \(A\) を簡約化した行列を
+\(
+B=[\bm{b}_1\ \bm{b}_2\ \bm{b}_3\ \bm{b}_4\ \bm{b}_5]
+\)
+とする. 今回の場合は
+\[
+A=
+\begin{pmatrix}
+1&1&1&-2&-1\\
+1&2&3&-4&-4\\
+3&0&-3&1&7\\
+0&-1&-2&-1&0
+\end{pmatrix}
+\overset{\text{簡約化}}{\longrightarrow}
+\begin{pmatrix}
+1&0&-1&0&2\\
+0&1&2&0&-1\\
+0&0&0&1&1\\
+0&0&0&0&0
+\end{pmatrix}
+=B
+\]
+である. 
+教科書には次のように書かれていた. 
+\begin{tcolorbox}[mybox]
+\(x\in\mathbb{R}^5\) に対して
+\(
+Ax=0\Longleftrightarrow Bx=0
+\)すなわち
+\[
+x_1a_1+x_2a_2+\cdots+x_5a_5=0
+\Longleftrightarrow
+x_1b_1+x_2b_2+\cdots+x_5b_5=0
+\]
+であるから
+\(a_1,a_2,a_3,a_4,a_5\) の間の \(1\) 次関係と \(b_1,b_2,b_3,b_4,b_5\) の間の \(1\) 次関係は同じである. 
+\end{tcolorbox}
+少しわからなかったので, もう少し具体的に説明する. 
+
+$A\bm{x}=\bm{0}$の解を求めると
+$$
+A\bm{x}=\bm{0}
+\Longleftrightarrow B\bm{x}=\bm{0}
+\Longleftrightarrow
+\begin{pmatrix}
+1&0&-1&0&2\\
+0&1&2&0&-1\\
+0&0&0&1&1\\
+0&0&0&0&0
+\end{pmatrix}
+\begin{pmatrix}
+x_1\\x_2\\x_3\\x_4\\x_5
+\end{pmatrix}
+=
+\begin{pmatrix}
+0\\0\\0\\0
+\end{pmatrix}
+\Longrightarrow
+\begin{pmatrix}
+x_1\\x_2\\x_3\\x_4\\x_5
+\end{pmatrix}
+=
+\begin{pmatrix}
+c_3 - 2c_5\\-2c_3+c_5 \\c_3\\-c_5\\c_5
+\end{pmatrix}
+$$
+となる. ここで$c_3, c_5$は任意の実数である. 
+
+そこで$c_3=1, c_5=0$の時, つまり
+$x_1=1, x_2=-2, x_3=1, x_4=0, x_5=0$
+の時は, 
+$$
+\begin{pmatrix}
+1&0&-1&0&2\\
+0&1&2&0&-1\\
+0&0&0&1&1\\
+0&0&0&0&0
+\end{pmatrix}
+\begin{pmatrix}
+1\\-2\\1\\0\\0
+\end{pmatrix}
+=
+\begin{pmatrix}
+0\\0\\0\\0
+\end{pmatrix}
+\Longrightarrow
+\bm{b}_1-2\bm{b}_2+\bm{b}_3=\bm{0} 
+$$
+である. 教科書が言っていることは
+$$
+\bm{b}_1-2\bm{b}_2+\bm{b}_3=\bm{0} 
+\Longleftrightarrow
+\bm{a}_1-2\bm{a}_2+\bm{a}_3=\bm{0}
+$$
+が成り立つということである. 
+
+以上より右で計算した $\bm{b}_1,\bm{b}_2,\bm{b}_3,\bm{b}_4,\bm{b}_5$ の具体的な形より, 
+\[
+\bm{b}_1=
+\begin{pmatrix}
+1\\0\\0\\0
+\end{pmatrix},
+\quad
+\bm{b}_2=
+\begin{pmatrix}
+0\\1\\0\\0
+\end{pmatrix},
+\quad
+\bm{b}_4=
+\begin{pmatrix}
+0\\0\\1\\0
+\end{pmatrix}
+\]
+であるから, $\bm{b}_1,\bm{b}_2,\bm{b}_4$ は一次独立である.
+一方で, 
+\[
+\bm{b}_3=
+\begin{pmatrix}
+-1\\2\\0\\0
+\end{pmatrix}
+=-\bm{b}_1+2\bm{b}_2,
+\quad
+\bm{b}_5=
+\begin{pmatrix}
+2\\-1\\1\\0
+\end{pmatrix}
+=2\bm{b}_1-\bm{b}_2+\bm{b}_4
+\]
+である. したがって, $\bm{b}_1,\bm{b}_2,\bm{b}_3,\bm{b}_4,\bm{b}_5$ はすべて $\bm{b}_1,\bm{b}_2,\bm{b}_4$ の一次結合で表されるので, 一次独立なベクトルを $4$ 個以上選ぶことはできない. よって, 一次独立な最大個数は $3$ である.
+
+そして上で見たように
+\[
+x_1\bm{b}_1+\cdots+x_5\bm{b}_5=\bm{0}
+\Longleftrightarrow
+x_1\bm{a}_1+\cdots+x_5\bm{a}_5=\bm{0}
+\]
+であり, $\bm{a}_i$ の間の一次関係と $\bm{b}_i$ の間の一次関係は全く同じである. したがって, 
+\[
+\bm{b}_3=-\bm{b}_1+2\bm{b}_2
+\Longrightarrow
+\bm{b}_1-2\bm{b}_2+\bm{b}_3=\bm{0}
+\Longleftrightarrow
+\bm{a}_1-2\bm{a}_2+\bm{a}_3=\bm{0},
+\Longrightarrow
+\bm{a}_3=-\bm{a}_1+2\bm{a}_2
+\]
+を得る. 同様に, 
+\[
+\bm{b}_5=2\bm{b}_1-\bm{b}_2+\bm{b}_4
+\Longrightarrow
+\bm{a}_5=2\bm{a}_1-\bm{a}_2+\bm{a}_4
+\]
+である. 
+また 同様の議論から$\bm{b}_1,\bm{b}_2,\bm{b}_4$ が一次独立であることから, $\bm{a}_1,\bm{a}_2,\bm{a}_4$ も一次独立である.
+よって
+\[
+\left\{
+\begin{aligned}
+&\bm{a}_1,\bm{a}_2,\bm{a}_3,\bm{a}_4,\bm{a}_5\text{ の \(1\) 次独立な最大個数 }r=3,\\
+&\bm{a}_1,\bm{a}_2,\bm{a}_4\text{ は \(1\) 次独立},\\
+&\bm{a}_3=-\bm{a}_1+2\bm{a}_2,\quad \bm{a}_5=2\bm{a}_1-\bm{a}_2+\bm{a}_4.
+\end{aligned}
+\right.
+\]
+\end{proof}
+\end{eg}
+
+上の例において, $3$は$A$のrankに等しい. 
+これは偶然ではなく, 次が成り立つ. 
+
+\begin{thm}[{\cite[定理4.3.3]{M}}] 
+\label{thm-M-4.3.3}
+\[
+\begin{aligned}
+\operatorname{rank}(A)
+&=A\text{ の列ベクトルの \(1\) 次独立な最大個数}\\
+&=A\text{ の行ベクトルの \(1\) 次独立な最大個数}.
+\end{aligned}
+\]
+\end{thm}
+これは
+行列 \(A\) の簡約化を \(B\) とし, \(A,B\) の列ベクトルの分割を
+\[
+A=[\bm{a}_1\ \bm{a}_2\ \cdots\ \bm{a}_n],
+\quad
+B=[\bm{b}_1\ \bm{b}_2\ \cdots\ \bm{b}_n]
+\]
+と書いたとき, \(\bm{x}\in\mathbb{R}^n\) に対して
+\(
+A\bm{x}=\bm{0}\Longleftrightarrow B\bm{x}=\bm{0}
+\)
+である. 
+定義により\(\operatorname{rank}(A) = B\text{ の行の主成分を含む列の個数}\)であり, \(B\) の列のうち \(1\) 次独立な最大個数を与えるものとして \(B\) の列のうち行の主成分を含む列が取れることからわかる. 
+
+なので使える形でまとめると
+\begin{suma}
+\label{suma-M-4.3-1}
+  $n \times k$行列$A$と$\bm{a}_1, \ldots, \bm{a}_k \in  \R^n$を以下で定める.
+    
+    $$
+    \bm{a}_j=
+    \begin{pmatrix}
+    a_{1j}\\a_{2j}\\\vdots\\a_{nj}
+    \end{pmatrix}
+    \quad
+     A=\begin{pmatrix}
+a_{11}& a_{12} & \cdots &a_{1k} \\
+a_{21}& a_{22} & \cdots &a_{2k} \\
+\vdots& \vdots	&	\ddots   &	\vdots \\
+a_{n1}& a_{n2} & \cdots &a_{nk} \\
+\end{pmatrix}
+=
+    \begin{pmatrix}
+    \bm{a}_1&\bm{a}_2&\cdots&\bm{a}_k
+    \end{pmatrix}.
+$$
+また$B$を$A$の簡約化とする. 
+この時, 
+\begin{itemize}
+\item $\{ \bm{a}_1,  \bm{a}_2, \ldots, \bm{a}_k\}$の中で \(1\) 次独立な最大個数 \(r\)は
+$\operatorname{rank}(A)$($B$ の行の主成分を含む列の個数)で与えられ, 
+\item \(r\) 個の \(1\) 次独立なベクトルの1組として, $B$の主成分1が現れた位置の元の行列の列たちが取れる.
+\end{itemize}
+\end{suma}
+最後の"$B$の1が現れた位置の元の行列の列たちが取れる"とは, 例えば行列$A$を行基本変形を用いて次のようになったとする.
+$$
+A=
+    \begin{pmatrix}
+    \bm{a}_1&\bm{a}_2&\bm{a}_3&\bm{a}_4&\bm{a}_5
+    \end{pmatrix}
+   =
+\begin{pmatrix}
+a_{11}& a_{12} &a_{13}& a_{14} & a_{15}  \\
+a_{21}& a_{22} & a_{23}& a_{24} & a_{25}   \\
+a_{31}& a_{32} &a_{33}& a_{34} & a_{35}  \\
+a_{41}& a_{42} &a_{43}& a_{44} & a_{45}  \\
+\end{pmatrix}
+\longrightarrow 
+B=
+\begin{pmatrix}
+0& \xr{1}& 2& 0 & 0   \\
+0& 0 &0&\xr{1}&2 \\
+0& 0 &0& 0&\xr{1}  \\
+0& 0&0& 0& 0 \\
+\end{pmatrix}.
+$$
+今$B$に主成分$\xr{1}$が現れる列は2,4,5列である.
+よって\(r=3\) 個の \(1\) 次独立なベクトルの1組として, $A$の2,4,5列, つまり
+$\bm{a}_2, \bm{a}_4, \bm{a}_5$が取れる. 
+
+
+
+\begin{thm}[{\cite[定理4.3.4]{M}}] 
+\label{thm-M-4.3.4}
+\(n\) 次正方行列 \(A\) について, 次の \(3\) 条件は同値である.
+\begin{enumerate}
+\item[(1)] \(A\) は正則行列である.
+\item[(2)] \(A\) の \(n\) 個の列ベクトルは \(1\) 次独立である.
+\item[(3)] \(A\) の \(n\) 個の行ベクトルは \(1\) 次独立である.
+\end{enumerate}
+\end{thm}
+
+
+またこれから {\cite[定理4.3.5]{M}} の 簡約化の唯一性がわかる. 
+この部分は省略する. 
+
+定理\ref{thm-M-4.3.4}から次がわかる.
+\begin{thm}[{\cite[定理4.3.6]{M}}] 
+\label{thm-M-4.3.6}
+$V$ のベクトル $\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_m$ は1次独立とする.
+ベクトル $\bm{v}_1,\bm{v}_2,\ldots,\bm{v}_n$ が $m\times n$ 行列 $A$ を用いて
+\[
+(\bm{v}_1,\bm{v}_2,\ldots,\bm{v}_n)=(\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_m)A
+\]
+と書けているとする.
+$A$ の列ベクトルを用いて
+$A=(\bm{a}_1,\bm{a}_2,\ldots,\bm{a}_n)$と表記する. 
+\begin{enumerate}
+\item[(1)] $\bm{v}_1,\bm{v}_2,\ldots,\bm{v}_n$ と $A$ の列ベクトル $\bm{a}_1,\bm{a}_2,\ldots,\bm{a}_n$ には同じ1次関係が成り立つ.
+つまり$c_1, \ldots, c_n \in \R$について
+$$
+c_1\bm{v}_1+c_2\bm{v}_2+\cdots+c_n\bm{v}_n=\bm{0}
+\iff
+c_1\bm{a}_1+c_2\bm{a}_2+\cdots+c_n\bm{a}_n=\bm{0}.
+$$
+\item[(2)] $m=n$ のとき
+\[
+\bm{v}_1,\bm{v}_2,\ldots,\bm{v}_n\text{ が1次独立}
+\quad\Longleftrightarrow\quad
+A\text{ が正則行列}.
+\]
+\end{enumerate}
+\end{thm}
+
+\begin{eg}[{\cite[例題4.3.2]{M}}] 
+次の $\mathbb{R}[x]_3$ のベクトルの1次独立な最大個数 $r$ と $r$ 個の1次独立なベクトルを一組求め, 他のベクトルをこれらの1次結合で表せ.
+\[
+\begin{aligned}
+&f_1(x)=1+x+3x^2, \quad
+f_2(x) =1+2x-x^3, \quad
+f_3(x)=1+3x-3x^2-2x^3, \\
+& f_4(x)=-2-4x+x^2-x^3,\quad
+f_5(x)=-1-4x+7x^2.
+\end{aligned}
+\]
+\end{eg}
+
+\begin{proof}
+まず定理\ref{thm-M-4.3.6}を用いて, 次の$\R^4$の問題に帰着する. 
+$f_1,\ldots,f_5$ を $\mathbb{R}[x]_3$ の1次独立なベクトル $\{1,x,x^2,x^3\}$ の1次結合で表すと
+\[
+(f_1,f_2,f_3,f_4,f_5)
+=
+(1,x,x^2,x^3)
+\begin{pmatrix}
+1&1&1&-2&-1\\
+1&2&3&-4&-4\\
+3&0&-3&1&7\\
+0&-1&-2&-1&0
+\end{pmatrix}
+\]
+である.
+そこで
+$$
+\begin{gathered}
+ \bm{a}_1=\begin{pmatrix}
+1\\1\\3\\0
+\end{pmatrix} \quad
+ \bm{a}_2= \begin{pmatrix}
+1\\2\\0\\-1
+\end{pmatrix}\quad
+ \bm{a}_3 =\begin{pmatrix}
+1\\3\\-3\\-2
+\end{pmatrix}\quad
+ \bm{a}_4 =\begin{pmatrix}
+-2\\-4\\1\\-1
+\end{pmatrix}\quad
+ \bm{a}_5=\begin{pmatrix}
+-1\\-4\\7\\0
+\end{pmatrix}\\
+ A=\begin{pmatrix}
+1&1&1&-2&-1\\
+1&2&3&-4&-4\\
+3&0&-3&1&7\\
+0&-1&-2&-1&0
+\end{pmatrix}
+\end{gathered}
+$$
+とすると, 
+定理\ref{thm-M-4.3.6}から$f_1,f_2,f_3,f_4,f_5$ と $A$ の列ベクトル $\bm{a}_1,\bm{a}_2,\bm{a}_3, \bm{a}_4, \bm{a}_5$ には同じ1次関係が成り立つ.
+以上より次の問題を解けば良い.
+\begin{tcolorbox}[mybox]
+上で与えられた$\R^4$のベクトル $\bm{a}_1,\bm{a}_2,\bm{a}_3, \bm{a}_4, \bm{a}_5$について,  \(1\) 次独立な最大個数 \(r\) と \(r\) 個の \(1\) 次独立なベクトルを一組求め, 他のベクトルをこれらの \(1\) 次結合で表せ.
+\end{tcolorbox}
+これは例\ref{ex-M-4.3.1-1}と同じである. 実際簡約化
+$$
+ A=\begin{pmatrix}
+1&1&1&-2&-1\\
+1&2&3&-4&-4\\
+3&0&-3&1&7\\
+0&-1&-2&-1&0
+\end{pmatrix}
+\overset{\text{簡約化}}{\longrightarrow}
+B=
+\begin{pmatrix}
+\xr{1}&0&-1&0&2\\
+0&\xr{1}&2&0&-1\\
+0&0&0&\xr{1}&1\\
+0&0&0&0&0
+\end{pmatrix}
+$$
+をする. まとめ\ref{suma-M-4.3-1}と同様に
+\begin{itemize}
+\item \(1\) 次独立な最大個数 \(r=\rank A=3\). これは赤色の主成分の個数に同じ. 
+\item \(r=3\) 個の \(1\) 次独立なベクトルの一組は$\bm{a}_1,\bm{a}_2,\bm{a}_4$.
+\item $B=(\bm{b}_1, \bm{b}_2, \bm{b}_3, \bm{b}_4, \bm{b}_5)$と表示すると
+$$
+\bm{b}_3=\begin{pmatrix}
+-1\\2\\0\\0
+\end{pmatrix}
+=
+-1
+\begin{pmatrix}
+1\\0\\0\\0
+\end{pmatrix}
++
+2
+\begin{pmatrix}
+0\\1\\0\\0
+\end{pmatrix}
+=
+-\bm{b}_1+2\bm{b}_2
+$$
+なので, $\bm{a}_3=-\bm{a}_1+2\bm{a}_2$. 
+同様に$\bm{b}_5=2\bm{b}_1-\bm{b}_2+\bm{b}_4$なので$\bm{a}_5=2\bm{a}_1-\bm{a}_2+\bm{a}_4$である. 
+\end{itemize}
+よってあとは $f_1,\ldots,f_5$ の関係に言いなおせば次の答えを得る.
+\[
+\left\{
+\begin{aligned}
+&f_1,f_2,f_3,f_4,f_5\text{ の1次独立な最大個数 }r=3,\\
+&f_1,f_2,f_4\text{ は1次独立},\\
+&f_3=-f_1+2f_2,\quad f_5=2f_1-f_2+f_4.
+\end{aligned}
+\right.
+\]
+\end{proof}
+
+\subsection{ベクトル空間の基底と次元  \cite[4.4節]{M}}
+
+\begin{defn}
+ベクトル空間 $V$ のベクトル $\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_n$ が $V$ を生成するとは, $V$ の全てのベクトルが $\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_n$ の1次結合で表されるときにいう.
+
+つまり任意の$\bm{v} \in V$について, ある$c_1, \ldots, c_n \in \R$があって
+$$
+\bm{v}=c_1\bm{u}_1+\cdots +c_n \bm{u}_n
+$$
+となること. 
+\end{defn}
+
+\begin{defn}
+ベクトル空間 $V$ のベクトルの組 $\{\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_n\}$ が次の2つの条件を満たすときに $V$ の基底という.
+\begin{enumerate}
+\item[(1)] $\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_n$ は1次独立である.
+\item[(2)] $\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_n$ は $V$ を生成する.
+\end{enumerate}
+\end{defn}
+教科書では"基"という書き方をしていたが, これはあまり聞いたことがない表現である. 
+
+\begin{ex}
+$\mathbb{R}^n$ の基本ベクトル $\bm{e}_1,\bm{e}_2,\ldots,\bm{e}_n$ は $\mathbb{R}^n$ を生成する. 実際 $\mathbb{R}^n$ の任意のベクトルは
+\[
+\begin{pmatrix}
+a_1\\
+a_2\\
+\vdots\\
+a_n
+\end{pmatrix}
+=
+a_1\bm{e}_1+a_2\bm{e}_2+\cdots+a_n\bm{e}_n
+\]
+と $\bm{e}_1,\bm{e}_2,\ldots,\bm{e}_n$ の1次結合で書けている.
+
+よって $\bm{e}_1,\allowbreak\bm{e}_2,\allowbreak\ldots,\allowbreak\bm{e}_n$ は1次独立であり, $\mathbb{R}^n$ を生成しているので$\mathbb{R}^n$ の基底になる. 
+この$\{\bm{e}_1,\allowbreak\bm{e}_2,\allowbreak\ldots,\allowbreak\bm{e}_n\}$ を $\mathbb{R}^n$ の標準基底という.
+\end{ex}
+
+
+定理\ref{thm-M-4.2.3}から次がわかる. 
+\begin{thm}
+[{\cite[定理4.4.1]{M}}] 
+ベクトル空間 $V$ の基底に含まれるベクトルの個数は, 基底の取り方によらず一定である.
+\end{thm}
+
+
+\begin{defn}
+%\paragraph{ベクトル空間の次元}
+$V$をベクトル空間とする.
+\begin{itemize}
+\item 零ベクトルのみからなるベクトル空間を零（ベクトル）空間という.
+\item 零空間および有限個のベクトルからなる基底をもつベクトル空間を有限次元ベクトル空間という.
+\item $V$ の1組の基底を構成するベクトルの個数を $V$ の（$\mathbb{R}$ 上の）次元といい, $\dim(V)$ とか $\dim_{\mathbb{R}}(V)$ などと書く. 上の定理より$V$ の次元は基底の取り方によらない.
+\item $V$ が零空間であるときは $V$ の次元は $0$, すなわち $\dim(V)=0$ とする.
+\end{itemize}
+\end{defn}
+零（ベクトル）空間の扱いをしているのは定義上のためであり, 本質的ではない. 
+またこの授業では基本的に有限次元ベクトル空間を扱う.\footnote{無限次元の場合, 基底の濃度を次元と定める."濃度"は個数の無限への拡張と思って良い. 例えば$\R[x]$は(可算)無限次元である. ただ"濃度"の定義が面倒なので, 以下このことは考えなくて良い.}
+
+
+\begin{ex}%\paragraph{例3}
+$\mathbb{R}^n$ の基本ベクトルの集合 $\{\bm{e}_1,\bm{e}_2,\ldots,\bm{e}_n\}$ は $\mathbb{R}^n$ の基底であるから
+\(
+\dim(\mathbb{R}^n)=n.
+\)
+\end{ex}
+
+\begin{ex}%\paragraph{例4}
+$\mathbb{R}[x]_n$ の元 $1,x,\ldots,x^n$ は明らかに $\mathbb{R}[x]_n$ を生成し, 1次独立である. よって, $\{1,x,\ldots,x^n\}$ は $\mathbb{R}[x]_n$ の基底となる. 従って
+\(
+\dim(\mathbb{R}[x]_n)=n+1.
+\)
+\end{ex}
+
+
+\begin{thm}[{\cite[定理4.4.2]{M}}] 
+\label{thm-M-4.4.2}
+ベクトル空間 $V$ が有限次元である必要十分条件は $V$ のベクトルの1次独立な最大個数が有限であることである. このとき
+\[
+\dim(V)=V\text{ のベクトルの1次独立な最大個数}.
+\]
+\end{thm}
+
+\begin{eg}
+[{\cite[例4.4.4]{M}}] 
+次の解空間の次元と1組の基底を求めよ.
+\[
+W=
+\left\{
+\bm{x}\in\mathbb{R}^5
+\mathrel{}\middle|\mathrel{}
+\begin{aligned}
+x_1-2x_2+x_3+2x_4+3x_5&=0,\\
+2x_1-4x_2+3x_3+3x_4+8x_5&=0
+\end{aligned}
+\right\}.
+\]
+
+
+\begin{proof}
+$A=\begin{pmatrix}
+1&-2&1&2&3\\
+2&-4&3&3&8
+\end{pmatrix}$
+とする. 
+$
+W=
+\left\{
+\bm{x}\in\mathbb{R}^5
+\mathrel{}\middle|\mathrel{}
+A\bm{x}
+=\bm{0}
+\right\}.
+$
+となる. 
+$A$を簡約化すると
+\[
+A=
+\begin{pmatrix}
+1&-2&1&2&3\\
+2&-4&3&3&8
+\end{pmatrix}
+\overset{\text{簡約化}}{\longrightarrow}
+\begin{pmatrix}
+1&-2&0&3&1\\
+0&0&1&-1&2
+\end{pmatrix}
+=B.
+\]
+従って$A\bm{x}
+=\bm{0} \iff B\bm{x}
+=\bm{0}$なので, $A\bm{x}
+=\bm{0}$の解は
+\[
+\bm{x}=
+\begin{pmatrix}
+2c_1-3c_2-c_3\\
+c_1\\
+c_2-2c_3\\
+c_2\\
+c_3
+\end{pmatrix}
+=
+c_1
+\begin{pmatrix}
+2\\
+1\\
+0\\
+0\\
+0
+\end{pmatrix}
++
+c_2
+\begin{pmatrix}
+-3\\
+0\\
+1\\
+1\\
+0
+\end{pmatrix}
++
+c_3
+\begin{pmatrix}
+-1\\
+0\\
+-2\\
+0\\
+1
+\end{pmatrix}
+\quad(c_1,c_2,c_3\in\mathbb{R}).
+\]
+となる. 以上より
+\[
+\bm{a}_1=
+\begin{pmatrix}
+2\\
+1\\
+0\\
+0\\
+0
+\end{pmatrix},
+\quad
+\bm{a}_2=
+\begin{pmatrix}
+-3\\
+0\\
+1\\
+1\\
+0
+\end{pmatrix},
+\quad
+\bm{a}_3=
+\begin{pmatrix}
+-1\\
+0\\
+-2\\
+0\\
+1
+\end{pmatrix}
+\]
+とおくと, $\bm{a}_1,\bm{a}_2,\bm{a}_3$ は $W$ を生成し, 1次独立である. よって
+\(
+\dim(W)=3
+\)
+かつ$\{\bm{a}_1,\bm{a}_2,\bm{a}_3\}$ が $W$ の1組の基底となる.
+\end{proof}
+\end{eg}
+
+上のような$\bm{a}_1,\bm{a}_2,\bm{a}_3$を基本解ともいう. 
+この上の例と同じくして次が言える.
+\begin{thm}[{\cite[定理4.4.3]{M}}] 
+\label{thm-M-4.4.3}
+$A$ は $m\times n$ 行列とする. 同次形の連立1次方程式 $A\bm{x}=\bm{0}$ の解空間\(W=\{\bm{x}\in\mathbb{R}^n\mid A\bm{x}=\bm{0}\}\)の次元は次のように表される.
+\[
+\dim(W)=n-\operatorname{rank}(A).
+\]
+\end{thm}
+
+%\paragraph{ベクトルの集合で生成される部分空間}
+\begin{defn}
+ベクトル空間 $V$ のベクトル $\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_t$ の1次結合全体のなす集合
+\[
+W=
+\left\{
+c_1\bm{u}_1+c_2\bm{u}_2+\cdots+c_t\bm{u}_t
+\mathrel{}\middle|\mathrel{}
+c_i\in\mathbb{R}
+\right\}
+\]
+は $V$ の部分空間である. この $W$ を
+\[
+\langle \bm{u}_1,\bm{u}_2,\ldots,\bm{u}_t\rangle_{\mathbb{R}}
+\quad\text{あるいは}\quad
+\langle \bm{u}_1,\bm{u}_2,\ldots,\bm{u}_t\rangle
+\]
+と書き, $\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_t$ で生成される $V$ の部分空間という.
+\end{defn}
+定理\ref{thm-M-4.4.2}より次の定理を得る.
+
+\begin{thm}[{\cite[定理4.4.4]{M}}] 
+\[
+\dim\bigl(\langle \bm{u}_1,\bm{u}_2,\ldots,\bm{u}_t\rangle_{\mathbb{R}}\bigr)
+=
+\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_t\text{ の1次独立な最大個数}
+=
+\mathrm{rank}(\bm{u}_1,\bm{u}_2,\ldots,\bm{u}_t).
+\]
+\end{thm}
+
+\begin{ex}%\paragraph{例6}
+$\mathbb{R}^3$ のベクトル
+\[
+\bm{a}_1=
+\begin{pmatrix}
+1\\
+1\\
+0
+\end{pmatrix},
+\quad
+\bm{a}_2=
+\begin{pmatrix}
+2\\
+2\\
+1
+\end{pmatrix},
+\quad
+\bm{a}_3=
+\begin{pmatrix}
+-1\\
+-1\\
+2
+\end{pmatrix}
+\]
+で生成される $\mathbb{R}^3$ の部分空間\(W=\langle \bm{a}_1,\bm{a}_2,\bm{a}_3\rangle_{\mathbb{R}}\)を考える. $\bm{a}_1,\bm{a}_2,\bm{a}_3$ の1次独立な最大個数は $2$ であるから, $\dim(W)=2$ である.
+$$
+A=(\bm{a}_1, \bm{a}_2, \bm{a}_3)=
+\begin{pmatrix}
+1&2&-1\\
+1&2&-1\\
+0&1&2\\
+\end{pmatrix}
+\overset{\text{簡約化}}{\longrightarrow}
+\begin{pmatrix}
+1&0&-5\\
+0&1&2\\
+0&0&0
+\end{pmatrix}.
+$$
+でランクが2であることからもわかる.
+\end{ex}
+
+
+次元が有限の場合は, 以下の簡単な方法で基底かどうかが判定できる. 
+\begin{thm}[{\cite[定理4.4.5]{M}}] 
+\label{thm-M-4.4.5}
+$\dim(V)=n$ とする. $V$ の $n$ 個のベクトル $\bm{v}_1,\bm{v}_2,\ldots,\bm{v}_n$ について, 次の3条件は同値である.
+\begin{enumerate}
+\item[(1)] $\{\bm{v}_1,\bm{v}_2,\ldots,\bm{v}_n\}$ は $V$ の基底である.
+\item[(2)] $\bm{v}_1,\bm{v}_2,\ldots,\bm{v}_n$ は1次独立である.
+\item[(3)] $\bm{v}_1,\bm{v}_2,\ldots,\bm{v}_n$ は $V$ を生成する.
+\end{enumerate}
+\end{thm}
+
+\begin{ex}
+%\paragraph{例7}
+$\dim\mathbb{R}^3=3$ で, 次の3個のベクトルは1次独立だから $\mathbb{R}^3$ の1組の基底である.
+\[
+\left\{
+\begin{pmatrix}
+1\\
+1\\
+1
+\end{pmatrix},
+\begin{pmatrix}
+0\\
+1\\
+1
+\end{pmatrix},
+\begin{pmatrix}
+0\\
+0\\
+1
+\end{pmatrix}
+\right\}.
+\]
+\end{ex}
+\begin{ex}%\paragraph{例8}
+$\dim\mathbb{R}[x]_2=3$ で, $\mathbb{R}[x]_2$ の3個のベクトル $x+x^2,1-x^2,x$ を考えると
+\[
+a+bx+cx^2
+=
+(a+c)(x+x^2)+a(1-x^2)+(-a+b-c)x
+\]
+となるから, $\mathbb{R}[x]_2$ を生成する. よって, $\{x+x^2,1-x^2,x\}$ は $\mathbb{R}[x]_2$ の基底である.
+\end{ex}
+
+\newpage
+
+
+\section{線形写像 \cite[5章]{M}}
+
+\subsection{線形写像\cite[5.1 節]{M}}
+
+\begin{defn}
+\(U,V\) を \(\mathbb{R}\) 上のベクトル空間とする. \(U\) から \(V\) への写像 \(T\) が（\(\mathbb{R}\) 上の）線形写像であるとは, 次の (1), (2) を満たすときにいう.
+\begin{enumerate}
+\item 
+$\bm{u},\bm{v}\in U$について, 
+\(
+T(\bm{u}+\bm{v})=T(\bm{u})+T(\bm{v})
+\).
+
+\item
+$\bm{u}\in U,\ c\in\mathbb{R}$について, 
+\(
+T(c\bm{u})=cT(\bm{u})
+\).
+\end{enumerate}
+\end{defn}
+
+\begin{eg}
+$a \in \R$について\(T : \R \to \R \quad x \mapsto ax\)は \(\mathbb{R}\) から \(\mathbb{R}\) への線形写像である.
+これは(1)と(2)を満たすためである. 
+\end{eg}
+
+\begin{eg}%[例1]
+\label{ex-linear-map-matrix}
+\(A\) が \(m\times n\) 行列であるとき,
+\(\mathbb{R}^n\) から \(\mathbb{R}^m\) への写像 \(T_A\) を
+\[
+T_A : \R^n \to \R^m
+\quad 
+\bm{x} \mapsto A\bm{x}
+\]
+と定める. この \(T_A\) は\(\mathbb{R}^n\) から \(\mathbb{R}^m\) への線形写像である.
+これは(1)と(2)を満たすためである. 
+\end{eg}
+
+実は逆も言える.
+\begin{thm}
+  \(\mathbb{R}^n\) から \(\mathbb{R}^m\) への線形写像 \(T\) は適当な \(m\times n\) 行列 \(A\) によって
+\(
+T(\bm{x})=A\bm{x}
+\)
+と書ける.
+\end{thm}
+よってわからなければ線形写像=行列の掛け算と思っても良い.
+
+
+
+\begin{defn}%[線形写像の像と核]
+\(T\) がベクトル空間 \(U\) から \(V\) への線形写像とする. 
+\begin{itemize}
+\item \(\operatorname{Im}(T)=\{T(\bm{u}) \mid \bm{u}\in U\} \subset V\)とおき, \(T\) の像(Image)という. \(T\) の像は \(T(U)\) とも書く.
+\item \(\operatorname{Ker}(T)=\{\bm{u}\in U\mid T(\bm{u})=\bm{0}_V\} \subset U\)とおき, \(T\) の核(Kernel)という.
+\end{itemize}
+\end{defn}
+
+\begin{ex}
+$1 \times 2$行列
+$A=\begin{pmatrix}
+2&-1\\
+\end{pmatrix}
+$
+とし,\(\mathbb{R}^2\) から \(\mathbb{R}^1\) への写像 \(T_A\) を
+\[
+T_A : \R^2 \to \R^1
+\quad 
+\bm{x}=
+\begin{pmatrix}
+x_1\\
+x_2
+\end{pmatrix}
+ \mapsto A\bm{x}
+ =
+\begin{pmatrix}
+2&-1\\
+\end{pmatrix} 
+\begin{pmatrix}
+x_1\\
+x_2
+\end{pmatrix}
+=
+2x_1-x_2
+\]
+とする. 
+この時
+\begin{itemize}
+\item 像を求めると
+ \[
+\operatorname{Im}(T_A)=\{T_A(\bm{x}) \mid \bm{x}\in \R^2\} 
+=\{2x_1-x_2 \mid x_1, x_2 \in \R \}
+=\R. 
+\]
+\item 核を求めると
+\begin{align*}
+\operatorname{Ker}(T_A)
+&=
+\{\bm{x}\in \R^2\mid T_A(\bm{x})=0\}
+=
+\left\{
+\begin{pmatrix}
+x_1\\
+x_2
+\end{pmatrix}
+\in \R^2\mid T_A(\bm{x})=2x_1-x_2=0
+\right\}
+\\
+&=
+\left\{
+\begin{pmatrix}
+c\\
+2c
+\end{pmatrix}
+\in \R^2\mid c \in \R
+\right\}
+ \subset \R^2.
+\end{align*}
+\end{itemize}
+\end{ex}
+
+
+\begin{thm}[{\cite[定理5.1.1]{M}}] 
+\(T\) はベクトル空間 \(U\) から \(V\) への線形写像とする.
+\begin{enumerate}
+\item \(T\) の像 \(\operatorname{Im}(T)\) は \(V\) の部分空間である.
+\item \(T\) の核 \(\operatorname{Ker}(T)\) は \(U\) の部分空間である.
+\end{enumerate}
+\end{thm}
+
+以下 断りがなければ\(U,V\) は有限次元ベクトル空間とする.
+
+\begin{defn}
+%[線形写像の階数と退化次数]
+\(U,V\) は有限次元ベクトル空間とし, 
+\(T\) が \(U\) から \(V\) への線形写像とする. 
+\begin{itemize}
+\item $\operatorname{rank}(T)=\dim(\operatorname{Im}(T))$を\(T\) の階数(ランク)と言う. 
+\item $\operatorname{null}(T)=\dim(\operatorname{Ker}(T))$を\(T\) の退化次数という.
+\end{itemize}
+\end{defn}
+この言葉・記号を覚えていなかったので, この教科書特有の用語かもしれない. 
+ただし次の定理は重要で, 次元定理とも呼ばれる. 
+
+\begin{thm}[{\cite[定理5.1.2]{M}}]
+\label{thm-M-5.1.2}
+\(U,V\) がベクトル空間, \(T\) が \(U\) から \(V\) への線形写像とすると
+\[
+\operatorname{null}(T)+\operatorname{rank}(T)
+=
+\dim(\operatorname{Ker}(T))+\dim(\operatorname{Im}(T))=\dim(U).
+\]
+\end{thm}
+
+\begin{eg}%[例2]
+\(A\) を \(m\times n\) 行列, \(T_A\) を例\ref{ex-linear-map-matrix}で定義した \(\mathbb{R}^n\) から \(\mathbb{R}^m\) への線形写像とすると \(T_A(\bm{x})=A\bm{x}\) なので, 
+\begin{itemize}
+\item 行列 \(A\) を
+$
+A=[\bm{a}_1\ \bm{a}_2\ \cdots\ \bm{a}_n]
+$
+と列ベクトルで表すと
+$$\operatorname{Im}(T_A)=\{A\bm{x}\mid \bm{x}\in\mathbb{R}^n\}=
+\{x_1\bm{a}_1+x_2\bm{a}_2+\cdots+x_n\bm{a}_n \mid
+x_1,\ldots,x_n\in\mathbb{R}\}
+$$
+定理\ref{thm-M-4.3.3}より
+$$\operatorname{rank}(T_A)=\dim(\operatorname{Im}(T_A))=\mathrm{rank}(A).$$
+\item\(
+\operatorname{Ker}(T_A)
+=
+\{\bm{x}\in\mathbb{R}^n\mid A\bm{x}=\bm{0}\}.
+\)
+すなわち \(\operatorname{Ker}(T_A)\) は連立 \(1\) 次方程式 \(A\bm{x}=\bm{0}\) の解空間に他ならない. よって定理\ref{thm-M-4.4.3}より
+\[
+\operatorname{null}(T_A)
+=\dim(\operatorname{Ker}(T_A))=
+n-\operatorname{rank}(A).
+\]
+\end{itemize}
+\end{eg}
+
+
+
+\begin{suma}[線形写像$A : \R^n \to \R^m$の像と核の求め方]
+\label{suma-gauss}
+$m \times n$行列$A$による線形写像$A : \R^n \to \R^m$の像と核の求め方は以下の手順で解くことができる. 
+\begin{enumerate}
+   \setlength{\parskip}{0cm} 
+  \setlength{\itemsep}{0cm}
+ \item 行列$A$を簡約化・行基本変形を繰り返して簡約行列$B$を得る.
+ \item (像の次元)$B$のゼロベクトルでない行ベクトルの個数(主成分の1の個数)が${\rm rank}A=\dim {\rm Im}(A)$である.
+ \item (像の基底) $B$の1(主成分)が現れた位置の元の行列の列たちが${\rm Im}(A)$の基底になる.
+ \item (核の次元) $\dim {\rm Ker}(A) = n-\dim {\rm Im}(A)=n-{\rm rank}A$.
+ \item (核の基底) $B \bm{x}=\bm{0}$の解($A\bm{x}=\bm{0}$の解に同じ)が, パラメーター$t_1, \ldots, t_l$を用いて$\bm{x}=t_1\bm{b}_1+\cdots+t_l\bm{b}_l$とかけるとき, $\bm{b}_1, \ldots, \bm{b}_l$が${\rm Ker}(A)$の基底となる.
+ \end{enumerate}
+\end{suma}
+
+
+
+
+\begin{eg}[例題5.1.1]
+次の線形写像
+\[
+T\colon\mathbb{R}^5\longrightarrow\mathbb{R}^3,
+\quad
+T(\bm{x})=
+\begin{pmatrix}
+2&-1&1&5&0\\
+1&3&4&-1&7\\
+1&0&1&2&1
+\end{pmatrix}
+\bm{x}.
+\]
+ に対し, 次を求めよ. 
+\begin{itemize}
+\item  \(T\) の階数$\operatorname{rank}(T)=\dim(\operatorname{Im}(T))$と \(\operatorname{Im}(T)\) の \(1\) 組の基底
+\item \(T\) の退化次数$\operatorname{null}(T)=\dim(\operatorname{Ker}(T))$と \(\operatorname{Ker}(T)\) の \(1\) 組の基底,
+\end{itemize}
+
+
+\begin{proof}
+
+手順通りする. 
+(手順1) $A$を簡約化すると
+\[
+A=
+\begin{pmatrix}
+2&-1&1&5&0\\
+1&3&4&-1&7\\
+1&0&1&2&1
+\end{pmatrix}
+\longrightarrow
+B=
+\begin{pmatrix}
+1&0&1&2&1\\
+0&1&1&-1&2\\
+0&0&0&0&0
+\end{pmatrix}.
+\]
+
+(手順2) $B$の主成分の個数を求めると
+\[
+B=
+\begin{pmatrix}
+\xr{1}&0&1&2&1\\
+0&\xr{1}&1&-1&2\\
+0&0&0&0&0
+\end{pmatrix}.
+\]
+で2個. よって$\operatorname{rank}(T)=\dim(\operatorname{Im}(T))=2$. 
+
+(3) 像の基底は$B$の1(主成分)が現れた位置の元の行列の列は1列目と２列目なので
+$A$の1列目と２列目, つまり
+\[
+\left\{
+\begin{pmatrix}
+2\\
+1\\
+1
+\end{pmatrix},
+\begin{pmatrix}
+-1\\
+3\\
+0
+\end{pmatrix}
+\right\}
+\]
+が像の基底となる. 
+
+(4) 核の次元(退化次数)
+$$\operatorname{null}(T)=\dim(\operatorname{Ker}(T)) = 
+5-{\rm rank}A = 5-2=3.
+$$
+(5). 核の基底は
+$B\bm{x}=\bm{0}$を解くと
+$$
+\bm{x}=
+c_3
+\begin{pmatrix}
+-1\\
+-1\\
+1\\
+0\\
+0
+\end{pmatrix}+
+c_4
+\begin{pmatrix}
+-2\\
+1\\
+0\\
+1\\
+0
+\end{pmatrix}
++
+c_5
+\begin{pmatrix}
+-1\\
+-2\\
+0\\
+0\\
+1
+\end{pmatrix}
+$$
+である. 
+よって\(\operatorname{Ker}(T)\) の基底として
+\[
+\left\{
+\begin{pmatrix}
+-1\\
+-1\\
+1\\
+0\\
+0
+\end{pmatrix},
+\begin{pmatrix}
+-2\\
+1\\
+0\\
+1\\
+0
+\end{pmatrix},
+\begin{pmatrix}
+-1\\
+-2\\
+0\\
+0\\
+1
+\end{pmatrix}
+\right\}
+\]
+が取れる.
+
+\end{proof}
+\end{eg}
+
+\subsection{線形写像の表現行列 \cite[5.2節]{M}}
+
+\begin{defn}
+%[表現行列]
+\(T\) がベクトル空間 \(U\) から \(V\) への線形写像とする. \(U\) の基底
+\(
+\{\bm{u}_1,\ldots,\bm{u}_n\},
+\)
+\(V\) の基底
+\(
+\{\bm{v}_1,\ldots,\bm{v}_m\}
+\)
+を一つ固定する. 
+
+\(T(\bm{u}_1),\ldots,T(\bm{u}_n)\) は \(V\) のベクトルであるから, \(\bm{v}_1,\ldots,\bm{v}_m\) の \(1\) 次結合で書ける.
+これを行列を用いて
+\[
+(T(\bm{u}_1),\ldots,T(\bm{u}_n))
+=
+(\bm{v}_1,\ldots,\bm{v}_m)A
+\quad
+(A\colon m\times n\text{ 行列})
+\]
+と表わす. この行列 \(A\) を \(U\) の基底 \(\{\bm{u}_1,\ldots,\bm{u}_n\}\), \(V\) の基底 \(\{\bm{v}_1,\ldots,\bm{v}_m\}\) に関する \(T\) の表現行列であるという.
+\end{defn}
+
+\begin{eg}[例1]
+\(T : U=\mathbb{R}^2 \to V=\mathbb{R}^3\) への線形写像で
+\[
+T(\bm{x})=
+\begin{pmatrix}
+2&1\\
+1&0\\
+4&3
+\end{pmatrix}
+\bm{x}
+\]とする.
+\begin{itemize}
+\item $n=2$で
+\(
+\bm{u}_1=
+\begin{pmatrix}
+1\\
+0
+\end{pmatrix},
+\bm{u}_2=
+\begin{pmatrix}
+0\\
+1
+\end{pmatrix}
+\)
+\item 
+$m=3$で
+$
+\bm{v}_1=
+\begin{pmatrix}
+1\\
+0\\
+0
+\end{pmatrix},
+\bm{v}_2=
+\begin{pmatrix}
+0\\
+1\\
+0
+\end{pmatrix},
+\bm{v}_3=
+\begin{pmatrix}
+0\\
+0\\
+1
+\end{pmatrix}
+$
+\end{itemize}
+をとると
+\[
+T(\bm{u}_1)
+=
+\begin{pmatrix}
+2\\
+1\\
+4
+\end{pmatrix}
+=
+2\bm{v}_1+\bm{v}_2+4\bm{v}_3,
+\quad
+T(\bm{u}_2)
+=
+\begin{pmatrix}
+1\\
+0\\
+3
+\end{pmatrix}
+=
+\bm{v}_1+0 \cdot \bm{v}_2 + 3 \bm{v}_3
+\]
+であるから
+\[
+(T(\bm{u}_1),T(\bm{u}_2))
+=
+(\bm{v}_1,\bm{v}_2,\bm{v}_3)
+\begin{pmatrix}
+2&1\\
+1&0\\
+4&3
+\end{pmatrix}.
+\]
+よって標準基底に関する \(T\) の表現行列は
+\(
+A=
+\begin{pmatrix}
+2&1\\
+1&0\\
+4&3
+\end{pmatrix}.
+\)
+\end{eg}
+
+\begin{defn}
+%[表現行列と基の変換行列]
+\(T\) がベクトル空間 \(U\) から \(V\) への線形写像とする.
+\(
+\dim(U)=n,\dim(V)=m
+\)
+とし, \(U,V\) の基底として次のようなものをとる.
+\begin{itemize}
+\item $U$の基底として
+$\{\bm{u}_1,\ldots,\bm{u}_n\},
+\{\bm{u}'_1,\ldots,\bm{u}'_n\}$
+\item $V$の基底として
+$\{\bm{v}_1,\ldots,\bm{v}_m\},
+\{\bm{v}'_1,\ldots,\bm{v}'_m\}
+$
+\end{itemize}
+\(U\) と \(V\) の各々 \(2\) つの基底の間の関係を
+\[
+(\bm{u}'_1,\ldots,\bm{u}'_n)
+=
+(\bm{u}_1,\ldots,\bm{u}_n)P,
+\quad
+(\bm{v}'_1,\ldots,\bm{v}'_m)
+=
+(\bm{v}_1,\ldots,\bm{v}_m)Q
+\]
+と表す. 定理\ref{thm-M-4.3.6}(2) より \(P,Q\) は正則行列である. この行列 \(P,Q\) を基底の変換行列という.
+\end{defn}
+
+\begin{thm}[{\cite[定理5.2.1]{M}}]
+\(T\) をベクトル空間 \(U\) から \(V\) への線形写像とする. 上の記号の下に,
+\begin{itemize}
+\item \(T\) の
+\(
+\{\bm{u}_1,\ldots,\bm{u}_n\},
+\{\bm{v}_1,\ldots,\bm{v}_m\}
+\)
+に関する表現行列を \(A\),
+\item \(T\) の
+\(
+\{\bm{u}'_1,\ldots,\bm{u}'_n\},
+\{\bm{v}'_1,\ldots,\bm{v}'_m\}
+\)
+に関する表現行列を \(B\) とする.
+\end{itemize}
+この時
+\(
+B=Q^{-1}AP
+\)
+が成り立つ. 
+\end{thm}
+
+\begin{eg}
+[{\cite[例題5.2.1]{M}}]
+$U=\mathbb{R}^3$, $V=\mathbb{R}^2$ とし, $U$ から $V$ への線形写像を
+\[
+T(\bm{x})=
+\begin{pmatrix}
+2&4&1\\
+1&-1&0
+\end{pmatrix}
+\bm{x}
+\quad (\bm{x}\in U)
+\]
+と定義する. $U$ と $V$ の次の与えられた基底に関する $T$ の表現行列 $B$ を求めよ.
+\[
+U\text{ の基底 }
+\left\{
+\bm{a}_1=
+\begin{pmatrix}
+2\\
+0\\
+3
+\end{pmatrix},
+\quad
+\bm{a}_2=
+\begin{pmatrix}
+0\\
+1\\
+1
+\end{pmatrix},
+\quad
+\bm{a}_3=
+\begin{pmatrix}
+1\\
+0\\
+1
+\end{pmatrix}
+\right\}\quad
+V\text{ の基底 }
+\left\{
+\bm{b}_1=
+\begin{pmatrix}
+1\\
+1
+\end{pmatrix},
+\quad
+\bm{b}_2=
+\begin{pmatrix}
+2\\
+3
+\end{pmatrix}
+\right\}.
+\]
+\end{eg}
+\begin{proof}
+$U$ の標準基底 $\{\bm{e}_1,\bm{e}_2,\bm{e}_3\}$, $V$ の標準基底 $\{\bm{e}_1',\bm{e}_2'\}$ に関する $T$ の表現行列は
+\[
+A=
+\begin{pmatrix}
+2&4&1\\
+1&-1&0
+\end{pmatrix}
+\]
+である. また基底を取り替えると
+\[
+(\bm{a}_1,\bm{a}_2,\bm{a}_3)=(\bm{e}_1,\bm{e}_2,\bm{e}_3)P,
+\quad
+P=
+\begin{pmatrix}
+2&0&1\\
+0&1&0\\
+3&1&1
+\end{pmatrix},
+\quad
+(\bm{b}_1,\bm{b}_2)=(\bm{e}_1',\bm{e}_2')Q,
+\quad
+Q=
+\begin{pmatrix}
+1&2\\
+1&3
+\end{pmatrix}
+\]
+となるから
+\[
+\begin{aligned}
+B
+&=Q^{-1}AP
+=
+\begin{pmatrix}
+3&-2\\
+-1&1
+\end{pmatrix}
+\begin{pmatrix}
+2&4&1\\
+1&-1&0
+\end{pmatrix}
+\begin{pmatrix}
+2&0&1\\
+0&1&0\\
+3&1&1
+\end{pmatrix}=
+\begin{pmatrix}
+17&17&7\\
+-5&-6&-2
+\end{pmatrix}.
+\end{aligned}
+\]
+\end{proof}
+
+\begingroup\tcbset{mybox/.append style={breakable=false}}
+\begin{thm}
+[{\cite[定理5.2.2]{M}}]
+\label{thm-M-5.2.2}
+ベクトル空間 $U$ の2組の基底を
+\(
+\{\bm{u}_1,\ldots,\bm{u}_n\},
+\{\bm{u}_1',\ldots,\bm{u}_n'\}
+\)
+とし, $T : U\to U$を線形写像(線形変換)とする.
+\begin{itemize}
+\item 基底の変換行列を $P$ とする. すなわち
+\(
+(\bm{u}_1',\ldots,\bm{u}_n')=(\bm{u}_1,\ldots,\bm{u}_n)P
+\)
+とする.
+\item $U$ の線形変換 $T$ の $\{\bm{u}_1,\ldots,\bm{u}_n\}$ に関する表現行列を $A$とする. 
+\item $\{\bm{u}_1',\ldots,\bm{u}_n'\}$ に関する表現行列を $B$ とする. 
+\end{itemize}
+このとき\(
+B=P^{-1}AP.
+\)
+\end{thm}
+\endgroup
+
+\begin{eg}
+[{\cite[例題5.2.2]{M}}]
+$\mathbb{R}^2$ の線形変換
+\(
+T(\bm{x})=
+\begin{pmatrix}
+7&-6\\
+3&-2
+\end{pmatrix}
+\bm{x}
+\)
+の次の $\mathbb{R}^2$ の基底に関する表現行列 $B$ を求めよ.
+\[
+\left\{
+\bm{u}_1=
+\begin{pmatrix}
+1\\
+1
+\end{pmatrix},
+\quad
+\bm{u}_2=
+\begin{pmatrix}
+2\\
+1
+\end{pmatrix}
+\right\}.
+\]
+\end{eg}
+
+\begin{proof}
+$\mathbb{R}^2$ の標準基底 $\{\bm{e}_1,\bm{e}_2\}$ に関する $T$ の表現行列は
+\(
+A=
+\begin{pmatrix}
+7&-6\\
+3&-2
+\end{pmatrix}
+\)
+である. 
+
+\(
+(\bm{u}_1,\bm{u}_2)=(\bm{e}_1,\bm{e}_2)P
+\)
+で与えられる $\{\bm{u}_1,\bm{u}_2\}$ の $\{\bm{e}_1,\bm{e}_2\}$ に関する基底の変換行列は
+\(
+P=
+\begin{pmatrix}
+1&2\\
+1&1
+\end{pmatrix}
+\)
+で与えられる.
+以上より
+\[
+\begin{aligned}
+B
+&=P^{-1}AP
+=
+\begin{pmatrix}
+-1&2\\
+1&-1
+\end{pmatrix}
+\begin{pmatrix}
+7&-6\\
+3&-2
+\end{pmatrix}
+\begin{pmatrix}
+1&2\\
+1&1
+\end{pmatrix}=
+\begin{pmatrix}
+1&0\\
+0&4
+\end{pmatrix}.
+\end{aligned}
+\]
+\end{proof}
+
+
+\begin{eg}
+[{\cite[例題5.2.3]{M}}]
+ベクトル空間 $\mathbb{R}[x]_2$ の線形変換 $T$ を
+\[
+T(f(x))=f'(x)x+f(0)x^2+f(1)
+\]
+と定義する.
+\begin{enumerate}
+\item[(1)] $\mathbb{R}[x]_2$ の基底 $\{1,x,x^2\}$ に関する $T$ の表現行列 $A$ を求めよ.
+\item[(2)] $\mathbb{R}[x]_2$ の基底 $\{1+x,x+x^2,x^2\}$ に関する $T$ の表現行列 $B$ を求めよ.
+\end{enumerate}
+\end{eg}
+\begin{proof}
+
+(1). $T$ による $1,x,x^2$ の行き先を調べると
+\[
+T(1)=1+x^2,
+\quad
+T(x)=1+x,
+\quad
+T(x^2)=1+2x^2
+\]
+であるから
+\[
+\begin{aligned}
+(T(1),T(x),T(x^2))
+&=(1+x^2,1+x,1+2x^2)
+=(1,x,x^2)
+\begin{pmatrix}
+1&1&1\\
+0&1&0\\
+1&0&2
+\end{pmatrix}
+\end{aligned}
+\Rightarrow
+A=
+\begin{pmatrix}
+1&1&1\\
+0&1&0\\
+1&0&2
+\end{pmatrix}.
+\]
+
+(2). $\mathbb{R}[x]_2$ の基底 $\{1,x,x^2\}$ と $\{1+x,x+x^2,x^2\}$ の変換行列 $P$ を求めると
+\[
+(1+x,x+x^2,x^2)
+=
+(1,x,x^2)
+\begin{pmatrix}
+1&0&0\\
+1&1&0\\
+0&1&1
+\end{pmatrix}
+\Rightarrow
+P=
+\begin{pmatrix}
+1&0&0\\
+1&1&0\\
+0&1&1
+\end{pmatrix}.
+\]
+よって定理\ref{thm-M-5.2.2}により
+\[
+\begin{aligned}
+B
+&=P^{-1}AP
+=
+\begin{pmatrix}
+1&0&0\\
+-1&1&0\\
+1&-1&1
+\end{pmatrix}
+\begin{pmatrix}
+1&1&1\\
+0&1&0\\
+1&0&2
+\end{pmatrix}
+\begin{pmatrix}
+1&0&0\\
+1&1&0\\
+0&1&1
+\end{pmatrix}=
+\begin{pmatrix}
+2&2&1\\
+-1&-1&-1\\
+2&3&3
+\end{pmatrix}.
+\end{aligned}
+\]
+\end{proof}
+
+
+\subsection{固有値と固有ベクトル \cite[5.3節]{M}}
+
+\begin{defn}
+%\paragraph{固有値と固有ベクトル \cite[5.3節]{M}}
+$T$ はベクトル空間 $V$ の線形変換とする.
+\[
+T(\bm{u})=\lambda \bm{u}
+\quad(\bm{u}\in V,\ \bm{u}\neq\bm{0},\ \lambda\in\mathbb{R})
+\]
+を満たす $\lambda$ を $T$ の固有値, $\bm{u}$ を（固有値 $\lambda$ に属する）$T$ の固有ベクトルという.
+\end{defn}
+複素数体上のベクトル空間の線形変換についても $\lambda\in\mathbb{C}$ として同様に定義される.
+\begin{ex}%\paragraph{例1}
+$T$ は次のような $\mathbb{R}^2$ の線形変換とする.
+\[
+T(\bm{x})=
+\begin{pmatrix}
+7&-6\\
+3&-2
+\end{pmatrix}
+\bm{x}
+\]
+ここで
+\(
+\bm{u}=
+\begin{pmatrix}
+2\\
+1
+\end{pmatrix}
+\)
+とすると,
+\[
+T(\bm{u})=
+\begin{pmatrix}
+8\\
+4
+\end{pmatrix}
+=
+4
+\begin{pmatrix}
+2\\
+1
+\end{pmatrix}
+=4\bm{u}
+\]
+であるから, $\lambda=4$ は $T$ の固有値で, $\bm{u}$ は $T$ の固有値 $\lambda=4$ に属する固有ベクトルである.
+\end{ex}
+\begin{ex}
+$T$ を次のような $\mathbb{R}^2$ の線形変換とする.
+\[
+A=
+\begin{pmatrix}
+0&-1\\
+1&0
+\end{pmatrix}
+\]
+とすると, $T_A$ を $\mathbb{R}^2$ の1次変換と考えると固有値は存在しない. 
+
+ただし$T_A$ を $\mathbb{C}^2$ の1次変換と考えると固有値は $\pm\sqrt{-1}$ で, 
+固有ベクトルは$\sqrt{-1}$なら$\begin{pmatrix}
+1\\
+-\sqrt{-1}
+\end{pmatrix}$で
+$-\sqrt{-1}$なら$\begin{pmatrix}
+1\\
+\sqrt{-1}
+\end{pmatrix}$である. 
+\end{ex}
+
+まとめると次が言える. 
+\begin{tcolorbox}[mybox]
+\begin{center}
+$\R$ベクトル空間を考えると固有値が存在しない場合があるが, \\
+$\C$ベクトル空間を考えると固有値は存在する.
+\end{center}
+\end{tcolorbox}
+これは代数学の基本定理(多項式の解は存在する)に関わる数学的に面白い部分だが, 今回は深入りせず
+\begin{tcolorbox}[mybox]
+\begin{center}
+基本的に$\R$ベクトル空間で固有値が存在する場合を考える. 
+\end{center}
+\end{tcolorbox}
+ことにする. 複素数の固有値が出てきても, 方法としては同じようにできるからである. 
+気になる人は教科書の7から9章を参照してほしい. 
+
+\begin{defn}
+%\paragraph{固有空間}
+ベクトル空間 $V$ の線形変換 $T$ の固有値 $\lambda$ に対し
+\[
+W(\lambda;T)=\{\bm{u}\in V\mid T(\bm{u})=\lambda \bm{u}\}
+\]
+とおき, $T$ の固有値 $\lambda$ の固有空間という. $W(\lambda;T)$ は $V$ の部分空間であり, この零でないベクトルが $\lambda$ に属する $T$ の固有ベクトルである.
+\end{defn}
+
+\begin{defn}
+%\paragraph{固有多項式}
+正方行列 $A$ に対し, 次の多項式 $g_A(t)$ を $A$ の固有多項式という.
+\[
+g_A(t)=\lvert tE-A\rvert.
+\]
+$g_A(t)=0$ の根を（複素根もふくめ）行列 $A$ の固有値という.
+\end{defn}
+\begin{ex}%\paragraph{例2}
+
+\(
+A=
+\begin{pmatrix}
+7&-6\\
+3&-2
+\end{pmatrix}
+\)
+とすると $A$ の固有多項式は
+\[
+\begin{aligned}
+g_A(t)
+&=\lvert tE-A\rvert
+=
+\begin{vmatrix}
+t-7&6\\
+-3&t+2
+\end{vmatrix}
+=t^2-5t+4
+=(t-1)(t-4)
+\end{aligned}
+\]
+となる. よって $A$ の固有値は $\lambda=1,4$ である.
+\end{ex}
+
+
+\begin{thm}
+[{\cite[定理5.3.1]{M}}]
+\[
+\lambda\text{ が }T_A\text{ の固有値}
+\quad\Longleftrightarrow\quad
+g_A(\lambda)=0.
+\]
+\end{thm}
+
+\begin{eg}
+[{\cite[例題5.3.1]{M}}]
+\[
+A=
+\begin{pmatrix}
+8&-10\\
+5&-7
+\end{pmatrix}
+\]
+とする.
+\begin{enumerate}
+\item[(1)] $A$ の固有多項式 $g_A(t)$ を求めよ.
+\item[(2)] $\mathbb{R}^2$ の線形変換 $T=T_A$ の固有値 $\lambda$ を求めよ.
+\item[(3)] $T$ の各固有値 $\lambda$ の固有空間 $W(\lambda;T)$ を求めよ.
+\end{enumerate}
+\end{eg}
+
+\begin{proof}
+(1) 定義より
+\[
+\begin{aligned}
+g_A(t)
+&=\lvert tE-A\rvert=
+\begin{vmatrix}
+t-8&10\\
+-5&t+7
+\end{vmatrix}=t^2-t-6.
+\end{aligned}
+\]
+
+(2)
+\(
+g_A(t)=(t+2)(t-3)=0
+\)
+を解くと固有値は
+\(
+\lambda=-2,3.
+\)
+
+(3) 固有値ごとに計算する. 
+
+(a). $\lambda=-2$ とする. $(-2E-A)\bm{x}=\bm{0}$ の解空間が $T$ の固有値 $\lambda=-2$ の固有空間である. このとき
+\[
+(-2E-A)\bm{x}=
+\begin{pmatrix}
+-10&10\\
+-5&5
+\end{pmatrix}
+\begin{pmatrix}
+x_1\\
+x_2\\
+\end{pmatrix}
+=
+\begin{pmatrix}
+0\\
+0\\
+\end{pmatrix}
+\]
+となるので, $(-2E-A)\bm{x}=\bm{0}$ の解は
+\[
+\bm{x}=c
+\begin{pmatrix}
+1\\
+1
+\end{pmatrix}
+\quad(c\in\mathbb{R})
+\Rightarrow
+W(-2;T)
+=
+\left\{
+c
+\begin{pmatrix}
+1\\
+1
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+c\in\mathbb{R}
+\right\}.
+\]
+
+(b). $\lambda=3$ とする.
+$(3E-A)\bm{x}=\bm{0}$ の解空間が $T$ の固有値 $\lambda=3$ の固有空間である. このとき
+\[
+(3E-A)\bm{x}=
+\begin{pmatrix}
+-5&10\\
+-5&10
+\end{pmatrix}
+\begin{pmatrix}
+x_1\\
+x_2\\
+\end{pmatrix}
+=
+\begin{pmatrix}
+0\\
+0\\
+\end{pmatrix}
+\]
+となるので, $(3E-A)\bm{x}=\bm{0}$ の解は
+\[
+\bm{x}=c
+\begin{pmatrix}
+2\\
+1
+\end{pmatrix}
+\quad(c\in\mathbb{R})
+\Rightarrow
+W(3;T)
+=
+\left\{
+c
+\begin{pmatrix}
+2\\
+1
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+c\in\mathbb{R}
+\right\}.
+\]
+\end{proof}
+
+\begin{thm}
+[{ケイリー・ハミルトンの定理 \cite[定理5.3.2]{M}}]
+$g_A(t)$ が正方行列 $A$ の固有多項式ならば
+\[
+g_A(A)=0.
+\]
+ただし一般に多項式
+\(
+f(t)=a_mt^m+a_{m-1}t^{m-1}+\cdots+a_1t+a_0
+\)
+と正方行列 $A$ に対し
+\[
+f(A)=a_mA^m+a_{m-1}A^{m-1}+\cdots+a_1A+a_0E
+\]
+と定義する.
+\end{thm}
+
+
+\begin{thm}
+[{\cite[定理5.3.3]{M}}]
+\(T\) を \(n\) 次元ベクトル空間 \(V\) の線形変換とする. \(V\) の \(1\) 組の基底
+\(
+\{\bm{u}_1,\ldots,\bm{u}_n\}
+\)
+をとる. \(T\) の \(\{\bm{u}_1,\ldots,\bm{u}_n\}\) に関する表現行列を \(A\) とする. \(A\) の固有多項式を \(T\) の固有多項式といい, \(g_T(t)\) と書く. すなわち
+\[
+g_T(t)=g_A(t)=\lvert tE-A\rvert.
+\]
+とする. 
+
+この \(T\) の固有多項式は \(T\) の表現行列$A$の取り方によらずに決まり, さらに\(\lambda\) が \(T\) の固有値である必要十分条件は\(g_T(\lambda)=0\)となることである.
+\end{thm}
+特に\(T=T_A\) ならば
+\(
+g_T(t)=g_A(t)
+\)
+であるので, 線形変換の固有多項式は行列の固有多項式を考えることに等しい. 
+
+\begin{eg}
+[{\cite[例題5.3.2]{M}}]
+\(T\) は \(V=\mathbb{R}[x]_2\) の線形変換で
+\[
+T(f(x))=f(1+2x)
+\]
+で与えられるものとする.
+\begin{enumerate}
+\item[(1)] \(T\) の固有多項式 \(g_T(t)\) を求めよ.
+\item[(2)] \(T\) の固有値 \(\lambda\) を求めよ.
+\item[(3)] \(T\) の各固有値 \(\lambda\) の固有空間を求めよ.
+\end{enumerate}
+
+\begin{proof}
+(1)\(V\) の \(1\) 組の基底として\(\{1,x,x^2\}\)をとる. この基底に関する \(T\) の表現行列 \(A\) を求める.
+\[
+\begin{aligned}
+(T(1),T(x),T(x^2))
+&=(1,1+2x,1+4x+4x^2)
+=(1,x,x^2)
+\begin{pmatrix}
+1&1&1\\
+0&2&4\\
+0&0&4
+\end{pmatrix}
+\Rightarrow
+A=
+\begin{pmatrix}
+1&1&1\\
+0&2&4\\
+0&0&4
+\end{pmatrix}.
+\end{aligned}
+\]
+よって
+\[
+\begin{aligned}
+g_T(t)
+=g_A(t)
+&=
+\begin{vmatrix}
+t-1&-1&-1\\
+0&t-2&-4\\
+0&0&t-4
+\end{vmatrix}
+=(t-1)(t-2)(t-4).
+\end{aligned}
+\]
+
+(2)
+\(g_T(t)=0\) を解いて, 固有値は
+\(
+\lambda=1,2,4
+\)
+である.
+
+(3)
+\(
+f(x)=a_0+a_1x+a_2x^2
+ \in V=\mathbb{R}[x]_2\)
+を \(T\) の固有値 \(\lambda\) に属する固有ベクトルとすると,
+\[
+\bm{a}=
+\begin{pmatrix}
+a_0\\
+a_1\\
+a_2
+\end{pmatrix}
+\]
+は
+\(
+(\lambda E-A)\bm{x}=\bm{0}
+\)
+の解である. 固有値ごとに計算する. 
+
+(a).\(\lambda=4\) とする.
+\[
+(4E-A)\bm{x}=
+\begin{pmatrix}
+3&-1&-1\\
+0&2&-4\\
+0&0&0
+\end{pmatrix}
+\begin{pmatrix}
+a_0\\
+a_1\\
+a_2
+\end{pmatrix}
+=
+\begin{pmatrix}
+0\\
+0\\
+0
+\end{pmatrix}.
+\]
+よって \((4E-A)\bm{x}=\bm{0}\) の解は
+\[
+\bm{x}=c
+\begin{pmatrix}
+1\\
+2\\
+1
+\end{pmatrix}
+\quad(c\in\mathbb{R})
+\Rightarrow
+W(4;T)
+=
+\{c(1+2x+x^2)\mid c\in\mathbb{R}\}.
+\]
+
+(b).\(\lambda=2\) についても全く同様に \((2E-A)\bm{x}=\bm{0}\) の解は
+\[
+\bm{x}=c
+\begin{pmatrix}
+1\\
+1\\
+0
+\end{pmatrix}
+\quad(c\in\mathbb{R})
+\Rightarrow
+W(2;T)
+=
+\{c(1+x)\mid c\in\mathbb{R}\}.
+\]
+
+\(\lambda=1\) についても全く同様に \((E-A)\bm{x}=\bm{0}\) を解いて
+\(
+W(1;T)=\{c\mid c\in\mathbb{R}\}.
+\)
+\end{proof}
+\end{eg}
+
+
+\subsection{行列の対角化 \cite[5.4節]{M}}
+
+\begin{defn}%[同値な行列]
+\(2\) つの \(n\) 次正方行列 \(A,B\) が同値であるとは
+\[
+B=P^{-1}AP
+\]
+となる正則行列 \(P\) が存在するときにいう.
+\end{defn}
+\(1\) 次変換 \(T\) の基底を取り替えて得られる表現行列は, 定理\ref{thm-M-5.2.2}でみたように同値である.
+
+\begin{defn}%[行列の対角化]
+正方行列 \(A\) が与えられたとき,
+\[
+B=P^{-1}AP 
+\]
+が対角行列になるような正則行列 \(P\) と対角行列 \(B\) を求めることを行列 \(A\) の対角化という.
+特に \(P,B\) が実数（複素数）を成分とする行列でとれるとき, \(A\) は実数体上（複素数体上）対角化されるという.
+\end{defn}
+正方行列 \(A\) は常に対角化されるとは限らないことに注意.
+
+対角化と$A^n$の求め方のやり方を$2 \times 2$行列で書いておく. 
+$3 \times 3$の場合もほぼ同様にできる. 
+  \begin{suma}
+$A=\begin{pmatrix}
+a& b \\
+c& d \\
+\end{pmatrix}$を$2 \times 2$行列とする.
+ 対角化可能の場合, 以下の手順で対角化をすることができ, $A^n$も求められる.  
+\begin{enumerate}
+	\setlength{\parskip}{0cm}
+  	\setlength{\itemsep}{0pt} 
+\item[手順1.] $\det (A - tE_2) =0$となる$t$を求める. つまり次の2次方程式の解を求める.
+$$
+\det
+\begin{pmatrix}
+a-t& b \\
+c& d -t\\
+\end{pmatrix}
+= (a-t)(d-t) -bc=0.
+$$
+\item[手順2.] $\lambda_1, \lambda_2$を上の解とする. 
+$
+A\begin{pmatrix}
+x_1 \\ y_1
+ \end{pmatrix}  
+ = 
+ \lambda_1
+ \begin{pmatrix}
+x_1 \\ y_1
+ \end{pmatrix}  
+$
+となる零ベクトルでない
+$ \begin{pmatrix}
+x_1 \\ y_1
+ \end{pmatrix}  
+ $
+ を一つ求める. 
+ 
+ この$\lambda_1, \lambda_2$を$A$の\underline{固有値}と言い, 上の
+ $ \begin{pmatrix}
+x_1 \\ y_1
+ \end{pmatrix}  
+ $を$\lambda_1$の\underline{固有ベクトル}と言う.
+ 
+ $\lambda_2$に対しても同じ操作を行い, 零ベクトルでない
+$ \begin{pmatrix}
+x_2 \\ y_2
+ \end{pmatrix}  
+ $
+ を一つ求める. 
+ 
+\item[手順3.]  
+$P=\begin{pmatrix}
+x_1& x_2 \\
+y_1& y_2 \\
+\end{pmatrix}$とおき, $P$が正則ならば, 次の対角化を得る.
+$$
+P^{-1} A P=
+\begin{pmatrix}
+\lambda_1& 0 \\
+0& \lambda_2\\
+\end{pmatrix}.
+$$ 
+\item[手順4]
+$$
+P^{-1} A^n  P=
+(P^{-1} A P)^n=
+\begin{pmatrix}
+\lambda_1& 0 \\
+0& \lambda_2\\
+\end{pmatrix}^n
+=
+\begin{pmatrix}
+\lambda_1^n& 0 \\
+0& \lambda_2^n\\
+\end{pmatrix}
+$$
+なので,
+$$
+A^n = 
+P
+\begin{pmatrix}
+\lambda_1^n& 0 \\
+0& \lambda_2^n\\
+\end{pmatrix}
+P^{-1}.
+$$
+\end{enumerate}
+ \end{suma}
+
+
+\begin{eg}
+[{\cite[例題5.4.1]{M}}]
+\(
+A=
+\begin{pmatrix}
+8&-10\\
+5&-7
+\end{pmatrix},
+\)
+を対角化し, $A^n$を求めよ.
+
+\begin{proof}
+
+手順通りやる. 
+
+\begin{enumerate}
+  \setlength{\parskip}{0cm}
+  \setlength{\itemsep}{0pt}
+
+\item[手順1.]
+固有値を求める.
+\begin{align*}
+\det(A-tE_2)
+&=
+\det
+\begin{pmatrix}
+8-t&-10\\
+5&-7-t
+\end{pmatrix} 
+=(t+2)(t-3).
+\end{align*}
+したがって,
+\(
+\det(A-tE_2)=0
+\)
+の解である固有値は
+\(
+t=-2,\quad 3
+\)
+である. 
+
+\item[手順2.]
+まず, 固有値 $\lambda_1=-2$ に対応する固有ベクトルを求める.
+
+\[
+A
+\begin{pmatrix}
+x_1\\
+y_1
+\end{pmatrix}
+=
+-2
+\begin{pmatrix}
+x_1\\
+y_1
+\end{pmatrix}
+\Rightarrow
+(A+2E_2)
+\begin{pmatrix}
+x_1\\
+y_1
+\end{pmatrix}
+=
+\begin{pmatrix}
+10&-10\\
+5&-5
+\end{pmatrix}
+\begin{pmatrix}
+x_1\\
+y_1
+\end{pmatrix}
+=
+\begin{pmatrix}
+0\\
+0
+\end{pmatrix}.
+\]
+したがって,
+\(
+x_1-y_1=0.
+\)
+よって, 例えば
+\(
+\begin{pmatrix}
+x_1\\
+y_1
+\end{pmatrix}
+=
+\begin{pmatrix}
+1\\
+1
+\end{pmatrix}
+\)
+と取ることができる.
+
+次に, 固有値 $\lambda_2=3$ に対応する固有ベクトルを求める.
+
+\[
+A
+\begin{pmatrix}
+x_2\\
+y_2
+\end{pmatrix}
+=
+3
+\begin{pmatrix}
+x_2\\
+y_2
+\end{pmatrix}
+\Rightarrow
+(A-3E_2)
+\begin{pmatrix}
+x_2\\
+y_2
+\end{pmatrix}
+=
+\begin{pmatrix}
+5&-10\\
+5&-10
+\end{pmatrix}
+\begin{pmatrix}
+x_2\\
+y_2
+\end{pmatrix}
+=
+\begin{pmatrix}
+0\\
+0
+\end{pmatrix}.
+\]
+したがって,
+\(
+x_2-2y_2=0.
+\)
+よって, 例えば
+\(
+\begin{pmatrix}
+x_2\\
+y_2
+\end{pmatrix}
+=
+\begin{pmatrix}
+2\\
+1
+\end{pmatrix}
+\)
+と取ることができる.
+
+\item[手順3.]
+二つの固有ベクトルを列ベクトルとして並べ,
+\[
+P=
+\begin{pmatrix}
+1&2\\
+1&1
+\end{pmatrix}
+\]
+とおく.
+このとき,
+\(
+\det P=1\cdot 1-2\cdot 1=-1\neq 0
+\)
+であるから, $P$は正則である. また,
+\[
+P^{-1}
+=
+\begin{pmatrix}
+-1&2\\
+1&-1
+\end{pmatrix}.
+\]
+したがって,
+\begin{align*}
+P^{-1}AP
+&=
+\begin{pmatrix}
+-1&2\\
+1&-1
+\end{pmatrix}
+\begin{pmatrix}
+8&-10\\
+5&-7
+\end{pmatrix}
+\begin{pmatrix}
+1&2\\
+1&1
+\end{pmatrix}=
+\begin{pmatrix}
+-2&0\\
+0&3
+\end{pmatrix}.
+\end{align*}
+
+
+\item[手順4.]
+対角化の結果から,
+\[
+A^n
+=
+P
+\begin{pmatrix}
+(-2)^n&0\\
+0&3^n
+\end{pmatrix}
+P^{-1}
+\]
+である. これを計算すると,
+\begin{align*}
+A^n
+&=
+\begin{pmatrix}
+1&2\\
+1&1
+\end{pmatrix}
+\begin{pmatrix}
+(-2)^n&0\\
+0&3^n
+\end{pmatrix}
+\begin{pmatrix}
+-1&2\\
+1&-1
+\end{pmatrix}
+=
+\begin{pmatrix}
+(-2)^n&2\cdot 3^n\\
+(-2)^n&3^n
+\end{pmatrix}
+\begin{pmatrix}
+-1&2\\
+1&-1
+\end{pmatrix}
+\\
+&=
+\begin{pmatrix}
+2\cdot 3^n-(-2)^n
+&
+2(-2)^n-2\cdot 3^n
+\\
+3^n-(-2)^n
+&
+2(-2)^n-3^n
+\end{pmatrix}.
+\end{align*}
+\end{enumerate}
+\end{proof}
+\end{eg}
+
+\begin{thm}
+[{\cite[定理5.4.1]{M}}]
+\(T\) はベクトル空間 \(V\) の線形変換とし, \(T\) の相異なる固有値を
+\(
+\lambda_1,\ldots,\lambda_r
+\)
+とすると
+\[
+\sum_{i=1}^{r}\dim\bigl(W(\lambda_i;T)\bigr)
+\leq \dim(V).
+\]
+\end{thm}
+
+\begin{thm}
+[{\cite[定理5.4.2]{M}}]
+\(A\) を \(n\) 次の実正方行列とし, \(A\) の相異なる実固有値の全体を
+\(
+\lambda_1,\ldots,\lambda_r
+\)
+とする. \(A\) が \(\mathbb{R}\) 上対角化される必要十分条件は
+\[
+\sum_{i=1}^{r}\dim\bigl(W(\lambda_i;T_A)\bigr)=n
+\]
+である.
+\end{thm}
+
+\begin{eg}
+[{\cite[例題5.4.2]{M}}]
+\[
+A=
+\begin{pmatrix}
+5&6&0\\
+-1&0&0\\
+1&2&2
+\end{pmatrix}
+\]
+が対角化されるか調べ, 対角化できれば対角化せよ.
+
+\begin{proof}
+
+
+
+\(A\) の固有多項式は
+\[
+\begin{aligned}
+g_A(t)
+&=\lvert tE-A\rvert
+=
+\begin{vmatrix}
+t-5&-6&0\\
+1&t&0\\
+-1&-2&t-2
+\end{vmatrix}=(t-2)^2(t-3)
+\end{aligned}
+\]
+となるから \(T_A\) の固有値は\(\lambda=2,3\)である. \(T_A\) の各固有値の固有空間を求めよう.
+
+(a). \(\lambda=2\) とする.
+\[
+\begin{pmatrix}
+-3&-6&0\\
+1&2&0\\
+-1&-2&0
+\end{pmatrix}
+\bm{x}=\bm{0}
+\Rightarrow
+W(2;T_A)
+=
+\left\{
+a
+\begin{pmatrix}
+-2\\
+1\\
+0
+\end{pmatrix}
++
+b
+\begin{pmatrix}
+0\\
+0\\
+1
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+a,b\in\mathbb{R}
+\right\}.
+\]
+
+(b).\(\lambda=3\) とする.
+\[
+\begin{pmatrix}
+-2&-6&0\\
+1&3&0\\
+-1&-2&1
+\end{pmatrix}
+\bm{x}=\bm{0}
+\Rightarrow
+W(3;T_A)
+=
+\left\{
+a
+\begin{pmatrix}
+3\\
+-1\\
+1
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+a\in\mathbb{R}
+\right\}.
+\]
+
+従って
+\[
+\dim\bigl(W(2;T_A)\bigr)
++
+\dim\bigl(W(3;T_A)\bigr)
+=2+1=3
+\]
+となるので \(A\) は対角化される. さらに \(W(2;T_A)\) と \(W(3;T_A)\) の基底を用いて
+\[
+P=
+\begin{pmatrix}
+-2&0&3\\
+1&0&-1\\
+0&1&1
+\end{pmatrix}
+\]
+とおくと
+\[
+B=P^{-1}AP
+=
+\begin{pmatrix}
+2&0&0\\
+0&2&0\\
+0&0&3
+\end{pmatrix}.
+\]
+\end{proof}
+\end{eg}
+
+
+\begin{eg}
+[{\cite[例題5.4.3]{M}}]
+\[
+A=
+\begin{pmatrix}
+1&3&2\\
+0&-1&0\\
+1&2&0
+\end{pmatrix}
+\]
+が対角化されるか調べ, 対角化できれば対角化せよ.
+\end{eg}
+
+\begin{proof}
+
+
+$A$ の固有多項式は
+\[
+\begin{aligned}
+g_A(t)
+=\lvert tE-A\rvert
+=
+\begin{vmatrix}
+t-1&-3&-2\\
+0&t+1&0\\
+-1&-2&t
+\end{vmatrix}
+=(t+1)^2(t-2)
+\end{aligned}
+\]
+なので $T_A$ の固有値は $\lambda=-1,2$ である. $T_A$ の各固有値の固有空間を求める.
+
+(a).$\lambda=-1$ とする.
+\[
+\begin{pmatrix}
+-2&-3&-2\\
+0&0&0\\
+-1&-2&-1
+\end{pmatrix}
+\bm{x}=\bm{0}
+\Rightarrow
+W(-1;T_A)
+=
+\left\{
+a
+\begin{pmatrix}
+-1\\
+0\\
+1
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+a\in\mathbb{R}
+\right\}.
+\]
+
+(b).$\lambda=2$ とする.
+\[
+\begin{pmatrix}
+1&-3&-2\\
+0&3&0\\
+-1&-2&2
+\end{pmatrix}
+\bm{x}=\bm{0}
+\Rightarrow
+W(2;T_A)
+=
+\left\{
+a
+\begin{pmatrix}
+2\\
+0\\
+1
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+a\in\mathbb{R}
+\right\}.
+\]
+従って
+\[
+\dim\bigl(W(-1;T_A)\bigr)+\dim\bigl(W(2;T_A)\bigr)
+=1+1=2\neq3
+\]
+となるので
+$A$は対角化できない.
+\end{proof}
+
+今まで実数でやってきたが複素数でも同様である. 
+複素数の場合の利点は「固有値($g_A(t)=0$の解)が常に存在」である. 
+\begin{thm}
+$n$ 次正方行列 $A$ に対し $\mathbb{C}^n$ の線形変換\(T_A\colon\mathbb{C}^n\longrightarrow\mathbb{C}^n\)を, $\mathbb{R}^n$ のときと同様に
+\(T_A(\bm{x})=A\bm{x}\quad(\bm{x}\in\mathbb{C}^n)\)と定義する. $A$ の全ての相異なる固有値を $\lambda_1,\ldots,\lambda_r$ とすると
+\[
+A\text{ が }\mathbb{C}\text{ 上対角化される}
+\quad\Longleftrightarrow\quad
+\sum_{j=1}^r\dim_{\mathbb{C}}\bigl(W(\lambda_j;T_A)\bigr)=n
+\]
+が成り立つ.
+\end{thm}
+
+
+\newpage
+
+
+\section{内積空間 \cite[6章]{M}}
+
+\subsection{内積 \cite[6.1節]{M}}
+
+引き続きこの授業では, 議論を簡潔にするために, 内積を考える際も実数体 $\mathbb{R}$ を考える. 
+
+\begin{defn}
+$\mathbb{R}$ 上のベクトル空間 $V$ の2つのベクトル $\bm{u},\bm{v}$ に対して実数 $(\bm{u},\bm{v})$ を対応させる対応 $(\ ,\ )$ が次の4条件を満たすとき, ベクトル空間 $V$ の内積という.
+
+\begin{enumerate}
+\item $(\bm{u}+\bm{u}',\bm{v})=(\bm{u},\bm{v})+(\bm{u}',\bm{v})$.
+\item $(c\bm{u},\bm{v})=c(\bm{u},\bm{v})$.
+\item $(\bm{v},\bm{u})=(\bm{u},\bm{v})$.
+\item $\bm{u}\neq\bm{0}$ならば$(\bm{u},\bm{u})>0$.
+\end{enumerate}
+ここで $\bm{u},\bm{u}',\bm{v}\in V$, $c\in\mathbb{R}$ である. 内積をもつベクトル空間を内積空間という.
+\end{defn}
+
+特に (2), (3) より
+\(
+(\bm{u},\bm{0})=(\bm{0},\bm{u})=0
+\)
+がわかる.
+
+
+\begin{defn}
+内積空間 $V$ のベクトル $\bm{u}$ に対し 
+\[
+\lVert \bm{u}\rVert=\sqrt{(\bm{u},\bm{u})}
+\]
+とおき $\bm{u}$ のノルムまたは長さという.
+$\lVert \bm{u}\rVert\geq0$ であり, 内積の定義の (4) より $\lVert \bm{u}\rVert=0$ となるのは $\bm{u}=\bm{0}$ のときに限る.
+\end{defn}
+
+
+\begin{ex}
+
+$V=\mathbb{R}^n$ とする. $\mathbb{R}^n$ のベクトル
+\[
+\bm{a}=
+\begin{pmatrix}
+a_1\\
+\vdots\\
+a_n
+\end{pmatrix},
+\quad
+\bm{b}=
+\begin{pmatrix}
+b_1\\
+\vdots\\
+b_n
+\end{pmatrix}
+\]
+に対して
+\[
+(\bm{a},\bm{b})={}^{t}\!\bm{a}\bm{b}=a_1b_1+\cdots+a_nb_n
+\]
+と定義すると, これは $\mathbb{R}^n$ の内積である. これを $\mathbb{R}^n$ の標準内積という.
+実際(1)から(4)の4条件を満たすからである. 
+
+\(
+\bm{u}=
+\begin{pmatrix}
+3\\
+-2
+\end{pmatrix}
+\)
+とすると, 標準内積に関して
+\[
+\lVert \bm{u}\rVert=\sqrt{3^2+(-2)^2}=\sqrt{13}.
+\]
+
+以下, 断らないかぎり $\mathbb{R}^n$ の内積は標準内積を考える.
+\end{ex}
+
+4条件を満たすならば内積になるので, 以下の集合も内積空間になる. 
+\begin{eg}
+[{\cite[例題6.1.2]{M}}]
+$V=\mathbb{R}[x]_n$ とする. ($\mathbb{R}[x]_n$は$n$次以下の多項式の集合)
+$f,g\in V$ に対して
+\[
+(f,g)=\int_{-1}^{1}f(x)g(x)\,dx
+\]
+と定義すると, $(\ ,\ )$ は $V$ の内積である.
+
+\(
+u=
+x^2 -1
+\)
+とすると, 上で定義した内積に関して
+\begin{align*}
+\lVert u\rVert^2
+&=(u,u)
+=\int_{-1}^{1}(x^2-1)^2\,dx
+=\int_{-1}^{1}(x^4-2x^2+1)\,dx
+\\
+&=\left[
+\frac{x^5}{5}-\frac{2x^3}{3}+x
+\right]_{-1}^{1}
+=\frac{2}{5}-\frac{4}{3}+2=\frac{16}{15}.
+\end{align*}
+\end{eg}
+
+
+
+
+\begin{thm}
+[{\cite[定理6.1.1]{M}}]
+内積空間 $V$ のノルムについて, 次が成り立つ（$\bm{u},\bm{v}\in V$, $c\in\mathbb{R}$）.
+\begin{enumerate}
+\item$\lVert c\bm{u}\rVert=\lvert c\rvert\lVert \bm{u}\rVert$.
+\item （コーシーシュワルツの不等式） $\lvert(\bm{u},\bm{v})\rvert\leq\lVert \bm{u}\rVert\lVert \bm{v}\rVert$.
+\item （三角不等式） $\lVert \bm{u}+\bm{v}\rVert\leq\lVert \bm{u}\rVert+\lVert \bm{v}\rVert$.
+\end{enumerate}
+\end{thm}
+
+
+\begin{defn}
+内積空間 $V$ の2つのベクトル $\bm{u},\bm{v}$ が直交するとは
+\[
+(\bm{u},\bm{v})=0
+\]
+が成り立つときにいい, $\bm{u}\perp \bm{v}$ と書く.
+\end{defn}
+
+
+\begin{ex}
+$\mathbb{R}^2$ のベクトル
+\[
+\bm{u}=
+\begin{pmatrix}
+2\\
+3
+\end{pmatrix},
+\quad
+\bm{v}=
+\begin{pmatrix}
+-3\\
+2
+\end{pmatrix}
+\]
+は直交する. 実際
+\(
+(\bm{u},\bm{v})=2\cdot(-3)+3\cdot2=0
+\)
+である.
+\end{ex}
+
+\begin{thm}
+[{\cite[定理6.1.2]{M}}]
+\label{thm-M-6.1.2}
+零ベクトルでないベクトル $\bm{u}_1,\ldots,\bm{u}_r$ が互いに直交すれば1次独立である.
+\end{thm}
+
+\subsection{正規直交基底と直交行列 \cite[6.2節]{M}}
+
+この節では, ベクトル空間 $V$ は $\mathbb{R}$ 上の内積空間とする. また $\mathbb{R}^n$ の内積は標準的なものとする.
+\begin{defn}
+次の条件を満たす $V$ の基底 $\{\bm{u}_1,\ldots,\bm{u}_n\}$ を正規直交基底という.
+\[
+(\bm{u}_i,\bm{u}_j)=\delta_{ij}
+\quad(1\leq i,j\leq n).
+\]
+\end{defn}
+$\dim(V)=n$ ならば, $V$ の $n$ 個のベクトル $\{\bm{u}_1,\ldots,\bm{u}_n\}$ が 上の式を満たせば,
+定理\ref{thm-M-4.4.5}, \ref{thm-M-6.1.2}より $V$ の基底となるので, $\{\bm{u}_1,\ldots,\bm{u}_n\}$ は正規直交基底である.
+
+\begin{ex}
+$\mathbb{R}^n$ の標準基底 $\{\bm{e}_1,\ldots,\bm{e}_n\}$ は正規直交基底である.
+他にも
+\[
+\left\{
+\begin{pmatrix}
+1/\sqrt{2}\\
+1/\sqrt{2}
+\end{pmatrix},
+\begin{pmatrix}
+1/\sqrt{2}\\
+-1/\sqrt{2}
+\end{pmatrix}
+\right\}
+\]
+は正規直交基底である.
+\end{ex}
+
+\begin{thm}
+[（シュミットの正規直交化）{\cite[定理 6.2.1]{M}}]
+\label{thm-M-6.2.1}
+$\{\bm{v}_1,\ldots,\bm{v}_n\}$を$V$ の1組の基底とすると, 正規直交基底 $\{\bm{u}_1,\ldots,\bm{u}_n\}$ で
+\[
+\langle \bm{u}_1,\ldots,\bm{u}_r\rangle_{\mathbb{R}}
+=
+\langle \bm{v}_1,\ldots,\bm{v}_r\rangle_{\mathbb{R}}
+\quad(1\leq r\leq n)
+\]
+となるものが存在する. 特に有限次元の内積空間は正規直交基底をもつ.
+\end{thm}
+
+
+\begin{eg}[{\cite[例題6.2.1]{M}}]
+シュミットの正規直交化を用いて, $\mathbb{R}^3$ の次の基底を正規直交化せよ.
+\[
+\left\{
+\begin{pmatrix}
+1\\
+1\\
+0
+\end{pmatrix},
+\begin{pmatrix}
+1\\
+3\\
+1
+\end{pmatrix},
+\begin{pmatrix}
+2\\
+-1\\
+1
+\end{pmatrix}
+\right\}.
+\]
+\end{eg}
+\begin{proof}
+\[
+\bm{v}_1=
+\begin{pmatrix}
+1\\
+1\\
+0
+\end{pmatrix},
+\quad
+\bm{v}_2=
+\begin{pmatrix}
+1\\
+3\\
+1
+\end{pmatrix},
+\quad
+\bm{v}_3=
+\begin{pmatrix}
+2\\
+-1\\
+1
+\end{pmatrix}
+\]
+とおく. 定理\ref{thm-M-6.2.1}のように $\bm{u}_1,\bm{u}_2,\bm{u}_3$ を順に求めていく.
+\begin{itemize}
+\item \(
+\bm{u}_1
+=
+\frac{1}{\lVert \bm{v}_1\rVert}\bm{v}_1
+=
+\frac{1}{\sqrt{2}}
+\begin{pmatrix}
+1\\
+1\\
+0
+\end{pmatrix}.
+\)
+\item 
+\[
+\bm{v}_2'
+=\bm{v}_2-(\bm{v}_2,\bm{u}_1)\bm{u}_1
+=
+\begin{pmatrix}
+1\\
+3\\
+1
+\end{pmatrix}
+-\frac{4}{\sqrt{2}}\frac{1}{\sqrt{2}}
+\begin{pmatrix}
+1\\
+1\\
+0
+\end{pmatrix}=
+\begin{pmatrix}
+-1\\
+1\\
+1
+\end{pmatrix}
+\]
+なので
+\(
+\bm{u}_2
+=
+\frac{1}{\lVert \bm{v}_2'\rVert}\bm{v}_2'
+=
+\frac{1}{\sqrt{3}}
+\begin{pmatrix}
+-1\\
+1\\
+1
+\end{pmatrix}.
+\)
+\item 
+\[
+\bm{v}_3'
+=
+\bm{v}_3-(\bm{v}_3,\bm{u}_1)\bm{u}_1-(\bm{v}_3,\bm{u}_2)\bm{u}_2
+=
+\frac{5}{6}
+\begin{pmatrix}
+1\\
+-1\\
+2
+\end{pmatrix},
+\]
+なので
+\(
+\bm{u}_3
+=
+\frac{1}{\lVert \bm{v}_3'\rVert}\bm{v}_3'
+=
+\frac{1}{\sqrt{6}}
+\begin{pmatrix}
+1\\
+-1\\
+2
+\end{pmatrix}
+\).
+\end{itemize}
+\end{proof}
+
+
+\begin{thm}
+[{\cite[定理6.2.2]{M}}]
+\(\{\bm{u}_1,\ldots,\bm{u}_n\}\) を内積空間 \(V\) の正規直交基底とする. \(V\) のベクトル \(\bm{u},\bm{v}\) を
+\[
+\bm{u}=a_1\bm{u}_1+\cdots+a_n\bm{u}_n,\quad
+\bm{v}=b_1\bm{u}_1+\cdots+b_n\bm{u}_n
+\]
+と書くと
+\[
+(\bm{u},\bm{v})=a_1b_1+\cdots+a_nb_n.
+\]
+\end{thm}
+
+
+\begin{defn}
+内積空間 \(V\) の線形変換 \(T\) が直交変換であるとは
+\[
+(T(\bm{u}),T(\bm{v}))=(\bm{u},\bm{v})
+\quad (\bm{u},\bm{v}\in V)
+\]
+が成り立つときにいう.
+\end{defn}
+
+\begin{eg}
+\(\mathbb{R}^2\) の線形変換
+\[
+T(\bm{x})=
+\begin{pmatrix}
+0&1\\
+1&0
+\end{pmatrix}\bm{x}
+\]
+は直交変換である.
+\end{eg}
+
+\begin{thm}
+[{\cite[定理6.2.3, 定理6.2.4]{M}}]
+\(\{\bm{u}_1,\ldots,\bm{u}_n\}\) を内積空間 \(V\) の正規直交基底とする. \(V\) の線形変換 \(T\) に対して
+\[
+T\text{ が直交変換}
+\quad\Longleftrightarrow\quad
+\{T(\bm{u}_1),\ldots,T(\bm{u}_n)\}\text{ が \(V\) の正規直交基底}.
+\]
+さらに$A$を$\bm{u}_1, \ldots, \bm{u}_n$に関する$T$の表現行列とする時, 
+$$
+T\text{ が直交変換}
+\quad\Longleftrightarrow\quad
+A\text{ が 直交行列}.
+$$
+\end{thm}
+
+\begin{defn}[直交行列]
+\(n\) 次の実正方行列 \(P\) が直交行列であるとは
+\[
+{}^tPP=E_n
+\]
+を満たすときにいう.
+\end{defn}
+
+直交行列\(P\) について次が成り立つ. 
+\begin{itemize}
+\item $P$は正則で
+\(
+P^{-1}={}^tP
+\).
+\item \(
+\det(P)=\pm1
+\).
+\end{itemize}
+
+
+\begin{eg}
+%[例4]
+次の行列は, \(2\) 次の直交行列である.
+\[
+\begin{pmatrix}
+1&0\\
+0&1
+\end{pmatrix},
+\quad
+\begin{pmatrix}
+0&1\\
+1&0
+\end{pmatrix},
+\quad
+\begin{pmatrix}
+0&-1\\
+1&0
+\end{pmatrix},
+\quad
+\begin{pmatrix}
+\cos\theta&-\sin\theta\\
+\sin\theta&\cos\theta
+\end{pmatrix}.
+\]
+\end{eg}
+
+\begin{thm}
+[{\cite[定理6.2.5]{M}}]
+\(n\) 次の実正方行列を
+\(
+A=[\bm{a}_1\ \cdots\ \bm{a}_n]
+\)
+と列ベクトル表示すると
+\[
+A\text{ が直交行列}
+\quad\Longleftrightarrow\quad
+\{\bm{a}_1,\ldots,\bm{a}_n\}\text{ が \(\mathbb{R}^n\) の正規直交基底}.
+\]
+\end{thm}
+
+
+\subsection{対称行列の対角化 \cite[6.3節]{M}}
+
+\begin{defn}
+$n$次正方行列$A$が対称行列とは${}^tA =A$となる行列のこと. 
+\end{defn}
+
+一般に実数の行列を考えていても固有値は複素数になりうるが, 実対称行列の場合はそのようなことにはならない. 
+\begin{thm}
+[{\cite[定理6.3.1]{M}}]
+実対称行列の固有値は全て実数である.
+\end{thm}
+\begin{eg}%[例1]
+\[
+A=
+\begin{pmatrix}
+1&2\\
+2&1
+\end{pmatrix}
+\]
+とすると \(A\) は実対称行列である. \(A\) の固有多項式は
+\[
+g_A(t)=t^2-2t-3=(t-3)(t+1)
+\]
+となるから, \(A\) の固有値は
+\(
+\lambda=3,-1
+\)
+となり実数である.
+\end{eg}
+
+\begin{defn}
+%[行列の（上）三角化]
+正方行列 \(A\) に対し \(P^{-1}AP\) が上三角行列となる正則行列 \(P\) と上三角行列 \(P^{-1}AP\) を求めることを, 行列 \(A\) の（上）三角化という.
+\end{defn}
+
+\begin{thm}
+[{\cite[定理6.3.2]{M}}]
+\(n\) 次の実正方行列 \(A\) の固有値が全て実数ならば, \(A\) は直交行列を用いて上三角化できる. すなわち次のような直交行列 \(P\) が存在する.
+\[
+P^{-1}AP=
+\begin{pmatrix}
+\lambda_1&*&\cdots&*\\
+0&\lambda_2&\ddots&\vdots\\
+\vdots&\ddots&\ddots&*\\
+0&\cdots&0&\lambda_n
+\end{pmatrix}.
+\]
+直交行列 \(P\) は
+\(
+\det(P)=1
+\)
+とすることができる.
+\end{thm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{comment}
+\begin{eg}[例題6.3.1]
+次の行列 \(A\) の固有値は全て実数であることを確かめ，直交行列を用いて上三角化せよ．
+\[
+A=
+\begin{pmatrix}
+1&0&0\\
+2&3&4\\
+-2&-2&-3
+\end{pmatrix}.
+\]
+
+\textbf{解答}
+
+定理6.3.2の証明に従って求めてみる．\(A\) の固有多項式は
+\[
+g_A(t)=(t-1)^2(t+1)
+\]
+であるから，\(A\) の固有値は全て実数である．固有値 \(\lambda=1\) の固有空間を求めると
+\[
+W(1;A)
+=
+\left\{
+c_1
+\begin{pmatrix}
+-1\\
+1\\
+0
+\end{pmatrix}
++
+c_2
+\begin{pmatrix}
+-2\\
+0\\
+1
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+c_1,c_2\in\mathbb{R}
+\right\}.
+\]
+この空間の零でないベクトルを \(1\) つとり，それを含む \(\mathbb{R}^3\) の基を \(1\) 組とる．例えば
+\[
+\left\{
+\begin{pmatrix}
+-1\\
+1\\
+0
+\end{pmatrix},
+\begin{pmatrix}
+0\\
+1\\
+0
+\end{pmatrix},
+\begin{pmatrix}
+0\\
+0\\
+1
+\end{pmatrix}
+\right\}
+\]
+をとり正規直交化すると
+\[
+\left\{
+\begin{pmatrix}
+-1/\sqrt{2}\\
+1/\sqrt{2}\\
+0
+\end{pmatrix},
+\begin{pmatrix}
+1/\sqrt{2}\\
+1/\sqrt{2}\\
+0
+\end{pmatrix},
+\begin{pmatrix}
+0\\
+0\\
+1
+\end{pmatrix}
+\right\}
+\]
+となる．よって
+\[
+Q=
+\begin{pmatrix}
+-1/\sqrt{2}&1/\sqrt{2}&0\\
+1/\sqrt{2}&1/\sqrt{2}&0\\
+0&0&1
+\end{pmatrix}
+\]
+は直交行列で
+\[
+Q^{-1}={}^tQ
+\]
+を用いると
+\[
+Q^{-1}AQ
+=
+\begin{pmatrix}
+1&2&2\sqrt{2}\\
+0&3&2\sqrt{2}\\
+0&-2\sqrt{2}&-3
+\end{pmatrix}
+\]
+となる．
+\[
+B=
+\begin{pmatrix}
+3&2\sqrt{2}\\
+-2\sqrt{2}&-3
+\end{pmatrix}
+\]
+とおくと
+\[
+g_B(t)=t^2-1
+\]
+である．\(B\) の固有値 \(1\) の固有空間は
+\[
+W(1;B)
+=
+\left\{
+c
+\begin{pmatrix}
+-\sqrt{2}\\
+1
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+c\in\mathbb{R}
+\right\}
+\]
+であるから
+\[
+\begin{pmatrix}
+-\sqrt{2}\\
+1
+\end{pmatrix}
+\]
+を含む \(\mathbb{R}^2\) の \(1\) つの基，例えば
+\[
+\left\{
+\begin{pmatrix}
+-\sqrt{2}\\
+1
+\end{pmatrix},
+\begin{pmatrix}
+1\\
+0
+\end{pmatrix}
+\right\}
+\]
+を正規直交化すると
+\[
+\left\{
+\begin{pmatrix}
+-\sqrt{2}/\sqrt{3}\\
+1/\sqrt{3}
+\end{pmatrix},
+\begin{pmatrix}
+1/\sqrt{3}\\
+\sqrt{2}/\sqrt{3}
+\end{pmatrix}
+\right\}
+\]
+となる．よって
+\[
+R=
+\begin{pmatrix}
+-\sqrt{2}/\sqrt{3}&1/\sqrt{3}\\
+1/\sqrt{3}&\sqrt{2}/\sqrt{3}
+\end{pmatrix}
+\]
+とおくと，\(R\) は \(2\) 次の直交行列である．さらに
+\[
+\begin{aligned}
+P
+&=
+Q
+\begin{pmatrix}
+1&0&0\\
+0&&\\
+0&&R
+\end{pmatrix}\\
+&=
+\begin{pmatrix}
+-1/\sqrt{2}&-1/\sqrt{3}&1/\sqrt{6}\\
+1/\sqrt{2}&-1/\sqrt{3}&1/\sqrt{6}\\
+0&1/\sqrt{3}&2/\sqrt{6}
+\end{pmatrix}
+\end{aligned}
+\]
+とおくと，\(P\) は \(3\) 次の直交行列で
+\[
+P^{-1}AP
+=
+\begin{pmatrix}
+1&0&2\sqrt{3}\\
+0&1&-4\sqrt{2}\\
+0&0&-1
+\end{pmatrix}.
+\]
+
+\textbf{別解}
+
+\(A\) の固有多項式は
+\[
+g_A(t)=(t-1)^2(t+1)
+\]
+であるから，\(A\) の固有値は
+\[
+\lambda=1,-1
+\]
+である．各々の固有空間を調べると例題5.3.1，例題5.4.2と同様の計算で
+\[
+W(1;A)
+=
+\left\{
+c_1
+\begin{pmatrix}
+-1\\
+1\\
+0
+\end{pmatrix}
++
+c_2
+\begin{pmatrix}
+-2\\
+0\\
+1
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+c_1,c_2\in\mathbb{R}
+\right\},
+\]
+\[
+W(-1;A)
+=
+\left\{
+c
+\begin{pmatrix}
+0\\
+-1\\
+1
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+c\in\mathbb{R}
+\right\}
+\]
+となる．\(\mathbb{R}^3\) の基として \(W(1;A)\) の基および \(W(-1;A)\) の基を含むものをとり，この基をシュミットの方法で正規直交化する．この場合は \(W(1;A)\) の基と \(W(-1;A)\) の基を合わせたものが \(\mathbb{R}^3\) の基で，その基
+\[
+\left\{
+\begin{pmatrix}
+-1\\
+1\\
+0
+\end{pmatrix},
+\begin{pmatrix}
+-2\\
+0\\
+1
+\end{pmatrix},
+\begin{pmatrix}
+0\\
+-1\\
+1
+\end{pmatrix}
+\right\}
+\]
+を正規直交化すると
+\[
+\left\{
+\begin{pmatrix}
+-1/\sqrt{2}\\
+1/\sqrt{2}\\
+0
+\end{pmatrix},
+\begin{pmatrix}
+-1/\sqrt{3}\\
+-1/\sqrt{3}\\
+1/\sqrt{3}
+\end{pmatrix},
+\begin{pmatrix}
+1/\sqrt{6}\\
+1/\sqrt{6}\\
+2/\sqrt{6}
+\end{pmatrix}
+\right\}.
+\]
+これを列ベクトルにもつ行列
+\[
+P=
+\begin{pmatrix}
+-1/\sqrt{2}&-1/\sqrt{3}&1/\sqrt{6}\\
+1/\sqrt{2}&-1/\sqrt{3}&1/\sqrt{6}\\
+0&1/\sqrt{3}&2/\sqrt{6}
+\end{pmatrix}
+\]
+は直交行列であり
+\[
+P^{-1}AP
+=
+\begin{pmatrix}
+1&0&2\sqrt{3}\\
+0&1&-4\sqrt{2}\\
+0&0&-1
+\end{pmatrix}.
+\]
+
+\textbf{注意}
+\(\mathbb{R}^n\)（この場合は \(\mathbb{R}^3\)）の基が \(A\) の固有ベクトルのみで得られないときには，このように \(1\) 回で上三角化できるとは限らないが，そのときには上の解答と同様に行列の一部をさらに上三角行列化する作業を繰り返す必要がある．
+\end{eg}
+\end{comment}
+%%%%%%%%%%%%%%%%
+
+対称行列は直交行列で対角化可能である. 
+\begin{thm}
+[{\cite[定理6.3.3]{M}}]
+\(A\) が \(n\) 次の実対称行列ならば, 直交行列 \(P\) で
+\[
+P^{-1}AP=
+\begin{pmatrix}
+\lambda_1&&O\\
+&\ddots&\\
+O&&\lambda_n
+\end{pmatrix}
+\]
+となるものが存在する. 直交行列 \(P\) は
+\(
+\det(P)=1
+\)
+にとることができる.
+\end{thm}
+
+\begin{eg}
+[{\cite[例題6.3.2]{M}}]
+\label{ex-M-6.3.2}
+実対称行列
+\[
+A=
+\begin{pmatrix}
+1&2&-1\\
+2&-2&2\\
+-1&2&1
+\end{pmatrix}
+\]
+を直交行列を用いて対角化せよ.
+\end{eg}
+
+\begin{proof}
+
+
+\[
+g_A(t)=\lvert tE-A\rvert=(t-2)^2(t+4)
+\]
+であるから, $A$ の固有値は $2,-4$ である. $A$ の各固有値に対して固有空間を求めると
+\begin{itemize}
+\item
+\(
+W(2;A)
+=
+\left\{
+c_1
+\begin{pmatrix}
+2\\
+1\\
+0
+\end{pmatrix}
++
+c_2
+\begin{pmatrix}
+-1\\
+0\\
+1
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+c_1,c_2\in\mathbb{R}
+\right\}.
+\)
+\item \(
+W(-4;A)
+=
+\left\{
+c
+\begin{pmatrix}
+1\\
+-2\\
+1
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+c\in\mathbb{R}
+\right\}.\)
+\end{itemize}
+
+(a).$W(2;A)$ の基底
+\[
+\left\{
+\begin{pmatrix}
+2\\
+1\\
+0
+\end{pmatrix},
+\begin{pmatrix}
+-1\\
+0\\
+1
+\end{pmatrix}
+\right\}
+\underalign{\text{(正規直交化)}}{\Rightarrow}
+\left\{
+\begin{pmatrix}
+2/\sqrt{5}\\
+1/\sqrt{5}\\
+0
+\end{pmatrix},
+\begin{pmatrix}
+-1/\sqrt{30}\\
+2/\sqrt{30}\\
+5/\sqrt{30}
+\end{pmatrix}
+\right\}.
+\]
+
+(b). $W(-4;A)$ の基底
+\[
+\left\{
+\begin{pmatrix}
+1\\
+-2\\
+1
+\end{pmatrix}
+\right\}
+\underalign{\text{(正規直交化)}}{\Rightarrow}
+\left\{
+\begin{pmatrix}
+1/\sqrt{6}\\
+-2/\sqrt{6}\\
+1/\sqrt{6}
+\end{pmatrix}
+\right\}
+\]
+
+$W(2;A)$ の各ベクトルと $W(-4;A)$ の各ベクトルは直交するので\footnote{ここは演習問題6.3--4で一般化される. }
+\[
+\left\{
+\begin{pmatrix}
+2/\sqrt{5}\\
+1/\sqrt{5}\\
+0
+\end{pmatrix},
+\begin{pmatrix}
+-1/\sqrt{30}\\
+2/\sqrt{30}\\
+5/\sqrt{30}
+\end{pmatrix},
+\begin{pmatrix}
+1/\sqrt{6}\\
+-2/\sqrt{6}\\
+1/\sqrt{6}
+\end{pmatrix}
+\right\}
+\]
+は $\mathbb{R}^3$ の正規直交基底で
+\[
+P=
+\begin{pmatrix}
+2/\sqrt{5}&-1/\sqrt{30}&1/\sqrt{6}\\
+1/\sqrt{5}&2/\sqrt{30}&-2/\sqrt{6}\\
+0&5/\sqrt{30}&1/\sqrt{6}
+\end{pmatrix}
+\]
+は直交行列で
+\[
+P^{-1}AP=
+\begin{pmatrix}
+2&0&0\\
+0&2&0\\
+0&0&-4
+\end{pmatrix}.
+\]
+\end{proof}
+
+\subsection{2次形式 \cite[6.4節]{M}}
+
+\begingroup\tcbset{mybox/.append style={breakable=false}}
+\begin{defn}
+%\paragraph{2次形式}
+実数 $a_{ij}$ を係数にもつ, $n$ 変数 $x_1,\ldots,x_n$ の2次の同次式
+\[
+q(x_1,\ldots,x_n)
+=
+\sum_{i=1}^{n}\sum_{j=1}^{n}a_{ij}x_ix_j
+=
+[\,x_1\ \cdots\ x_n\,]
+A
+\begin{pmatrix}
+x_1\\
+\vdots\\
+x_n
+\end{pmatrix}
+\quad
+(A=[a_{ij}])
+\]
+を2次形式という. この行列 $A$ を2次形式の係数行列という.
+
+上の$n$ 次正方行列 $A$ と $n$ 次の列ベクトル $\bm{x}$ に対して
+\[
+A[\bm{x}]:={}^{t}\!\bm{x}A\bm{x}
+\]
+と定義する. この記号を用いると, 2次形式は
+\(
+q(x_1,\ldots,x_n)=A[\bm{x}]
+\)
+と表される.
+\end{defn}
+\endgroup
+2次形式 $q(x_1,\ldots,x_n)=A[\bm{x}]$ において, はじめから係数行列 $A$ は実対称行列であると仮定して差し支えない.
+
+\begin{ex}
+%\paragraph{例1}
+2次形式\(q(x_1,x_2)=x_1^2+2x_1x_2+3x_2^2\)は, 次のように表される.
+\[
+q(x_1,x_2)
+=
+\begin{pmatrix}
+1&1\\
+1&3
+\end{pmatrix}
+[\bm{x}]
+=
+[\,x_1\ x_2\,]
+\begin{pmatrix}
+1&1\\
+1&3
+\end{pmatrix}
+\begin{pmatrix}
+x_1\\
+x_2
+\end{pmatrix}
+\quad
+\text{ここで}
+\bm{x}:=
+\begin{pmatrix}
+x_1\\
+x_2
+\end{pmatrix}.
+\]
+\end{ex}
+
+%%%%%%%%%%%
+\begin{comment}
+
+以下においては，$x,y,z$ は $n$ 次の列ベクトルで
+\[
+x=
+\begin{pmatrix}
+x_1\\
+\vdots\\
+x_n
+\end{pmatrix},
+\quad
+y=
+\begin{pmatrix}
+y_1\\
+\vdots\\
+y_n
+\end{pmatrix},
+\quad
+z=
+\begin{pmatrix}
+z_1\\
+\vdots\\
+z_n
+\end{pmatrix}
+\]
+となるものを表す。
+
+\paragraph{直交変数変換と2次形式の対角化}
+実対称行列 $A$ の固有値を $\lambda_1,\ldots,\lambda_n$ とし，対角成分が $\lambda_1,\ldots,\lambda_n$ である対角行列を $D$ とする。定理6.3.3により，直交変数変換 $x=Py$ によって
+\[
+q(x)=A[x]=D[y]
+\quad
+(P\text{：直交行列},\ D={}^{t}\!PAP\text{：対角行列})
+\]
+と書き替えられる（$P^{-1}={}^{t}\!P$）。これを2次形式の対角化という。定理4.3.3により，$A$ の階数は $0$ でない固有値の個数だから，次の定理6.4.1を得る。
+%%%%%%%%%%%
+\end{comment}
+
+
+\begin{thm}
+[（2次形式の対角化）{\cite[定理6.4.1]{M}}]
+2次形式 $q(\bm{x})=A[\bm{x}]$ で, $A$ の固有値を
+\[
+\lambda_i\neq0\quad(1\leq i\leq m),
+\quad
+\lambda_j=0\quad(m+1\leq j\leq n)
+\]
+ととる. 適当な直交変数変換 $\bm{x}=P\bm{y}$ によって
+\[
+\begin{aligned}
+q(x_1,\ldots,x_n)
+&=({}^{t}\!PAP)[\bm{y}]\\
+&=\lambda_1y_1^2+\cdots+\lambda_my_m^2
++\lambda_{m+1}y_{m+1}^2+\cdots+\lambda_ny_n^2\\
+&=\lambda_1y_1^2+\cdots+\lambda_my_m^2
+\end{aligned}
+\]
+と対角化される. ここで,
+\(
+m=\operatorname{rank}(A)
+\)
+である.
+\end{thm}
+
+\begin{eg}
+[{\cite[例題6.4.1]{M}}]
+次の2次形式を直交変数変換で対角化せよ.
+\[
+q(x_1,x_2,x_3)
+=
+x_1^2+4x_1x_2-2x_1x_3-2x_2^2+4x_2x_3+x_3^2.
+\]
+\end{eg}
+
+\begin{proof}
+この2次形式は, 行列を用いると
+\[
+q(x_1,x_2,x_3)
+=
+A[\bm{x}]
+=
+\begin{pmatrix}
+x_1& x_2& x_3
+\end{pmatrix}
+\begin{pmatrix}
+1&2&-1\\
+2&-2&2\\
+-1&2&1
+\end{pmatrix}
+\begin{pmatrix}
+x_1\\
+x_2\\
+x_3
+\end{pmatrix}
+\]
+と表される. ここで
+\[
+A=
+\begin{pmatrix}
+1&2&-1\\
+2&-2&2\\
+-1&2&1
+\end{pmatrix}
+\]
+となり, $A$ は例\ref{ex-M-6.3.2}により, 直交行列
+\[
+P=
+\begin{pmatrix}
+2/\sqrt{5}&-1/\sqrt{30}&1/\sqrt{6}\\
+1/\sqrt{5}&2/\sqrt{30}&-2/\sqrt{6}\\
+0&5/\sqrt{30}&1/\sqrt{6}
+\end{pmatrix}
+\]
+をとると
+\[
+{}^{t}\!PAP=
+\begin{pmatrix}
+2&0&0\\
+0&2&0\\
+0&0&-4
+\end{pmatrix}
+\]
+となる. 直交変数変換 $\bm{x}=P\bm{y}$ により, 2次形式は次のように対角化される.
+\[
+q(x_1,x_2,x_3)
+=
+({}^{t}\!PAP)[\bm{y}]
+=
+2y_1^2+2y_2^2-4y_3^2.
+\]
+\end{proof}
+\begin{defn}
+対角成分が $a_1,\ldots,a_n$ である対角行列を
+\(
+\operatorname{diag}[a_1,\ldots,a_n]
+\)
+と書く.
+\end{defn}
+
+\begin{defn}
+2次形式を正則行列による変換$\bm{x} =P\bm{z}$をすることで, 
+\[
+q(x_1,\ldots,x_n)
+=
+z_1^2+\cdots+z_r^2
+-z_{r+1}^2-\cdots-z_{r+s}^2
+\quad(m=r+s)
+\]
+係数が $\pm1$ および $0$ である2次形式に変形することを2次形式の標準化という.
+\end{defn}
+\begin{lem}
+2次形式の標準化は
+$$
+q(x_1,\ldots,x_n)
+=
+z_1^2+\cdots+z_r^2
+-z_{r+1}^2-\cdots-z_{r+s}^2
+\quad(m=r+s)
+$$
+常にできて, 
+$r+s=\operatorname{rank}(A)$ である. 
+\end{lem}
+
+
+\begin{thm}
+[（シルベスターの慣性法則）{\cite[定理6.4.2]{M}}]
+2次形式の標準化に現れる $(r,s)$ の組は, ただ1通りに定まる.
+\end{thm}
+
+\begin{defn}
+シルベスターの慣性法則により, 2次形式 $q(x_1,\ldots,x_n)$ の標準化
+$$
+q(x_1,\ldots,x_n)
+=
+z_1^2+\cdots+z_r^2
+-z_{r+1}^2-\cdots-z_{r+s}^2
+\quad(m=r+s)
+$$
+に現れる, 1通りに定まる整数の組 $(r,s)$ を2次形式の符号という.
+\end{defn}
+
+\begin{eg}
+[{\cite[例題6.4.2]{M}}]
+次の2次形式の標準化と, 符号を求めよ.
+\[
+q(x_1,x_2,x_3)
+=
+x_1^2-2x_1x_2+2x_2^2+2x_2x_3+x_3^2.
+\]
+\end{eg}
+
+\begin{proof}
+2次形式は行列を用いると
+\[
+q(x_1,x_2,x_3)=A[\bm{x}]
+\quad
+\text{ここで}
+A=
+\begin{pmatrix}
+1&-1&0\\
+-1&2&1\\
+0&1&1
+\end{pmatrix},
+\bm{x}=
+\begin{pmatrix}
+x_1\\
+x_2\\
+x_3
+\end{pmatrix}.
+\]
+標準化は$A$の固有値の正の数と負の数の数を数えれば良い. 
+実際固有多項式は
+\[
+g_A(t)=t(t-1)(t-3)
+\]
+で, 固有値は $1,3,0$ であるから, 2次形式の符号は $(2,0)$ である. 2次形式を変形して
+\[
+q(x_1,x_2,x_3)
+%=(x_1-x_2)^2+(x_2+x_3)^2
+=
+y_1^2+y_2^2.
+\]
+\end{proof}
+
+\begin{defn}
+%\paragraph{主小行列}
+$n$ 次の実対称行列 $A=[a_{ij}]$ に対して, 左上の $k^2$ 個の $a_{ij}\ (1\leq i,j\leq k)$ をとって得られる $k$ 次正方行列 $[a_{ij}]$ を $A$ の $k$ 次の主小行列といい, $A_k$ と書く. すなわち
+\[
+A=
+\left(
+\begin{array}{ccc|c}
+a_{11}&\cdots&a_{1k}&\cdots\ a_{1n}\\
+\vdots&&\vdots&\vdots\\
+a_{k1}&\cdots&a_{kk}&\cdots\ a_{kn}\\ \hline
+\vdots&&\vdots&\vdots\\
+a_{n1}&\cdots&a_{nk}&\cdots\ a_{nn}
+\end{array}
+\right)
+\]
+のとき
+\[
+A_k=
+\begin{pmatrix}
+a_{11}&\cdots&a_{1k}\\
+\vdots&&\vdots\\
+a_{k1}&\cdots&a_{kk}
+\end{pmatrix}
+\]
+である $(1\leq k\leq n)$.
+\end{defn}
+
+\begin{defn}
+%\paragraph{正定値2次形式}
+2次形式\(q(x_1,\ldots,x_n)=A[\bm{x}]\)が正定値2次形式であるとは
+\[
+q(x_1,\ldots,x_n)=A[\bm{x}]>0
+\quad
+\bigl((x_1,\ldots,x_n)\neq(0,\ldots,0)\bigr)
+\]
+のときにいう.
+\end{defn}
+
+\begin{lem}
+次は同値である. 
+\begin{enumerate}
+\item[(0)] 2次形式
+\(
+q(x_1,\ldots,x_n)=A[\bm{x}]
+\)
+が正定値2次形式. 
+\item[(1)] $q(x_1,\ldots,x_n)$ の符号が $(n,0)$ である. 
+\item[(2)] $A$ の全ての固有値が正である.
+\item[(3)] $\bm{a},\bm{b}\in\mathbb{R}^n$ に対して
+\(
+(\bm{a},\bm{b})={}^{t}\!\bm{a}A\bm{b}
+\)
+は内積になる.
+\end{enumerate}
+\end{lem}
+
+\begin{defn}
+%\paragraph{半正定値2次形式}
+2次形式が半正定値2次形式であるとは, 任意の $x_1,\ldots,x_n$ に対して
+\(
+q(x_1,\ldots,x_n)\geq0
+\)
+のときにいう.
+\end{defn}
+
+正定値2次形式について, 次の定理\ref{thm-M-6.4.3}が成り立つ.
+
+\begin{thm}
+[（正定値2次形式の判定）{\cite[定理6.4.3]{M}}]
+\label{thm-M-6.4.3}
+\(
+q(x_1,\ldots,x_n)=A[\bm{x}]
+\)
+が正定値2次形式であることは
+\(
+1\leq k\leq n\text{ に対して }\lvert A_k\rvert>0
+\)
+であることと同値. 
+\end{thm}
+
+\begin{eg}
+%[例2]
+半正定値 \(2\) 次形式については, 定理\ref{thm-M-6.4.3}で不等号 \(>\) を \(\geq\) に代えても成り立たない. 例えば
+\[
+q(x_1,x_2)
+=
+\begin{pmatrix}
+0&0\\
+0&-1
+\end{pmatrix}[\bm{x}]
+=
+[x_1\ x_2]
+\begin{pmatrix}
+0&0\\
+0&-1
+\end{pmatrix}
+\begin{pmatrix}
+x_1\\
+x_2
+\end{pmatrix}
+\]
+において,\(|A_1|=|A_2|=0\)であるが, \(q(x_1,x_2)\) は半正定値 \(2\) 次形式ではない.
+\end{eg}
+
+\begin{defn}
+%[負定値2次形式]
+\(2\) 次形式 \(q(x_1,\ldots,x_n)\) が負定値 \(2\) 次形式であるとは
+\[
+q(x_1,\ldots,x_n)<0
+\quad
+\bigl((x_1,\ldots,x_n)\neq(0,\ldots,0)\bigr)
+\]
+が成り立つときにいう. また, 任意の \(x_1,\ldots,x_n\) に対して
+\(
+q(x_1,\ldots,x_n)\leq0
+\)
+のときに, 半負定値 \(2\) 次形式であるという.
+\end{defn}
+
+\(q(\bm{x})=A[\bm{x}]\) が正定値（半正定値）\(2\) 次形式であることと,\(-q(\bm{x})=-A[\bm{x}]\)が負定値（半負定値）\(2\) 次形式であることは同値である.
+
+
+
+\begin{thebibliography}{n}
+\bibitem[教科書]{M}
+三宅敏恒著 「線形代数学　初歩からジョルダン標準形へ」(培風館)
+\url{http://www.baifukan.co.jp/cgi-bin/db/fromjapanbook.pl?ISBN=978-4-563-00381-4}
+\end{thebibliography}
+ 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{comment}
+
+\newpage
+\renewcommand{\thesection}{\Alph{section}}
+\renewcommand{\theHsection}{appendix.\Alph{section}}
+\setcounter{section}{0}
+
+以下に関しては\underline{試験範囲外の内容}である. 
+ただ個人的に復習したかったので, 資料として残しておく. 
+
+\section{双対空間, 商空間, 空間の直和 \cite[7章]{M}}
+
+\subsection{ベクトル空間の同型 \cite[7.1節]{M}}
+
+以下体$K$上のベクトル空間を考える. 
+ベクトル空間$V$の恒等写像を$I$または$I_V$とする. 
+また基本的にベクトル空間は有限次元とする. 
+
+\begin{defn}
+%[ベクトル空間の同型写像と逆写像]
+\(U,V\) を \(K\) 上のベクトル空間とする. \(T\) はベクトル空間 \(U\) から \(V\) への \(K\) 上の線形写像とする. \(V\) から \(U\) への \(K\) 上の線形写像 \(T^{-1}\) で
+\[
+T^{-1}T=I_U,
+\quad
+TT^{-1}=I_V
+\]
+を満たすものが存在するときに, \(T\) は \(U\) から \(V\) への \(K\) 上の同型写像であるという.
+
+\(K\) 上の同型写像 \(T\) が存在するとき, \(U\) と \(V\) は \(K\) 上のベクトル空間として \(K\) 上に同型であるといい, \(T^{-1}\) を \(T\) の逆写像という.
+%\(K\) が明らかなときには，\(K\) は省略して，単に線形写像とか，同型写像ということもある．また，\(U=V\) のとき，同型写像 \(T\) を同型変換，\(T^{-1}\) を逆変換という．
+\end{defn}
+
+
+
+\begin{defn}
+%[1対1写像]
+一般に \(X,Y\) を集合とし, \(T\) を集合 \(X\) から集合 \(Y\) への写像とする. 写像 \(T\) が \(1\) 対 \(1\) である(または単射)とは, \(a,b\in X\) に対して
+\[
+T(a)=T(b)\quad\Longrightarrow\quad a=b
+\]
+であるときにいう.
+\end{defn}
+
+\begin{defn}[上への写像]
+\(T\) を集合 \(X\) から \(Y\) への写像とするとき
+\[
+T(X)=\operatorname{Im}(T)=\{T(a)\mid a\in X\}
+\]
+とおく.
+\(
+T(X)=Y
+\)
+であるときに, \(T\) は上への写像である(または全射)という.
+\end{defn}
+
+\begin{thm}%[定理7.1.1：ベクトル空間の1対1写像]
+[{\cite[定理7.1.1]{M}}]
+\label{thm-M-7.1.1}
+\(K\) 上のベクトル空間の線形写像について, 次の (1) と (2) は同値である.
+\begin{enumerate}
+\item 線形写像
+\(
+T\colon U\longrightarrow V
+\)
+が \(1\) 対 \(1\) である.
+\item
+\(
+\operatorname{Ker}(T)=\{\bm{0}_U\}
+\)
+である.
+\end{enumerate}
+\end{thm}
+
+%同型写像に関して，次の定理7.1.2は基本的である．
+
+\begin{thm}%[定理7.1.2：同型写像]
+[{\cite[定理7.1.2]{M}}]
+\begin{enumerate}
+\item 線形写像
+\(
+T\colon U\longrightarrow V
+\)
+が同型写像である必要十分条件は, \(T\) が \(1\) 対 \(1\) で \(V\) の上への写像であることである.
+
+\item \(U\) と \(V\) が同型ならば,
+\(
+\dim_K(U)=\dim_K(V)
+\)
+である.
+
+\item$U, V$を有限次元とする. 
+\(
+\dim_K(U)=\dim_K(V)
+\)
+であるときには, \(T\) が同型写像である必要十分条件は, \(T\) が \(1\) 対 \(1\) であるか, \(V\) の上への写像であるか, いずれか一方が成り立つことである.
+\end{enumerate}
+\end{thm}
+(1)は$T^{-1}$を構成する. (2)は
+\[
+\{\bm{u}_1,\ldots,\bm{u}_n\}\text{ が \(U\) の基底}
+\quad\Longleftrightarrow\quad
+\{T(\bm{u}_1),\ldots,T(\bm{u}_n)\}\text{ が \(V\) の基底}
+\]
+から.(3)は定理\ref{thm-M-5.1.2}の帰結である. 
+
+\begin{thm}
+%[定理7.1.3：同型写像と逆写像]
+[{\cite[定理7.1.3]{M}}]
+\label{thm-M-7.1.3}
+線形写像
+\[
+T\colon U\longrightarrow V
+\]
+に対して, 次の (1) と (2) は同値である.
+\begin{enumerate}
+\item[(1)] \(T\) は同型写像である.
+\item[(2)] \(T\) の表現行列 \(A\) は正則行列である.
+\end{enumerate}
+このとき, \(A\) と同一の基底に関する \(T^{-1}\) の表現行列は \(A^{-1}\) である.
+\end{thm}
+
+
+\begin{eg}
+%[例題7.1.1]
+\[
+U=\mathbb{R}[x]_2,
+\quad
+V=\mathbb{R}^3
+\]
+とし, \(U\) から \(V\) への写像 \(T\) を
+\[
+T\colon U\ni f
+\longmapsto
+T(f)=
+\begin{pmatrix}
+f(0)\\
+f(1)\\
+f(-1)
+\end{pmatrix}
+\in V
+\]
+と定義すると, \(T\) は \(U\) から \(V\) への \(\mathbb{R}\) 上の同型写像であることを示せ.
+
+\textbf{解答}
+
+\(U\) の \(\mathbb{R}\) 上の基底
+\[
+\{1,x,x^2\}
+\]
+と, \(V\) の \(\mathbb{R}\) 上の標準基底
+\[
+\{\bm{e}_1,\bm{e}_2,\bm{e}_3\}
+\]
+に関する \(T\) の表現行列 \(A\) は
+\[
+(T(1),T(x),T(x^2))
+=
+(\bm{e}_1,\bm{e}_2,\bm{e}_3)
+\begin{pmatrix}
+1&0&0\\
+1&1&1\\
+1&-1&1
+\end{pmatrix}
+\]
+であるから, 表現行列は
+\[
+A=
+\begin{pmatrix}
+1&0&0\\
+1&1&1\\
+1&-1&1
+\end{pmatrix}
+\]
+となる.
+\[
+|A|=2\neq0
+\]
+なので, \(A\) は正則行列である. 定理\ref{thm-M-7.1.3}により, \(T\) は \(\mathbb{R}\) 上の同型写像である.
+\end{eg}
+
+\begin{defn}[行列全体の集合]
+行列全体をベクトル空間として扱うために, \(K\) に成分をもつ \(m\times n\) 行列全体の集合を
+\[
+M_{m\times n}(K)
+=
+\{A\mid A\text{ は \(K\) に成分をもつ \(m\times n\) 行列}\}
+\]
+と表す.
+\end{defn}
+
+\begin{defn}[行列単位]
+\(M_{m\times n}(K)\) の元で, \((i,j)\) 成分が \(1\) で, \((i,j)\) 以外の成分が全て \(0\) である行列を行列単位といい, \(E_{ij}\) と書く. すなわち
+\[
+E_{ij}
+=
+\begin{pmatrix}
+0&\cdots&0&\cdots&0\\
+\vdots&&\vdots&&\vdots\\
+0&\cdots&1&\cdots&0\\
+\vdots&&\vdots&&\vdots\\
+0&\cdots&0&\cdots&0
+\end{pmatrix},
+\]
+ここで \(1\) は第 \(i\) 行第 \(j\) 列にある.
+\end{defn}
+
+\begin{thm}
+[{\cite[定理7.1.4]{M}}]
+集合 \(M_{m\times n}(K)\) は行列としての和とスカラー倍によって, \(K\) 上の次元が \(mn\) であるベクトル空間となる.
+\end{thm}
+
+\begin{defn}%[\(U\) から \(V\) への線形写像]
+\(2\) つのベクトル空間 \(U,V\) に対して, \(U\) から \(V\) への線形写像全体の集合を
+\[
+\operatorname{Hom}_K(U,V)
+\]
+と書く. \(\operatorname{Hom}_K(U,V)\) に
+\[
+(T_1+T_2)(\bm{u})=T_1(\bm{u})+T_2(\bm{u})
+\quad
+(T_1,T_2\in\operatorname{Hom}_K(U,V),\ \bm{u}\in U)
+\]
+および
+\[
+(cT)(\bm{u})=cT(\bm{u})
+\quad
+(T\in\operatorname{Hom}_K(U,V),\ c\in K,\ \bm{u}\in U)
+\]
+と和とスカラー倍を定義すると, ベクトル空間の性質（p.~63 の性質 (1)～(8) で \(\mathbb{R}\) を \(K\) と取り替える）を満たす. よって, \(\operatorname{Hom}_K(U,V)\) は \(K\) 上のベクトル空間になる.
+\end{defn}
+
+\begin{defn}[零写像]
+\(\operatorname{Hom}_K(U,V)\) の零ベクトルは, \(U\) の全てのベクトルを \(V\) の零ベクトル \(\bm{0}_V\) に写像する線形写像 \(O\) である. この線形写像 \(O\) を零写像という.
+\end{defn}
+
+\begin{defn}[線形変換の全体と同型変換]
+\(K\) 上のベクトル空間 \(V\) の \(K\) 上の線形変換の全体
+\[
+\operatorname{Hom}_K(V,V)
+\]
+を
+\[
+\operatorname{End}_K(V)
+\]
+と書き, \(V\) の \(K\) 上の線形変換の全体という. また, \(\operatorname{End}_K(V)\) に含まれる零写像を零変換, 同型写像を同型変換という.
+\end{defn}
+
+\begin{defn}[べき零変換]
+ある \(m\) について
+\[
+T^m=O
+\]
+となる \(V\) の線形変換 \(T\) を, \(V\) のべき零変換という. ここで, \(O\) は零変換である.
+\end{defn}
+
+\begin{thm}
+[{\cite[定理7.1.5]{M}}]
+\label{thm-M-7.1.5}
+\(U,V\) を \(K\) 上のベクトル空間で,
+\[
+\dim_K(U)=n,
+\quad
+\dim_K(V)=m
+\]
+とする. このとき,
+\[
+\operatorname{Hom}_K(U,V)
+\]
+は \(K\) 上の次元が \(mn\) であるベクトル空間となる.
+\end{thm}
+
+
+
+\begin{thm}
+[{\cite[定理7.1.6]{M}}]
+$U,V$ をベクトル空間, $T\in\operatorname{Hom}_K(U,V)$ とする. $\{\bm{u}_1,\ldots,\bm{u}_n\}$ を $U$ の基底, $\{\bm{v}_1,\ldots,\bm{v}_m\}$ を $V$ の基底とする. $T$ に $T$ の表現行列 $A$ を対応させる写像
+\[
+\phi(T)=A
+\]
+は $\operatorname{Hom}_K(U,V)$ から $M_{m\times n}(K)$ への $K$ 上の同型写像である.
+\end{thm}
+
+\begin{defn}
+$V$ を $K$ 上の $n$ 次元ベクトル空間とする. $V$ から $K$ への $K$ 上の線形写像 $f$ を, 特に $V$ の線形汎関数という. $V$ の線形汎関数全体を $V^*$ と書き, $V$ の双対空間という. すなわち
+\[
+V^*
+=
+\{f\mid f\colon V\longrightarrow K\text{（線形写像）}\}
+=
+\operatorname{Hom}_K(V,K)
+\]
+である.
+\end{defn}
+$V^*$ の元は $V$ から $K$ への線形写像であるから, $V^*$ には次のように和とスカラー倍が定義されている.
+\[
+\begin{array}{lll}
+\text{（和）}&(f+g)(\bm{u})=f(\bm{u})+g(\bm{u})&(f,g\in V^*,\ \bm{u}\in V),\\
+\text{（スカラー倍）}&(cf)(\bm{u})=cf(\bm{u})&(c\in K,\ \bm{u}\in V).
+\end{array}
+\]
+$V^*=\operatorname{Hom}_K(V,K)$ は $K$ 上のベクトル空間で, $\dim_K(K)=1$ であるから, 定理\ref{thm-M-7.1.5}より
+\(
+\dim_K(V^*)=\dim_K(V)
+\)
+となる.
+
+
+\begin{ex}
+%\paragraph{例2}
+$V=\mathbb{R}^2$ とし, $V^*$ の元 $f_1,f_2$ を
+\[
+f_1\left(
+\begin{pmatrix}
+a_1\\
+a_2
+\end{pmatrix}
+\right)=a_1,
+\quad
+f_2\left(
+\begin{pmatrix}
+a_1\\
+a_2
+\end{pmatrix}
+\right)=a_2
+\]
+と定義すると, $\{f_1,f_2\}$ は $V^*$ の基底になる.
+\end{ex}
+\xr{2026/09/03 次はここから}
+\begin{defn} %\paragraph{双対基}
+$V$ の $K$ 上の基底 $\{\bm{v}_1,\ldots,\bm{v}_n\}$ に対して, $V^*$ の元 $f_1,\ldots,f_n$ で
+\[
+f_i(\bm{v}_j)=\delta_{ij}
+\quad(1\leq i,j\leq n)
+\]
+となるものを, 基底 $\{\bm{v}_1,\ldots,\bm{v}_n\}$ の双対基底という.
+\end{defn}
+
+$\{f_1,\ldots,f_n\}$ が $K$ 上の基底になることは, $\dim_K(V^*)=n$ と $\{f_1,\ldots,f_n\}$ が1次独立であることから示される.
+\paragraph{例3}
+例2の $V^*$ の基底 $\{f_1,f_2\}$ は, $V$ の基底
+\[
+\left\{
+\bm{e}_1=
+\begin{pmatrix}
+1\\
+0
+\end{pmatrix},
+\quad
+\bm{e}_2=
+\begin{pmatrix}
+0\\
+1
+\end{pmatrix}
+\right\}
+\]
+の双対基底である.
+
+\paragraph{双対写像}
+$K$ 上の線形写像 $T\colon U\longrightarrow V$ に対して, ${}^{t}\!T\colon V^*\longrightarrow U^*$ を
+\[
+{}^{t}\!T(g)(\bm{u})=g(T(\bm{u}))
+\quad(g\in V^*,\ \bm{u}\in U)
+\]
+と定義して, $T$ の双対写像という. 明らかに, ${}^{t}\!T$ は $K$ 上の線形写像である.
+
+\paragraph{例4}
+$U=V=\mathbb{R}^2$ とする. ここで, $U$ から $V$ への線形写像 $T$ を
+\[
+T\left(
+\begin{pmatrix}
+x_1\\
+x_2
+\end{pmatrix}
+\right)
+=
+\begin{pmatrix}
+2&3\\
+-1&5
+\end{pmatrix}
+\begin{pmatrix}
+x_1\\
+x_2
+\end{pmatrix}
+\]
+とし, $V^*$ の元 $g_i$ を
+\[
+g_i\left(
+\begin{pmatrix}
+y_1\\
+y_2
+\end{pmatrix}
+\right)=y_i
+\quad(i=1,2)
+\]
+と定義すると
+\[
+\begin{aligned}
+{}^{t}\!T(g_1)\left(
+\begin{pmatrix}
+x_1\\
+x_2
+\end{pmatrix}
+\right)
+&=
+g_1\left(
+T\left(
+\begin{pmatrix}
+x_1\\
+x_2
+\end{pmatrix}
+\right)
+\right)\\
+&=
+g_1\left(
+\begin{pmatrix}
+2&3\\
+-1&5
+\end{pmatrix}
+\begin{pmatrix}
+x_1\\
+x_2
+\end{pmatrix}
+\right)\\
+&=
+g_1\left(
+\begin{pmatrix}
+2x_1+3x_2\\
+-x_1+5x_2
+\end{pmatrix}
+\right)
+=
+2x_1+3x_2,
+\end{aligned}
+\]
+\[
+\begin{aligned}
+{}^{t}\!T(g_2)\left(
+\begin{pmatrix}
+x_1\\
+x_2
+\end{pmatrix}
+\right)
+&=
+g_2\left(
+T\left(
+\begin{pmatrix}
+x_1\\
+x_2
+\end{pmatrix}
+\right)
+\right)\\
+&=
+g_2\left(
+\begin{pmatrix}
+2&3\\
+-1&5
+\end{pmatrix}
+\begin{pmatrix}
+x_1\\
+x_2
+\end{pmatrix}
+\right)\\
+&=
+g_2\left(
+\begin{pmatrix}
+2x_1+3x_2\\
+-x_1+5x_2
+\end{pmatrix}
+\right)
+=
+-x_1+5x_2
+\end{aligned}
+\]
+である.
+
+$K$ 上のベクトル空間 $U,V$ の次元をそれぞれ $n,m$ とし, $U$ の基底 $\{\bm{u}_1,\ldots,\bm{u}_n\}$, $V$ の基底 $\{\bm{v}_1,\ldots,\bm{v}_m\}$ をとる. また, $U^*$ のベクトル $\{f_1,\ldots,f_n\}$ を $\{\bm{u}_1,\ldots,\bm{u}_n\}$ の双対基底にとり, $V^*$ のベクトル $\{g_1,\ldots,g_m\}$ を $\{\bm{v}_1,\ldots,\bm{v}_m\}$ の双対基底にとる.
+
+\begin{thm}[定理7.1.7（双対写像の表現行列）]
+${}^{t}\!T\colon V^*\longrightarrow U^*$ を線形写像 $T\colon U\longrightarrow V$ の双対写像とする. $T$ の $\{\bm{u}_1,\ldots,\bm{u}_n\}$, $\{\bm{v}_1,\ldots,\bm{v}_m\}$ に関する表現行列を $A$ とする. ${}^{t}\!T$ の $V^*$ の双対基底 $\{g_1,\ldots,g_m\}$, $U^*$ の双対基底 $\{f_1,\ldots,f_n\}$ に関する表現行列は, $A$ の転置行列 ${}^{t}\!A$ になる. すなわち
+\[
+\bigl({}^{t}\!T(g_1),\ldots,{}^{t}\!T(g_m)\bigr)
+=
+(f_1,\ldots,f_n){}^{t}\!A.
+\]
+\end{thm}
+
+\begin{proof}
+双対基底に関する表現行列を $B$ とし, $B={}^{t}\!A$ を示す. $B$ は定義より
+\[
+\bigl({}^{t}\!T(g_1),\ldots,{}^{t}\!T(g_m)\bigr)
+=
+(f_1,\ldots,f_n)B
+\]
+を満たす. また, 定義より
+\[
+{}^{t}\!T(g)(\bm{u})=g(T(\bm{u}))
+\quad(g\in V^*,\ \bm{u}\in U)
+\]
+であるから
+\[
+\begin{pmatrix}
+{}^{t}\!T(g_1)\\
+\vdots\\
+{}^{t}\!T(g_m)
+\end{pmatrix}
+(\bm{u}_1,\ldots,\bm{u}_n)
+=
+\begin{pmatrix}
+g_1\\
+\vdots\\
+g_m
+\end{pmatrix}
+\bigl(T(\bm{u}_1),\ldots,T(\bm{u}_n)\bigr)
+\]
+が成り立つ. この左辺に
+\[
+\bigl({}^{t}\!T(g_1),\ldots,{}^{t}\!T(g_m)\bigr)
+=
+(f_1,\ldots,f_n)B
+\]
+と $f_i(\bm{u}_j)=\delta_{ij}\ (1\leq i,j\leq n)$ を用いると
+\[
+\text{左辺}
+=
+{}^{t}\!B
+\begin{pmatrix}
+f_1\\
+\vdots\\
+f_n
+\end{pmatrix}
+(\bm{u}_1,\ldots,\bm{u}_n)
+=
+{}^{t}\!B.
+\]
+この右辺に
+\[
+\bigl(T(\bm{u}_1),\ldots,T(\bm{u}_n)\bigr)
+=
+(\bm{v}_1,\ldots,\bm{v}_m)A
+\]
+と $g_k(\bm{v}_l)=\delta_{kl}\ (1\leq k,l\leq m)$ を用いると
+\[
+\text{右辺}
+=
+\begin{pmatrix}
+g_1\\
+\vdots\\
+g_m
+\end{pmatrix}
+(\bm{v}_1,\ldots,\bm{v}_m)A
+=
+A.
+\]
+よって ${}^{t}\!B=A$, すなわち $B={}^{t}\!A$.
+\end{proof}
+
+\begin{eg}[例題7.1.2]
+$U=M_{2\times2}(K)$, $V=K^2$ とする. 次の線形写像 $T$ の $U$ の基底 $\{E_{11},E_{12},E_{21},E_{22}\}$ と $V$ の基底 $\{\bm{e}_1,\bm{e}_2\}$ に関する表現行列を求めよ.
+\[
+T\left(
+\begin{pmatrix}
+a_{11}&a_{12}\\
+a_{21}&a_{22}
+\end{pmatrix}
+\right)
+=
+\begin{pmatrix}
+a_{11}+2a_{22}\\
+-a_{12}+3a_{21}
+\end{pmatrix}.
+\]
+\begin{enumerate}
+\item[(2)] $V^*$ の双対基底 $\{g_1,g_2\}$ と $U^*$ の双対基底 $\{f_{11},f_{12},f_{21},f_{22}\}$ を考える. $T$ の双対写像 ${}^{t}\!T$ の, これらの基底に関する表現行列 $B$ を求めよ.
+\end{enumerate}
+\end{eg}
+
+\paragraph{解答}
+\begin{enumerate}
+\item[(1)] 定義により
+\[
+T(E_{11})
+=
+T\left(
+\begin{pmatrix}
+1&0\\
+0&0
+\end{pmatrix}
+\right)
+=
+\begin{pmatrix}
+1\\
+0
+\end{pmatrix}
+=
+(\bm{e}_1,\bm{e}_2)
+\begin{pmatrix}
+1\\
+0
+\end{pmatrix},
+\]
+\[
+T(E_{12})
+=
+T\left(
+\begin{pmatrix}
+0&1\\
+0&0
+\end{pmatrix}
+\right)
+=
+\begin{pmatrix}
+0\\
+-1
+\end{pmatrix}
+=
+(\bm{e}_1,\bm{e}_2)
+\begin{pmatrix}
+0\\
+-1
+\end{pmatrix},
+\quad\ldots
+\]
+であるから
+\[
+\bigl(T(E_{11}),T(E_{12}),T(E_{21}),T(E_{22})\bigr)
+=
+(\bm{e}_1,\bm{e}_2)
+\begin{pmatrix}
+1&0&0&2\\
+0&-1&3&0
+\end{pmatrix}
+\]
+と表される. よって, 表現行列は
+\[
+A=
+\begin{pmatrix}
+1&0&0&2\\
+0&-1&3&0
+\end{pmatrix}
+\]
+である.
+
+\item[(2)] この双対基底に関する双対写像 ${}^{t}\!T$ の表現行列 $B$ は, 定理7.1.7により
+\[
+B
+=
+{}^{t}\!A
+=
+\begin{pmatrix}
+1&0\\
+0&-1\\
+0&3\\
+2&0
+\end{pmatrix}.
+\]
+\end{enumerate}
+
+\paragraph{同値関係}
+集合 $X$ の元の間に, 次の3条件を満たす関係 $\equiv$ が存在するならば, この関係 $\equiv$ を $X$ の同値関係であるという $(a,b,c\in X)$.
+\begin{enumerate}
+\item[(1)] $a\equiv a$.
+\item[(2)] $a\equiv b\Longrightarrow b\equiv a$.
+\item[(3)] $a\equiv b,\ b\equiv c\Longrightarrow a\equiv c$.
+\end{enumerate}
+また, 同値関係を表すのに, $\sim$ という記号を用いることもある.
+
+\paragraph{例5}
+$\mathbb{R}$ に同値関係 $\equiv$ を, $a,b\in\mathbb{R}$ に対して
+\[
+a\equiv b
+\quad\Longleftrightarrow\quad
+a,b\text{ がともに正, またはともに負, またはともに }0
+\]
+と定義すると, $\equiv$ は $\mathbb{R}$ の同値関係である.
+
+\paragraph{同値類（剰余類）}
+集合 $X$ の1つの元 $a$ に対して, $a$ と同値な元 $b$ の全体からなる $X$ の部分集合を同値類, あるいは剰余類という.
+
+\paragraph{代表元, 商集合（剰余集合）}
+集合 $X$ の元 $a$ に対して, $a$ と同値な元のなす同値類を $\operatorname{cl}(a)$, あるいは $\bar a$ と書く. この $a$ を同値類 $\operatorname{cl}(a)$ の代表元という. $X$ の任意の元は, いずれかの同値類に含まれる. 2つの同値類は等しいか, あるいは共通部分をもたない. 集合 $X$ は同値類の和集合である. $X$ の同値類の全体を $X/{\equiv}$ と書き, $X$ の同値関係 $\equiv$ の商集合, あるいは剰余集合という.
+
+\paragraph{例6}
+$m,n\in\mathbb{Z}$ に対して
+\[
+m\equiv n
+\quad\Longleftrightarrow\quad
+m-n\text{ が }5\text{ で割り切れる}
+\]
+と定義すると, $\equiv$ は $\mathbb{Z}$ の同値関係である. 例えば, $2$ を含む同値類は
+\[
+\operatorname{cl}(2)=\{\ldots,-3,2,7,\ldots\}
+\]
+で, $-3,2,7$ などは同値類 $\operatorname{cl}(2)$ の代表元である. また, 商集合 $\mathbb{Z}/{\equiv}$ は
+\[
+\operatorname{cl}(0),\operatorname{cl}(1),\operatorname{cl}(2),
+\operatorname{cl}(3),\operatorname{cl}(4)
+\]
+の5個の同値類からなる.
+
+\paragraph{部分空間で定義される同値関係}
+$V$ を $K$ 上のベクトル空間, $W$ を $V$ の部分空間とする. $V$ に
+\[
+\bm{u}\equiv \bm{v}
+\quad\Longleftrightarrow\quad
+\bm{u}-\bm{v}\in W
+\]
+と同値関係 $\equiv$ を定義する. これが同値関係であることは容易にわかる. これをベクトル空間 $V$ の部分空間 $W$ で定義される同値関係という. ベクトル空間 $V$ の部分空間 $W$ で定義される同値関係の商集合を $V/W$ と書く.
+
+剰余集合 $V/W$ に含まれる同値類は, 代表元である $V$ のベクトル $\bm{u},\bm{v}$ によって, $\operatorname{cl}(\bm{u}),\operatorname{cl}(\bm{v})$ と書ける. 同値類 $\operatorname{cl}(\bm{u})$ と $\operatorname{cl}(\bm{v})$ の和を
+\[
+\text{（和）}\quad
+\operatorname{cl}(\bm{u})+\operatorname{cl}(\bm{v})
+=
+\operatorname{cl}(\bm{u}+\bm{v})
+\]
+と定義する. 同値関係の定義により, 和は代表元 $\bm{u},\bm{v}$ の取り方によらずに決まる. また, $k\in K$ に対して, $\operatorname{cl}(\bm{u})$ のスカラー倍 $k\operatorname{cl}(\bm{u})$ を
+\[
+\text{（スカラー倍）}\quad
+k\operatorname{cl}(\bm{u})=\operatorname{cl}(k\bm{u})
+\]
+と定義する. これも代表元 $\bm{u}$ の取り方によらずに, $k$ と $\operatorname{cl}(\bm{u})$ で決まる.
+
+\paragraph{商空間（剰余空間）}
+この和とスカラー倍を用いて, $V/W$ が $K$ 上のベクトル空間になることは, 直ちにわかる. $V/W$ を $K$ 上のベクトル空間の部分空間で定義される商空間, あるいは剰余空間という.
+
+これを, 定理の形に表すと次のようになる.
+
+\begin{thm}[定理7.1.8（商空間）]
+$K$ 上のベクトル空間 $V$ の部分空間 $W$ で定義される商集合 $V/W$ は, $K$ 上のベクトル空間になる.
+\end{thm}
+
+\begin{thm}[定理7.1.9（商空間の次元）]
+$U,V$ を $K$ 上のベクトル空間とする.
+\begin{enumerate}
+\item[(1)] $T$ が $U$ から $V$ への $K$ 上の線形写像とすると, $T$ によって $K$ 上の同型
+\[
+U/\operatorname{Ker}(T)\cong T(U)
+\]
+が得られる.
+\item[(2)] $W$ を $U$ の部分空間とする. 自然な写像
+\[
+T_W\colon U\longrightarrow U/W
+\]
+を
+\[
+T_W(\bm{u})=\operatorname{cl}(\bm{u})
+\]
+と定義すると,
+\[
+\operatorname{Ker}(T_W)=W,
+\quad
+T_W(U)=U/W
+\]
+である.
+\item[(3)] $W$ が $U$ の部分空間ならば,
+\[
+\dim_K(U/W)=\dim_K(U)-\dim_K(W)
+\]
+である.
+\end{enumerate}
+\end{thm}
+
+\begin{proof}
+\begin{enumerate}
+\item[(1)] $\bm{u}_1-\bm{u}_2\in\operatorname{Ker}(T)$ ならば $T(\bm{u}_1)=T(\bm{u}_2)$ であるから, $\bm{u}\in U$ に対して
+\[
+\widetilde{T}(\operatorname{cl}(\bm{u}))=T(\bm{u})
+\]
+と定義することができる. $T$ は $T(U)$ の上への写像であるから, $\widetilde{T}$ も $T(U)$ の上への写像である. また
+\[
+\operatorname{Ker}(\widetilde{T})
+=
+\operatorname{Ker}(T)/\operatorname{Ker}(T)
+=
+\{\bm{0}\}
+\]
+より, $\widetilde{T}$ は $U/\operatorname{Ker}(T)$ から $T(U)$ の上への1対1写像となり, $U/\operatorname{Ker}(T)$ と $T(U)$ の同型を与える.
+
+\item[(2)] 定義より, 明らかに
+\[
+\operatorname{Ker}(T_W)=W,
+\quad
+T_W(U)=U/W
+\]
+である.
+
+\item[(3)] $T_W$ を (2) で定義した線形写像とすると
+\[
+\operatorname{rank}(T_W)
+=
+\dim_K(T_W(U))
+=
+\dim_K(U/W),
+\]
+\[
+\operatorname{null}(T_W)
+=
+\dim_K(\operatorname{Ker}(T_W))
+=
+\dim_K(W)
+\]
+である. 定理5.1.2の
+\[
+\operatorname{null}(T)+\operatorname{rank}(T)=\dim(U)
+\]
+の $T$ として $T_W$ をとれば (3) がわかる.
+
+また, (3) は直接にも示される. $W$ の $K$ 上の基底を $\{\bm{w}_1,\ldots,\bm{w}_r\}$ とし, $U/W$ の基底を $\{\operatorname{cl}(\bm{u}_1),\ldots,\operatorname{cl}(\bm{u}_s)\}$ とすると,
+\[
+\{\bm{w}_1,\ldots,\bm{w}_r,\bm{u}_1,\ldots,\bm{u}_s\}
+\]
+は $U$ の基底になることを示すことによって,
+\[
+r+s=\dim_K(U)
+\]
+がわかる.
+\end{enumerate}
+\end{proof}
+
+\paragraph{問題7.1}
+
+\begin{enumerate}
+\item 次の線形写像は1対1か, あるいは上への写像か調べよ.
+\begin{enumerate}
+\item
+\[
+T\colon K^2\longrightarrow K,
+\quad
+T\left(
+\begin{pmatrix}
+x_1\\
+x_2
+\end{pmatrix}
+\right)=x_1-2x_2.
+\]
+\item
+\[
+T\colon K^2\longrightarrow K^2,
+\quad
+T\left(
+\begin{pmatrix}
+x_1\\
+x_2
+\end{pmatrix}
+\right)
+=
+\begin{pmatrix}
+2x_1+x_2\\
+x_1+x_2
+\end{pmatrix}.
+\]
+\end{enumerate}
+
+\item $V=K^2$ とする.
+\[
+\bm{a}_1=
+\begin{pmatrix}
+1\\
+-1
+\end{pmatrix},
+\quad
+\bm{a}_2=
+\begin{pmatrix}
+1\\
+0
+\end{pmatrix}
+\]
+の双対基底を求めよ.
+
+\item $K^2$ の基底
+\[
+\bm{a}_1=
+\begin{pmatrix}
+1\\
+-1
+\end{pmatrix},
+\quad
+\bm{a}_2=
+\begin{pmatrix}
+1\\
+0
+\end{pmatrix}
+\]
+をとる.
+\begin{enumerate}
+\item 線形写像 $T\colon K^2\longrightarrow K^2$ を
+\[
+T\left(
+\begin{pmatrix}
+x_1\\
+x_2
+\end{pmatrix}
+\right)
+=
+\begin{pmatrix}
+x_1-x_2\\
+2x_1+x_2
+\end{pmatrix}
+\]
+と定義する. このとき, $\{\bm{a}_1,\bm{a}_2\}$ に関する表現行列 $A$ を求めよ.
+\item $\{\bm{a}_1,\bm{a}_2\}$ の双対基底に関して, 双対写像 ${}^{t}\!T$ の表現行列 $B$ を計算で求め, その表現行列が ${}^{t}\!A$ となっていることを確かめよ.
+\end{enumerate}
+
+\item $K$ を成分とする $n$ 次の上三角行列全体のなす集合 $W$ は, $K$ 上のベクトル空間であることを示し, $K$ 上の次元を求めよ.
+
+\item $A$ を階数が $r$ の $m\times n$ 行列とする. $M_{n\times r}(K)$ の部分空間を
+\[
+W=\{X\in M_{n\times r}(K)\mid AX=0\}
+\]
+と定義するとき, $W$ の $K$ 上の次元を求めよ.
+
+\item $V$ を $n$ 次の実対称行列全体のなす集合とする. $V$ は $\mathbb{R}$ 上のベクトル空間であることを示し, $\mathbb{R}$ 上の次元を求めよ.
+
+\item 実正方行列 $A$ は, ${}^{t}\!A=-A$ のとき（実）交代行列という. $n$ 次の実交代行列全体のベクトル空間の $\mathbb{R}$ 上の次元を求めよ.
+
+\item $V=\mathbb{C}^2$ は $\mathbb{C}$ 上のベクトル空間であるが, $\mathbb{R}$ 上のベクトル空間でもある. 次を示せ.
+\[
+\begin{array}{ll}
+(1)&\dim_{\mathbb{C}}(V)=2,\\
+(2)&\dim_{\mathbb{R}}(V)=4.
+\end{array}
+\]
+\end{enumerate}
+
+\subsection{空間の直和と最小多項式  \cite[7.2節]{M}}
+
+$K$ を体, $K[t]$ を $K$ を係数とする多項式全体とする.
+
+\paragraph{多項式の集合が共通因子をもたない}
+$n\geq2$ のとき, $0$ でない多項式
+\[
+f_1(t),f_2(t),\ldots,f_n(t)\in K[t]
+\]
+が共通因子をもたないとは
+\[
+p(t)\mid f_i(t)\quad(1\leq i\leq n)
+\quad\Longrightarrow\quad
+p(t)\text{ が }0\text{ でない定数}
+\]
+となるときにいう.
+
+\paragraph{多項式のイデアル}
+$K[t]$ の部分集合 $J$ が $K[t]$ のイデアルであるとは, 任意に2つの多項式
+\[
+p(t),q(t)\in K[t]
+\]
+をとったときに
+\[
+f(t),g(t)\in J
+\quad\Longrightarrow\quad
+p(t)f(t)+q(t)g(t)\in J
+\]
+が成り立つときにいう.
+
+\begin{thm}[定理7.2.1（多項式のイデアル）]
+$K[t]$ のイデアル $J$ は, 1つの多項式で生成される. すなわち, $J$ がイデアルであるならば, ある $f_0(t)\in K[t]$ で
+\[
+J
+=
+\{p(t)f_0(t)\mid p(t)\in K[t]\}
+=
+f_0(t)K[t]
+\]
+となるものが存在する.
+\end{thm}
+
+\begin{proof}
+$J=\{0\}$ のときは $f_0(t)=0$ ととればよい. $J\neq\{0\}$ とし, $f_0(t)$ を $J$ の $0$ 以外の多項式の中で最も次数の低い多項式とする. $g(t)\in J$ ならば, $g(t)$ を $f_0(t)$ で割って
+\[
+g(t)=p(t)f_0(t)+q(t)
+\quad
+\bigl(\deg(q(t))<\deg(f_0(t))\bigr)
+\]
+と表す. もし $q(t)\neq0$ ならば
+\[
+q(t)=g(t)-p(t)f_0(t)
+\]
+と表され, $g(t),f_0(t)$ はともに $J$ の元であるから, $q(t)$ は $J$ に含まれる. これは, $f_0(t)$ が $J$ に含まれる次数が最小である多項式であることに矛盾する. 従って, $q(t)=0$ となり, $g(t)$ は $f_0(t)$ で割り切れる.
+\end{proof}
+
+このとき, $K[t]$ のイデアル $J$ は $f_0(t)$ で生成されるという. 定理7.2.1で示されたイデアルの性質を用いて, 次の定理7.2.2が示される.
+
+
+\begin{thm}[定理7.2.2：共通因子をもたない多項式]
+\(n\geq 2\) とする. \(f_1(t),f_2(t),\ldots,f_n(t)\in K[t]\) が共通因子をもたない多項式であるとき
+\[
+g_1(t)f_1(t)+g_2(t)f_2(t)+\cdots+g_n(t)f_n(t)=1
+\]
+となる \(K[t]\) の多項式 \(g_1(t),g_2(t),\ldots,g_n(t)\) が存在する.
+\end{thm}
+
+\begin{proof}
+\(f_1(t),f_2(t),\ldots,f_n(t)\) を用いて
+\[
+J=
+\left\{
+p_1(t)f_1(t)+p_2(t)f_2(t)+\cdots+p_n(t)f_n(t)
+\mathrel{}\middle|\mathrel{}
+p_1(t),p_2(t),\ldots,p_n(t)\in K[t]
+\right\}
+\]
+とおくと, \(J\) は \(K[t]\) の イデアル の定義を満たすことは容易に確かめられる. よって, 定理7.2.1により, ただ \(1\) つの多項式で生成される. その多項式を \(f_0(t)\) とすると
+\[
+J=f_0(t)K[t]
+\]
+と表されている. 特に, \(f_0(t)\) も \(J\) に含まれる多項式であるから
+\[
+f_0(t)=p_1(t)f_1(t)+p_2(t)f_2(t)+\cdots+p_n(t)f_n(t)
+\]
+と表される.
+
+さて, \(f_0(t)\) は \(J\) の元 \(f_i(t)\)（\(1\leq i\leq n\)）を割り切る. \(f_1(t),f_2(t),\ldots,f_n(t)\) は共通因子をもたないから,
+\[
+f_0(t)=c
+\]
+となる. ここで \(c\) は \(0\) でない定数である. \(f_0(t)\) を \(c\) で割ると \(1\) であるから, \(p_i(t)\)（\(1\leq i\leq n\)）を \(c\) で割った多項式を \(g_i(t)\) とすることにより
+\[
+1=g_1(t)f_1(t)+g_2(t)f_2(t)+\cdots+g_n(t)f_n(t)
+\quad
+(g_i(t)\in K[t])
+\]
+となる多項式 \(g_i(t)\) の存在が示される.
+\end{proof}
+
+\begin{defn}[ベクトル空間 \(V\) の直和と直和分解]
+ベクトル空間 \(V\) の部分空間 \(W_1,W_2,\ldots,W_r\)（\(W_i\neq\{\bm{0}\}\)）で, \(V\) の任意の元 \(\bm{v}\) が
+\[
+\bm{v}=\bm{w}_1+\bm{w}_2+\cdots+\bm{w}_r
+\quad
+(\bm{w}_i\in W_i)
+\]
+と \(1\) 通りに表されるときに, \(V\) は \(W_1,W_2,\ldots,W_r\) の直和であるという. このとき
+\[
+V=W_1\oplus W_2\oplus\cdots\oplus W_r
+\]
+と書いて, \(V\) の直和分解という. また, 部分空間 \(W_i\)（\(1\leq i\leq r\)）を, この直和における \(V\) の直和因子という.
+\end{defn}
+
+\begin{eg}[例1]
+\[
+V=\mathbb{R}^3,
+\quad
+W_1=
+\left\{
+\begin{pmatrix}
+a\\
+0\\
+0
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+a\in\mathbb{R}
+\right\},
+\quad
+W_2=
+\left\{
+\begin{pmatrix}
+0\\
+b\\
+0
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+b\in\mathbb{R}
+\right\},
+\]
+\[
+W_3=
+\left\{
+\begin{pmatrix}
+0\\
+0\\
+c
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+c\in\mathbb{R}
+\right\}
+\]
+とおくと
+\[
+V=W_1\oplus W_2\oplus W_3
+\]
+である. 実際, \(V\) の任意のベクトル
+\[
+\bm{a}=
+\begin{pmatrix}
+a_1\\
+a_2\\
+a_3
+\end{pmatrix}
+\]
+は
+\[
+\bm{a}=
+\begin{pmatrix}
+a_1\\
+0\\
+0
+\end{pmatrix}
++
+\begin{pmatrix}
+0\\
+a_2\\
+0
+\end{pmatrix}
++
+\begin{pmatrix}
+0\\
+0\\
+a_3
+\end{pmatrix}
+\]
+と, \(W_1,W_2,W_3\) のベクトルの和で \(1\) 通りに表される.
+\end{eg}
+
+\begin{eg}[例2]
+\[
+V=\mathbb{R}^2,
+\quad
+W_1=
+\left\{
+a
+\begin{pmatrix}
+1\\
+1
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+a\in\mathbb{R}
+\right\},
+\quad
+W_2=
+\left\{
+b
+\begin{pmatrix}
+1\\
+2
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+b\in\mathbb{R}
+\right\}
+\]
+とおくと
+\[
+V=W_1\oplus W_2
+\]
+である. 実際, \(V\) の任意のベクトル
+\[
+\bm{a}=
+\begin{pmatrix}
+a_1\\
+a_2
+\end{pmatrix}
+\]
+は
+\[
+\bm{a}
+=
+(2a_1-a_2)
+\begin{pmatrix}
+1\\
+1
+\end{pmatrix}
++
+(-a_1+a_2)
+\begin{pmatrix}
+1\\
+2
+\end{pmatrix}
+\]
+と, \(W_1,W_2\) のベクトルの \(1\) 次結合で \(1\) 通りに表される.
+\end{eg}
+
+\paragraph{直和分解の特徴付け}
+ベクトル空間の直和分解は, 次のように特徴付けられる.
+
+\begin{thm}[定理7.2.3：ベクトル空間 \(V\) の直和分解]
+\(V\) が \(K\) 上のベクトル空間で, \(W_i\)（\(1\leq i\leq r\)）は \(V\) の部分空間とする.
+\[
+V=W_1+W_2+\cdots+W_r
+\]
+が成り立つとき, 次の (1) と (2) は同値である.
+\begin{enumerate}
+\item[(1)]
+\[
+V=W_1\oplus W_2\oplus\cdots\oplus W_r.
+\]
+\item[(2)]
+\[
+(W_1+W_2+\cdots+W_{k-1})\cap W_k=\{\bm{0}\}
+\quad
+(2\leq k\leq r).
+\]
+\end{enumerate}
+\end{thm}
+
+\begin{proof}
+\((1)\Rightarrow(2)\)
+(2) の等式が, 少なくとも \(1\) つの \(k\)（\(2\leq k\leq r\)）では成り立たないと仮定する. すなわち, ある \(k\)（\(2\leq k\leq r\)）で
+\[
+(W_1+\cdots+W_{k-1})\cap W_k\neq\{\bm{0}\}
+\]
+と仮定すると,
+\[
+(W_1+\cdots+W_{k-1})\cap W_k
+\]
+に属する \(\bm{w}_k\neq\bm{0}\) が存在する. \(\bm{w}_k\) は \(\bm{w}_i\in W_i\)（\(1\leq i\leq k-1\)）を用いて
+\[
+\bm{w}_1+\cdots+\bm{w}_{k-1}=\bm{w}_k
+\]
+と表される. よって
+\[
+\bm{0}=\bm{w}_1+\cdots+\bm{w}_{k-1}-\bm{w}_k
+\]
+となり, \(\bm{w}_k\neq\bm{0}\) であるから, \(V\) のベクトル \(\bm{0}\) を \(W_1,\ldots,W_r\) のベクトルを用いた表し方の一意性に矛盾する.
+
+\((2)\Rightarrow(1)\)
+\(V\) のベクトル \(\bm{v}\) が
+\[
+\begin{aligned}
+\bm{v}
+&=\bm{w}_1+\cdots+\bm{w}_{r-1}+\bm{w}_r
+\quad
+(\bm{w}_i\in W_i)\\
+&=\bm{w}'_1+\cdots+\bm{w}'_{r-1}+\bm{w}'_r
+\quad
+(\bm{w}'_i\in W_i)
+\end{aligned}
+\]
+と \(2\) 通りに表されるとする. \(2\) つのベクトルの差をとると
+\[
+(\bm{w}_1-\bm{w}'_1)+\cdots+(\bm{w}_{r-1}-\bm{w}'_{r-1})
+=
+\bm{w}'_r-\bm{w}_r
+\in(W_1+\cdots+W_{r-1})\cap W_r
+\]
+である. (2) の条件を \(k=r\) のときに用いると
+\[
+(W_1+\cdots+W_{r-1})\cap W_r=\{\bm{0}\}
+\]
+であるから
+\[
+\bm{w}_r=\bm{w}'_r
+\]
+がわかる. これを繰り返して
+\[
+\bm{w}_1=\bm{w}'_1,\ldots,\bm{w}_{r-1}=\bm{w}'_{r-1}
+\]
+が示される.
+\end{proof}
+
+\begin{thm}[定理7.2.4：直和分解の線形変換による表現]
+\(I\)（\(=I_V\)）は \(V\) の単位変換, \(I_i\)（\(1\leq i\leq r\)）は \(V\) の線形変換（\(I_i\neq0\)）で
+\begin{enumerate}
+\item[(i)]
+\[
+I=I_1+I_2+\cdots+I_r,
+\]
+\item[(ii)]
+\[
+I_iI_j=0
+\quad(i\neq j),
+\]
+\item[(iii)]
+\[
+I_iI_i=I_i
+\quad(1\leq i\leq r)
+\]
+\end{enumerate}
+の \(3\) 条件を満たすとすると, \(V\) は
+\[
+V=I_1(V)\oplus I_2(V)\oplus\cdots\oplus I_r(V)
+\]
+と \(I_i(V)\) の直和で表される.
+\end{thm}
+
+\begin{proof}
+定理7.2.3により
+\[
+\bigl(I_1(V)+\cdots+I_{k-1}(V)\bigr)\cap I_k(V)=\{\bm{0}\}
+\quad
+(2\leq k\leq r)
+\]
+を示せばよい.
+\[
+\bm{w}\in\bigl(I_1(V)+\cdots+I_{k-1}(V)\bigr)\cap I_k(V)
+\]
+と仮定する. このとき
+\[
+\bm{w}
+=
+I_1(\bm{v}_1)+\cdots+I_{k-1}(\bm{v}_{k-1})
+=
+I_k(\bm{v}_k)
+\quad
+(\bm{v}_i\in V)
+\]
+と表されるから, 条件 (ii) を用いると
+\[
+I_k(\bm{w})
+=
+I_k(I_1(\bm{v}_1))+\cdots+I_k(I_{k-1}(\bm{v}_{k-1}))
+=
+\bm{0}+\cdots+\bm{0}
+=
+\bm{0}
+\]
+がわかる. 一方,
+\[
+\bm{w}=I_k(\bm{v}_k)
+\]
+と考えれば, 条件 (iii) を用いて
+\[
+I_k(\bm{w})
+=
+I_kI_k(\bm{v}_k)
+=
+I_k(\bm{v}_k)
+=
+\bm{w}
+\]
+がわかり, よって
+\[
+\bm{w}=I_k(\bm{w})=\bm{0}
+\]
+を得る.
+\end{proof}
+
+\begin{defn}[線形変換 \(T\) の最小多項式]
+ベクトル空間 \(V\) の線形変換 \(T\) に対して, 多項式 \(p_T(t)\) が
+\[
+p_T(T)=0
+\]
+を満たす多項式 \(f(t)\) の中で, 次数が最小で, 最高次の係数が \(1\) となるときに, 線形変換 \(T\) の最小多項式という.
+\end{defn}
+
+\begin{defn}[正方行列 \(A\) の最小多項式]
+\(A\) が正方行列であるとき, 多項式 \(p_A(t)\) が
+\[
+p_A(A)=0
+\]
+を満たす多項式の中で, 次数が最小で, 最高次の係数が \(1\) となるときに, 正方行列 \(A\) の最小多項式という.
+\end{defn}
+
+\begin{thm}[定理7.2.5：行列の最小多項式の存在]
+\begin{enumerate}
+\item[(1)] 正方行列 \(A\) に対して, 最小多項式 \(p_A(t)\) は常に存在する.
+\item[(2)] 最小多項式 \(p_A(t)\) は全ての固有値を根にもち, 固有多項式 \(g_A(t)\) を割り切る.
+\end{enumerate}
+\end{thm}
+
+\begin{proof}
+(1)
+\(A\) が与えられたとき, 集合 \(J\) を
+\[
+J=\{f(t)\in K[t]\mid f(A)=0\}
+\]
+と定義すると, \(J\) は イデアル である. 実際, \(f_1(t),f_2(t)\in J\) ならば
+\[
+f_1(A)=f_2(A)=0
+\]
+であるから, 任意の多項式 \(g_1(t),g_2(t)\) と定数 \(c\) に対して
+\[
+g_1(A)f_1(A)+g_2(A)f_2(A)=0,
+\quad
+cf_1(A)=0
+\]
+となる. よって, \(J\) は イデアル である. 従って, 定理7.2.1により,
+\[
+p_0(t)\in J
+\]
+が存在して
+\[
+J=p_0(t)K[t]
+\]
+と表される. この \(p_0(t)\) の最高次の係数を \(1\) にとったものを \(p_A(t)\) とおくと, \(p_A(t)\) が最小多項式で
+\[
+J=p_A(t)K[t]
+\]
+である.
+
+(2)
+\(\lambda\) を \(A\) の固有値, \(\bm{u}\neq\bm{0}\) を \(\lambda\) に属する固有ベクトルとすると
+\[
+A\bm{u}=\lambda \bm{u}
+\]
+である.
+\[
+p_A(A)\bm{u}=p_A(\lambda)\bm{u}
+\]
+で, \(p_A(A)=0\) となるから
+\[
+p_A(\lambda)=0
+\]
+である. 固有多項式 \(g_A(t)\) は, 定理5.3.2（Cayley--Hamilton theorem）により
+\[
+g_A(A)=0
+\]
+を満たすから
+\[
+g_A(t)\in J=p_A(t)K[t]
+\]
+となり, 最小多項式 \(p_A(t)\) は固有多項式 \(g_A(t)\) を割り切る.
+\end{proof}
+
+\begin{eg}[例題7.2.1]
+\[
+A=
+\begin{pmatrix}
+2&1&0\\
+0&2&0\\
+0&0&2
+\end{pmatrix}
+\]
+の最小多項式 \(p_A(t)\) を求めよ.
+
+\textbf{解答}
+
+\(g_A(t)\) を \(A\) の固有多項式とする. 定理7.2.5 (2) により, \(p_A(t)\) は
+\[
+g_A(t)=(t-2)^3
+\]
+を割り切るから, \(p_A(t)\) は
+\[
+t-2,\quad
+(t-2)^2,\quad
+(t-2)^3
+\]
+のいずれかである. 実際, \(A\) を代入して計算すると
+\[
+\begin{aligned}
+A-2E
+&=
+\begin{pmatrix}
+2&1&0\\
+0&2&0\\
+0&0&2
+\end{pmatrix}
+-2E\\
+&=
+\begin{pmatrix}
+0&1&0\\
+0&0&0\\
+0&0&0
+\end{pmatrix}
+\neq0
+\end{aligned}
+\]
+で,
+\[
+(A-2E)^2=0
+\]
+である. よって, 上の多項式のうち次数が最小な多項式 \(p_A(t)\) は \((t-2)^2\) に等しい. すなわち
+\[
+p_A(t)=(t-2)^2
+\]
+である.
+\end{eg}
+
+次のように, 線形変換とその表現行列の最小多項式は一致する.
+
+\begin{thm}[定理7.2.6：線形変換と行列の最小多項式]
+\(T\) を \(V\) の線形変換とし, \(A\) を \(T\) の表現行列とすると, 次が成り立つ.
+\begin{enumerate}
+\item[(1)] \(T\) の最小多項式と \(A\) の最小多項式は一致する.
+\item[(2)] 線形変換 \(T\) に対して, \(T\) の最小多項式 \(p_T(t)\) は常に存在する.
+\item[(3)] 最小多項式 \(p_T(t)\) は固有多項式 \(g_T(t)\) を割り切り, 全ての固有値を根にもつ.
+\end{enumerate}
+\end{thm}
+
+\begin{proof}
+定理7.1.6と定理7.2.5によりわかる.
+\end{proof}
+
+\begin{thm}[定理7.2.7：交換可能な線形変換]
+\begin{enumerate}
+\item[(1)] \(\mathbb{C}\) 上のベクトル空間 \(V\) の線形変換 \(T_1,T_2\) が交換可能ならば, \(T_1\) と \(T_2\) は共通の固有ベクトルをもつ.
+\item[(2)] \(A,B\) が交換可能な複素正方行列ならば, 線形変換 \(T_A,T_B\) は共通の固有ベクトルをもつ.
+\end{enumerate}
+\end{thm}
+
+\begin{proof}
+(1)
+\(T_1,T_2\) の固有多項式は, \(\mathbb{C}\) で必ず解をもつ. \(\lambda\) を \(T_1\) の固有値とし, 固有値 \(\lambda\) の \(T_1\) の固有空間を
+\[
+W(\lambda;T_1)
+\]
+とする. \(T_1\) と \(T_2\) は交換可能であるから, \(T_2\) は \(W(\lambda;T_1)\) を \(W(\lambda;T_1)\) に写像する. 従って, \(T_2\) が \(W(\lambda;T_1)\) において, 固有値 \(\mu\) と固有ベクトル \(\bm{u}\) をもつならば
+\[
+T_1(\bm{u})=\lambda \bm{u},
+\quad
+T_2(\bm{u})=\mu \bm{u}
+\]
+となるから, \(\bm{u}\) は \(T_1,T_2\) の共通の固有ベクトルである.
+
+(2)
+(1) を行列の言葉に言い換えただけである.
+\end{proof}
+
+\begin{defn}[線形変換の直和]
+ベクトル空間 \(V\) が, 部分空間 \(W_i\) の直和で
+\[
+V=W_1\oplus\cdots\oplus W_r
+\]
+と表されているとする. \(V\) のベクトル \(\bm{v}\) は \(\bm{w}_i\in W_i\) の和で \(1\) 通りに表されるから, \(1\leq i\leq r\) に対して, \(T_i\) が \(W_i\) の線形変換ならば
+\[
+\bm{v}=\bm{w}_1+\cdots+\bm{w}_r
+\]
+に対して
+\[
+T(\bm{v})=T_1(\bm{w}_1)+\cdots+T_r(\bm{w}_r)
+\]
+と定義し, \(\{T_1,\ldots,T_r\}\) の直和という. このように定義した \(V\) の線形変換 \(T\) を
+\[
+T=T_1\oplus\cdots\oplus T_r
+\]
+と表す.
+\end{defn}
+
+\begin{defn}[行列の直和]
+\(A\) が正方行列 \(A_1,\ldots,A_r\) の直和であるとは
+\[
+A=
+\begin{pmatrix}
+A_1&&O\\
+&\ddots&\\
+O&&A_r
+\end{pmatrix}
+\]
+のときにいう. この行列を
+\[
+A=A_1\oplus\cdots\oplus A_r
+\]
+と表す.
+\end{defn}
+
+\begin{defn}[補空間]
+ベクトル空間 \(V\) の部分空間 \(W\) が与えられたとき,
+\[
+V=W\oplus W'
+\]
+を満たす \(W'\) を \(W\) の補空間という. 補空間は一意的には定まらない.
+\end{defn}
+
+\subsection*{問題7.2}
+
+\begin{enumerate}
+\item \(V=\mathbb{R}^3\) の部分空間 \(W_1,W_2\) は,
+\[
+V=W_1\oplus W_2
+\]
+を満たすことを示せ.
+\begin{enumerate}
+\item[(1)]
+\[
+W_1=
+\left\{
+a
+\begin{pmatrix}
+1\\
+1\\
+-1
+\end{pmatrix}
++
+b
+\begin{pmatrix}
+0\\
+1\\
+1
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+a,b\in\mathbb{R}
+\right\},
+\quad
+W_2=
+\left\{
+c
+\begin{pmatrix}
+0\\
+1\\
+0
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+c\in\mathbb{R}
+\right\}.
+\]
+
+\item[(2)]
+\[
+W_1=
+\left\{
+a
+\begin{pmatrix}
+1\\
+0\\
+-1
+\end{pmatrix}
++
+b
+\begin{pmatrix}
+0\\
+1\\
+-1
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+a,b\in\mathbb{R}
+\right\},
+\quad
+W_2=
+\left\{
+c
+\begin{pmatrix}
+1\\
+2\\
+0
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+c\in\mathbb{R}
+\right\}.
+\]
+
+\item[(3)]
+\[
+\bm{x}=
+\begin{pmatrix}
+x_1\\
+x_2\\
+x_3
+\end{pmatrix}
+\]
+に対して
+\[
+T(\bm{x})=x_1-x_2+2x_3
+\]
+と定義するとき
+\[
+W_1=\operatorname{Ker}(T),
+\quad
+W_2=
+\left\{
+a
+\begin{pmatrix}
+1\\
+0\\
+0
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+a\in\mathbb{R}
+\right\}.
+\]
+\end{enumerate}
+
+\item \(V\) をベクトル空間, \(W_1,W_2\) が \(V\) の部分空間とする.
+\[
+V=W_1+W_2
+=
+\{\bm{w}_1+\bm{w}_2\mid \bm{w}_1\in W_1,\ \bm{w}_2\in W_2\}
+\]
+のとき,
+\[
+U=W_1\cap W_2
+\]
+とおくと,
+\[
+V/U=W_1/U\oplus W_2/U
+\]
+が成り立つことを示せ.
+
+\item \(B\) を \(k\) 次正方行列, \(C\) を \(l\) 次正方行列とする.
+\[
+A=B\oplus C
+=
+\begin{pmatrix}
+B&O\\
+O&C
+\end{pmatrix}
+\]
+とおくと, \(p_A(t)\) は \(p_B(t)\) と \(p_C(t)\) の最小公倍多項式であることを示せ.
+
+\item 次の行列の最小多項式を求めよ.
+\begin{enumerate}
+\item[(1)]
+\[
+A=
+\begin{pmatrix}
+2&1&0&0&0\\
+0&2&1&0&0\\
+0&0&2&0&0\\
+0&0&0&2&0\\
+0&0&0&0&5
+\end{pmatrix}.
+\]
+
+\item[(2)]
+\[
+A=
+\begin{pmatrix}
+3&1&0&0&0\\
+0&3&1&0&0\\
+0&0&3&0&0\\
+0&0&0&3&0\\
+0&0&0&0&3
+\end{pmatrix}.
+\]
+\end{enumerate}
+
+\item 対角化可能な線形変換 \(T_1,T_2\) が交換可能ならば, \(T_1\) と \(T_2\) には表現行列がともに対角行列となるような共通の基底がとれることを示せ.
+\end{enumerate}
+
+
+\newpage
+
+
+
+\section{ジョルダン標準形  \cite[8章]{M}}
+
+\subsection{準固有空間  \cite[8.1節]{M}}
+
+\(\S5.3\) で述べた固有空間を拡張して, 準固有空間を定義しよう. 以下では,
+\[
+K=\mathbb{C},
+\]
+すなわち, \(V\) は複素数体 \(\mathbb{C}\) 上のベクトル空間とする.
+
+\begin{defn}[固有値 \(\lambda\) に属する準固有空間]
+\(T\) を \(V\) の線形変換, \(\lambda\) を \(T\) の固有値とする. このとき
+\[
+\begin{aligned}
+\widetilde{W}(\lambda)
+=
+\widetilde{W}(\lambda;T)
+&=
+\left\{
+\bm{v}\in V
+\mathrel{}\middle|\mathrel{}
+(T-\lambda I)^m(\bm{v})=\bm{0},\ 
+m\text{ は正の整数}
+\right\}
+\end{aligned}
+\]
+とおき, \(T\) の固有値 \(\lambda\) に属する準固有空間という. \(T\) の固有値 \(\lambda\) に属する固有空間は, 準固有空間の部分空間である.
+\end{defn}
+
+\begin{eg}[例1]
+\[
+A=
+\begin{pmatrix}
+2&1&4\\
+0&2&-3\\
+0&0&2
+\end{pmatrix}
+\]
+とし, \(\mathbb{C}^3\) の線形変換 \(T_A\) を考える.
+\[
+g_A(t)=(t-2)^3
+\]
+であるから, \(A\) の固有値は \(1\) 個で,
+\[
+\lambda=2
+\]
+となる. このとき
+\[
+\begin{aligned}
+\left(
+\begin{pmatrix}
+2&1&4\\
+0&2&-3\\
+0&0&2
+\end{pmatrix}
+-
+\begin{pmatrix}
+2&0&0\\
+0&2&0\\
+0&0&2
+\end{pmatrix}
+\right)^3
+&=
+\begin{pmatrix}
+0&1&4\\
+0&0&-3\\
+0&0&0
+\end{pmatrix}^{3}\\
+&=0
+\end{aligned}
+\]
+である. 従って
+\[
+(T_A-2E)^3(\bm{a})=\bm{0}
+\quad
+(\bm{a}\in\mathbb{C}^3)
+\]
+となるので,
+\[
+\widetilde{W}(2;T_A)=\mathbb{C}^3
+\]
+である.
+\end{eg}
+
+
+\begin{thm}[定理8.1.1（直和分解と準固有空間）]
+$T$ を $V$ の線形変換とし, $\{\lambda_1,\lambda_2,\ldots,\lambda_r\}$ を $T$ の全ての相異なる固有値の集合とする.
+\begin{enumerate}
+\item[(1)] $T$ は準固有空間 $\widetilde{W}(\lambda_i;T)$ を $\widetilde{W}(\lambda_i;T)$ に写像する.
+\item[(2)]
+\[
+V=\widetilde{W}(\lambda_1;T)\oplus\widetilde{W}(\lambda_2;T)\oplus\cdots\oplus\widetilde{W}(\lambda_r;T).
+\]
+\end{enumerate}
+\end{thm}
+
+\begin{proof}
+\begin{enumerate}
+\item[(1)] $m$ を自然数とすると, $T$ と $(T-\lambda_iI)^m$ は可換であるから, $T$ は $\widetilde{W}(\lambda_i;T)$ を $\widetilde{W}(\lambda_i;T)$ に写像する.
+
+\item[(2)] $T$ の固有多項式を
+\[
+g_T(t)=\prod_{i=1}^{r}(t-\lambda_i)^{m_i}
+\]
+とする.
+\[
+f_i(t)=\prod_{j\neq i}(t-\lambda_j)^{m_j}
+\]
+とおくと $f_1,\ldots,f_r$ は共通因子をもたないから, 定理7.2.2により, 多項式 $g_i(t)$ で
+\[
+\tag{$*$}
+1=g_1(t)f_1(t)+g_2(t)f_2(t)+\cdots+g_r(t)f_r(t)
+\]
+となるものが存在する.
+\[
+I_i=g_i(T)f_i(T)
+\]
+とおくと $(*)$ より単位写像 $I$ は
+\[
+I=I_1+I_2+\cdots+I_r
+\]
+と分解される.
+
+この $I_i$ が定理7.2.4の3条件を満たすことを示す.
+
+(i) は上で示した.
+
+(ii) を示す. $i\neq j$ ならば $g_T(t)\mid f_i(t)f_j(t)$ であるから, $f_i(T)f_j(T)=0$ で, よって $I_iI_j=0$ がわかる.
+
+(iii) を示す. $I=I_1+I_2+\cdots+I_r$ となるから
+\[
+I_i=I_i(I_1+I_2+\cdots+I_r)=I_i^2
+\]
+であり, (iii) が示された. 従って
+\[
+V=I_1(V)\oplus I_2(V)\oplus\cdots\oplus I_r(V)
+\]
+が成り立ち, $V$ は $I_i(V)$ の直和であることが示される. よって, (2) を示すには,
+\[
+I_i(V)=\widetilde{W}(\lambda_i;T)
+\]
+を示せばよい.
+
+任意に $\bm{v}\in V$ をとると, $g_T(T)(\bm{v})=\bm{0}$ である. $\bm{w}=I_i(\bm{v})\in I_i(V)$ とおくと
+\[
+\begin{aligned}
+(T-\lambda_iI)^{m_i}(\bm{w})
+&=(T-\lambda_iI)^{m_i}g_i(T)f_i(T)(\bm{v})\\
+&=g_i(T)g_T(T)(\bm{v})=\bm{0}
+\end{aligned}
+\]
+となる. よって, $\bm{w}\in\widetilde{W}(\lambda_i;T)$ が成り立つ.
+
+逆に, $\bm{w}_i\in\widetilde{W}(\lambda_i;T)$ と仮定する. $t-\lambda_i$ と $g_i(t)f_i(t)$ が共通因子をもてば, $(*)$ により, $1$ が $t-\lambda_i$ で割り切れることになり, 矛盾である. よって, $t-\lambda_i$ と $g_i(t)f_i(t)$ は共通因子をもたない. ここで再び, 定理7.2.2を用いると, 多項式 $p(t),q(t)$ で
+\[
+p(t)(t-\lambda_i)^{m_i}+q(t)g_i(t)f_i(t)=1
+\]
+を満たすものが存在する. 従って
+\[
+p(T)(T-\lambda_iI)^{m_i}+q(T)g_i(T)f_i(T)=I
+\]
+となる. 上式の両辺を, ベクトル $\bm{w}_i$ に施す. $m_i$ を十分大きくとると
+\[
+(T-\lambda_iI)^{m_i}(\bm{w}_i)=\bm{0}
+\]
+となる. また, $I_i=g_i(T)f_i(T)$ は $T$ と可換で
+\[
+\begin{aligned}
+\bm{w}_i
+&=q(T)g_i(T)f_i(T)(\bm{w}_i)\\
+&=q(T)I_i(\bm{w}_i)\\
+&=I_i(q(T)(\bm{w}_i))\in I_i(V)
+\end{aligned}
+\]
+となり, $\widetilde{W}(\lambda_i;T)=I_i(V)$ がわかる.
+\end{enumerate}
+\end{proof}
+
+\paragraph{固有値の重複度}
+正方行列 $A$ の異なる固有値を $\lambda_1,\lambda_2,\ldots,\lambda_r$ とする. $A$ の固有多項式が
+\[
+g_A(t)=\prod_{k=1}^{r}(t-\lambda_k)^{m_k}
+\]
+であるときに, $m_k$ を固有値 $\lambda_k$ の重複度という.
+
+定理8.1.1の証明は抽象的であるから, 具体的に $T_A$ について例をあげる.
+
+\begin{eg}[例題8.1.1]
+\[
+A=
+\begin{pmatrix}
+1&-2&0\\
+0&1&0\\
+-2&-4&3
+\end{pmatrix}
+\]
+とし, $\mathbb{C}^3$ の線形変換 $T_A$ を考える.
+\begin{enumerate}
+\item[(1)] $T_A$ の固有多項式は
+\[
+g_A(t)=(t-3)(t-1)^2
+\]
+で, 固有値は $\lambda_1=3$, $\lambda_2=1$ であることを示し, それぞれの重複度 $m_1$ と $m_2$ を求めよ.
+\item[(2)]
+\[
+f_1(t)=(t-1)^2,\quad f_2(t)=t-3
+\]
+とおくとき
+\[
+g_1(t)f_1(t)+g_2(t)f_2(t)=1
+\]
+を満たす $g_1(t),g_2(t)$ を1組求めよ.
+\item[(3)] $\widetilde{W}(3;T_A)$, $\widetilde{W}(1;T_A)$ を求め,
+\[
+\mathbb{C}^3=\widetilde{W}(3;T_A)\oplus\widetilde{W}(1;T_A)
+\]
+を示せ.
+\end{enumerate}
+\end{eg}
+
+\paragraph{解答}
+\begin{enumerate}
+\item[(1)] 線形変換 $T_A$ の固有多項式を計算すると
+\[
+g_A(t)=\lvert tE-A\rvert=(t-3)(t-1)^2
+\]
+であるから, $T_A$ の固有値は $\lambda_1=3$, $\lambda_2=1$ である. また, 固有値 $\lambda_1=3$ の重複度は $m_1=1$ であり, 固有値 $\lambda_2=1$ の重複度は $m_2=2$ である.
+
+\item[(2)]
+\[
+f_i(t)=\prod_{j\neq i}(t-\lambda_j)^{m_j}
+\]
+とおくと
+\[
+f_1(t)=(t-1)^2,\quad f_2(t)=t-3
+\]
+である. 関係式
+\[
+\tag{$*$}
+g_1(t)f_1(t)+g_2(t)f_2(t)=1
+\]
+を満たす多項式 $g_1(t),g_2(t)$ を計算する. これにはユークリッドの互除法を用いる. すなわち, $f_1(t)$ は2次の多項式で, $f_2(t)$ は1次の多項式であるから, $f_1(t)$ を $f_2(t)$ で割ると
+\[
+f_1(t)-(t+1)f_2(t)=4
+\]
+となる. 従って, 両辺を $4$ で割り
+\[
+g_1(t)=\frac14,\quad
+g_2(t)=-\frac14(t+1)
+\]
+とおくと, この $g_1(t),g_2(t)$ は $(*)$ を満たす. もし $f_1(t)$ を $f_2(t)$ で割った余りが定数（ここでは $4$）でなければ, さらに割り算を繰り返す必要がある（問題8.1--4）.
+
+\item[(3)] $g_1(t)f_1(t)=\frac14(t-1)^2$ に対応する行列は, $t$ に $A$ を代入して
+\[
+\begin{aligned}
+g_1(A)f_1(A)
+&=\frac14
+\begin{pmatrix}
+0&-2&0\\
+0&0&0\\
+-2&-4&2
+\end{pmatrix}^{2}\\
+&=
+\begin{pmatrix}
+0&0&0\\
+0&0&0\\
+-1&-1&1
+\end{pmatrix}
+\end{aligned}
+\]
+となる. 従って
+\[
+\begin{aligned}
+\widetilde{W}(3;T_A)
+&=
+\left\{
+g_1(A)f_1(A)
+\begin{pmatrix}
+a\\
+b\\
+c
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+a,b,c\in\mathbb{C}
+\right\}\\
+&=
+\left\{
+\begin{pmatrix}
+0&0&0\\
+0&0&0\\
+-1&-1&1
+\end{pmatrix}
+\begin{pmatrix}
+a\\
+b\\
+c
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+a,b,c\in\mathbb{C}
+\right\}\\
+&=
+\left\{
+\begin{pmatrix}
+0\\
+0\\
+-a-b+c
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+a,b,c\in\mathbb{C}
+\right\}\\
+&=
+\left\{
+\begin{pmatrix}
+0\\
+0\\
+a
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+a\in\mathbb{C}
+\right\}
+\end{aligned}
+\]
+となり, これは1次元ベクトル空間である.
+
+同様に,
+\[
+g_2(t)f_2(t)=-\frac14(t+1)(t-3)
+\]
+の $t$ に $A$ を代入すると
+\[
+g_2(A)f_2(A)
+=
+-\frac14(A+E)(A-3E)
+=
+\begin{pmatrix}
+1&0&0\\
+0&1&0\\
+1&1&0
+\end{pmatrix}
+\]
+である. よって
+\[
+\begin{aligned}
+\widetilde{W}(1;T_A)
+&=
+\left\{
+\begin{pmatrix}
+1&0&0\\
+0&1&0\\
+1&1&0
+\end{pmatrix}
+\begin{pmatrix}
+a\\
+b\\
+c
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+a,b,c\in\mathbb{C}
+\right\}\\
+&=
+\left\{
+\begin{pmatrix}
+a\\
+b\\
+a+b
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+a,b\in\mathbb{C}
+\right\}
+\end{aligned}
+\]
+となる. この空間は
+\[
+\begin{pmatrix}
+a\\
+b\\
+a+b
+\end{pmatrix}
+=
+a
+\begin{pmatrix}
+1\\
+0\\
+1
+\end{pmatrix}
++
+b
+\begin{pmatrix}
+0\\
+1\\
+1
+\end{pmatrix}
+\]
+となるから, $\widetilde{W}(1;T_A)$ は2次元ベクトル空間である. よって, 定理8.1.1(2)により, $\mathbb{C}^3$ は $\widetilde{W}(3;T_A)$ と $\widetilde{W}(1;T_A)$ の直和になる.
+
+この直和を具体的に確かめてみよう. すなわち, $\mathbb{C}^3$ の任意のベクトルは $\widetilde{W}(3;T_A)$ と $\widetilde{W}(1;T_A)$ のベクトルの和で一意的に
+\[
+\begin{pmatrix}
+a\\
+b\\
+c
+\end{pmatrix}
+=
+\begin{pmatrix}
+0\\
+0\\
+-a-b+c
+\end{pmatrix}
++
+\begin{pmatrix}
+a\\
+b\\
+a+b
+\end{pmatrix}
+\]
+と表される. よって, $\mathbb{C}^3$ は $\widetilde{W}(3;T_A)$ と $\widetilde{W}(1;T_A)$ の直和であることが直接にも確かめられる.
+\end{enumerate}
+
+次の\S\,8.2のJordan標準形の結果を用いると, $T_A$ の各固有値 $\lambda_i$ の重複度 $m_i$ がわかっているならば, $\widetilde{W}(\lambda_i;T_A)$ は $(A-\lambda_iE)^{m_i}$ の解空間に直ちになる. よって, その解空間を計算しても準固有空間 $\widetilde{W}(\lambda_i;T_A)$ が求まる. ただし, 準固有空間はJordan標準形を求めるために定義したものだから, 準固有空間を計算するためにJordan標準形を用いるのは, いささか本末転倒であるが.
+
+\paragraph{問題8.1}
+
+\begin{enumerate}
+\item
+\[
+A=
+\begin{pmatrix}
+1&0&-2\\
+2&1&-1\\
+0&0&1
+\end{pmatrix}
+\]
+に対して, 固有値 $\lambda$ を求めよ. また, それぞれの $\lambda$ について準固有空間 $\widetilde{W}(\lambda;T_A)$ を求めよ.
+
+\item
+\[
+A=
+\begin{pmatrix}
+2&0&0\\
+2&5&3\\
+0&-6&-4
+\end{pmatrix}
+\]
+とする. $A$ の固有値は $2,-1$ であることを示せ. また,
+\[
+\widetilde{W}(2;T_A),\quad
+\widetilde{W}(-1;T_A)
+\]
+を求めよ.
+
+\item
+\[
+A=
+\begin{pmatrix}
+4&0&6\\
+0&1&0\\
+-3&0&-5
+\end{pmatrix}
+\]
+とする. $A$ の固有値は $1,-2$ であることを示せ. また,
+\[
+\widetilde{W}(1;T_A),\quad
+\widetilde{W}(-2;T_A)
+\]
+を求めよ.
+
+\item
+\[
+A=
+\begin{pmatrix}
+2&2&1&0\\
+0&5&3&0\\
+0&-6&-4&0\\
+0&0&0&-1
+\end{pmatrix}
+\]
+とし, $\mathbb{C}^4$ の線形変換 $T_A$ を考える.
+\begin{enumerate}
+\item[(1)] $T_A$ の固有多項式は
+\[
+g_A(t)=(t-2)^2(t+1)^2
+\]
+で, 固有値は $\lambda_1=2$ と $\lambda_2=-1$ であることを示し, それぞれの固有値の重複度を求めよ.
+\item[(2)]
+\[
+f_1(t)=(t+1)^2,\quad f_2(t)=(t-2)^2
+\]
+のとき,
+\[
+g_1(t)f_1(t)+g_2(t)f_2(t)=1
+\]
+を満たす $g_1(t),g_2(t)$ を1組求めよ.
+\item[(3)]
+\[
+\widetilde{W}(\lambda_1;T_A)
+=
+\widetilde{W}(2;T_A),
+\quad
+\widetilde{W}(\lambda_2;T_A)
+=
+\widetilde{W}(-1;T_A)
+\]
+を求めよ.
+\end{enumerate}
+
+\item $A_1,\ldots,A_k$ を正方行列とし,
+\[
+A=A_1\oplus\cdots\oplus A_k
+\]
+とおく. ここで, $A_i$ の最小多項式 $\{p_{A_i}(t)\}$ の任意の2つは共通因子をもたないと仮定する. 行列 $B_i$ がそれぞれ $f_i(t)$ を用いて, $A_i$ の多項式で
+\[
+B_i=f_i(A_i)
+\]
+と表されるならば, $B_i$ の直和
+\[
+B=B_1\oplus\cdots\oplus B_k
+\]
+も $A$ の多項式で表されることを示せ.
+\end{enumerate}
+
+\subsection{Jordan標準形  \cite[8.2節]{M} }
+
+全ての線形変換が対角化可能ならば都合がよいが, それは大抵の場合に不可能である. しかし, 複素数体 $\mathbb{C}$ の範囲では, 任意の線形変換はJordan標準形と呼ばれる, わかりやすい形の行列を表現行列としてもつ. この非常に有用なJordan標準形を求めるのが, この節の目的である.
+
+\paragraph{Jordan細胞}
+複素数 $\lambda$ を固有値にもつ, 次のように表される $n$ 次正方行列 $J(\lambda;n)$ を $\lambda$ を固有値とする（$n$ 次の）Jordan細胞という.
+\[
+J(\lambda;n)
+=
+\begin{pmatrix}
+\lambda&1&&&0\\
+&\lambda&1&&\\
+&&\ddots&\ddots&\\
+&&&\lambda&1\\
+0&&&&\lambda
+\end{pmatrix}_{n},
+\quad
+J(\lambda;1)=[\lambda].
+\]
+
+\paragraph{Jordan標準形}
+Jordan細胞の直和で表される行列をJordan標準形という. また, 線形変換 $T$ の表現行列がJordan標準形になるとき, その表現行列を $T$ のJordan標準形という.
+
+\paragraph{例1}
+\[
+A=
+\begin{pmatrix}
+2i&1&0&0&0\\
+0&2i&0&0&0\\
+0&0&2i&1&0\\
+0&0&0&2i&0\\
+0&0&0&0&3
+\end{pmatrix}
+\]
+はJordan標準形である. このJordan標準形 $A$ はJordan細胞を用いると, 次のように表される.
+\[
+A=J(2i;2)\oplus J(2i;2)\oplus J(3;1).
+\]
+
+まず, べき零変換から始めよう.
+
+\begin{thm}[定理8.2.1（べき零変換の特徴付け）]
+次の3条件は同値である.
+\begin{enumerate}
+\item[(1)] $T$ はべき零変換である.
+\item[(2)] 表現行列 $A$ はべき零行列である.
+\item[(3)] 表現行列 $A$ の固有値は全て $0$ である.
+\end{enumerate}
+\end{thm}
+
+\begin{proof}
+$(1)\Longleftrightarrow(2)$ は, 線形変換に対して, その表現行列を考えれば明らかである.
+
+$(1)\Longrightarrow(3)$
+$T$ の固有値を $\lambda$ とする. 固有値の定義により
+\[
+T(\bm{u})=\lambda \bm{u}
+\]
+を満たすベクトル $\bm{u}\neq\bm{0}$ が存在する. $T^k=0$ ならば
+\[
+T^k\bm{u}=\lambda^k\bm{u}=\bm{0}
+\]
+となるから, $\lambda=0$ がわかる.
+
+$(3)\Longrightarrow(2)$
+$n$ を $A$ の次数とする. $g_A(t)=0$ の根は全て $0$ なので,
+\[
+g_A(t)=t^n
+\]
+である. 定理5.3.2（Cayley--Hamiltonの定理）により
+\[
+A^n=0
+\]
+となる. よって, $A$ はべき零行列である.
+\end{proof}
+
+べき零変換のJordan標準形を調べよう.
+
+\begin{thm}[定理8.2.2（べき零変換のJordan標準形）]
+ベクトル空間 $V$ のべき零変換 $T$ は, $V$ の適当な基底をとると, 表現行列が $0$ を固有値とするJordan細胞 $J(0;k_i)$ のいくつかの行列の直和によって
+\[
+B
+=
+J(0;k_1)\oplus\cdots\oplus J(0;k_r),
+\quad
+J(0;k_i)
+=
+\begin{pmatrix}
+0&1&&&0\\
+&0&1&&\\
+&&\ddots&\ddots&\\
+&&&0&1\\
+0&&&&0
+\end{pmatrix}_{k_i}
+\]
+と表される. 行列 $B$ はJordan細胞の順序を除き一意的に定まる. この行列 $B$ をべき零変換 $T$ のJordan標準形という.
+\end{thm}
+
+\paragraph{考え方}
+この定理は, 問題5.2--4の一般化である. $T^m=0$, $T^{m-1}\neq0$ としたとき, $\bm{u}\in V$ を $T^{m-1}(\bm{u})\neq\bm{0}$ となるようにとると, 部分空間
+\[
+\langle T^{m-1}(\bm{u}),\ldots,T(\bm{u}),\bm{u}\rangle
+\]
+は $T$ によって自分自身にうつされ, この部分空間において, $T$ の表現行列は $J(0;m)$ となる. これが基本的な考え方である. $V$ 全体での表現行列を求めるには, さらに, ベクトルを追加してとらなければならないが, 取り方は証明で述べる.
+
+\begin{proof}
+（存在）$T=0$ ならば, 表現行列は零行列 $0$ でJordan標準形である. $T\neq0$ とし, $m\geq2$ に対して,
+\[
+T^m=0,\quad T^{m-1}\neq0
+\]
+であると仮定する. 整数 $k\ (0\leq k\leq m)$ に対して
+\[
+V(k)=\{\bm{u}\in V\mid T^k(\bm{u})=\bm{0}\}
+\]
+とおく. $T^0=I$ であるから, $V(0)=\{\bm{0}\}$ であり, $V=V(m)$ である. $T^k(\bm{u})=\bm{0}$ ならば $T^{k+1}(\bm{u})=\bm{0}$ であるから, $V(k+1)\supset V(k)$ である. すなわち
+\[
+V=V(m)\supset V(m-1)\supset\cdots\supset V(1)\supset V(0)=\{\bm{0}\}
+\]
+が成り立つ. ここで,
+\[
+s_k=\dim V(k)-\dim V(k-1)
+\quad(1\leq k\leq m)
+\]
+とおき, さらに $t_m=s_m$ とする. $V(m)$ の1次独立なベクトル $\{\bm{u}_{m,1},\ldots,\bm{u}_{m,t_m}\}$ を
+\[
+V=V(m)
+=
+\langle \bm{u}_{m,1},\ldots,\bm{u}_{m,t_m}\rangle\oplus V(m-1)
+\]
+となるようにとる.
+
+任意の整数 $k\ (0\leq k\leq m-1)$ に対して,
+\[
+\{T^k(\bm{u}_{m,1}),\ldots,T^k(\bm{u}_{m,t_m})\}
+\]
+は1次独立である. 実際, 1次関係
+\[
+a_1T^k(\bm{u}_{m,1})+\cdots+a_{t_m}T^k(\bm{u}_{m,t_m})=\bm{0}
+\quad(a_i\in\mathbb{C},\ 1\leq i\leq t_m)
+\]
+が成り立つと仮定し,
+\[
+\bm{u}=a_1\bm{u}_{m,1}+\cdots+a_{t_m}\bm{u}_{m,t_m}
+\]
+とおく.
+\[
+T^k(\bm{u})
+=
+a_1T^k(\bm{u}_{m,1})+\cdots+a_{t_m}T^k(\bm{u}_{m,t_m})
+=
+\bm{0}
+\]
+であるから, $\bm{u}\in V(k)\subset V(m-1)$ となる. 従って,
+\[
+\bm{u}\in
+\langle \bm{u}_{m,1},\ldots,\bm{u}_{m,t_m}\rangle
+\cap V(m-1)
+=
+\{\bm{0}\}
+\]
+となるから, $\bm{u}=\bm{0}$ である. $\bm{u}_{m,1},\ldots,\bm{u}_{m,t_m}$ は1次独立であるから
+\[
+a_1=\cdots=a_{t_m}=0
+\]
+がわかり, $\{T^k(\bm{u}_{m,1}),\ldots,T^k(\bm{u}_{m,t_m})\}$ は1次独立である. さらに,
+\[
+T^k(\bm{u})\in V(m-k),
+\quad
+T^k(\bm{u})\notin V(m-k-1)
+\quad(0\leq k\leq m-1)
+\]
+であるから
+\[
+\left\{
+\begin{array}{c}
+\bm{u}_{m,1},\ldots,\bm{u}_{m,t_m},\\
+T(\bm{u}_{m,1}),\ldots,T(\bm{u}_{m,t_m}),\\
+\vdots\\
+T^{m-1}(\bm{u}_{m,1}),\ldots,T^{m-1}(\bm{u}_{m,t_m})
+\end{array}
+\right\}
+\]
+は, 1次独立なベクトルである.
+
+次に,
+\[
+t_{m-1}=s_{m-1}-s_m
+\]
+とおき, $V(m-1)$ の1次独立なベクトル
+\[
+\{\bm{u}_{m-1,1},\ldots,\bm{u}_{m-1,t_{m-1}}\}
+\]
+を
+\[
+\begin{aligned}
+V(m-1)
+={}&
+\langle T(\bm{u}_{m,1}),\ldots,T(\bm{u}_{m,t_m})\rangle\\
+&\oplus
+\langle \bm{u}_{m-1,1},\ldots,\bm{u}_{m-1,t_{m-1}}\rangle
+\oplus V(m-2)
+\end{aligned}
+\]
+であるようにとる. このとき, 次のベクトルの集合 $(*)$
+\end{proof}
+
+\[
+\tag{*}
+\left\{
+\begin{aligned}
+&T(\bm{u}_{m,1}),\ldots,T(\bm{u}_{m,t_m}),\ \bm{u}_{m-1,1},\ldots,\bm{u}_{m-1,t_{m-1}},\\
+&T^2(\bm{u}_{m,1}),\ldots,T^2(\bm{u}_{m,t_m}),\ T(\bm{u}_{m-1,1}),\ldots,T(\bm{u}_{m-1,t_{m-1}}),\\
+&\hspace{35mm}\cdots\cdots\cdots,\\
+&T^{m-1}(\bm{u}_{m,1}),\ldots,T^{m-1}(\bm{u}_{m,t_m}),\
+T^{m-2}(\bm{u}_{m-1,1}),\ldots,T^{m-2}(\bm{u}_{m-1,t_{m-1}})
+\end{aligned}
+\right.
+\]
+は \(1\) 次独立である. 整数 \(k\)（\(1\leq k\leq m-1\)）に対して, \(V(m-k)\) のベクトル
+\[
+\tag{**}
+T^k(\bm{u}_{m,1}),\ldots,T^k(\bm{u}_{m,t_m}),\
+T^{k-1}(\bm{u}_{m-1,1}),\ldots,T^{k-1}(\bm{u}_{m-1,t_{m-1}})
+\]
+の \(1\) 次独立が示されれば, \((*)\) は \(1\) 次独立となる. \((**)\) の \(1\) 次独立を示すために
+\[
+\begin{aligned}
+&a_1T^k(\bm{u}_{m,1})+\cdots+a_{t_m}T^k(\bm{u}_{m,t_m})\\
+&\hspace{20mm}
++b_1T^{k-1}(\bm{u}_{m-1,1})+\cdots
++b_{t_{m-1}}T^{k-1}(\bm{u}_{m-1,t_{m-1}})=\bm{0}
+\end{aligned}
+\]
+\[
+(a_i,b_j\in\mathbb{C},\ 1\leq i\leq t_m,\ 1\leq j\leq t_{m-1})
+\]
+とおく. ここで
+\[
+\bm{u}
+=
+a_1T(\bm{u}_{m,1})+\cdots+a_{t_m}T(\bm{u}_{m,t_m})
++b_1\bm{u}_{m-1,1}+\cdots+b_{t_{m-1}}\bm{u}_{m-1,t_{m-1}}
+\]
+とおく. \(k\)（\(1\leq k\leq m-1\)）に対して \(T^{k-1}(\bm{u})=\bm{0}\) ならば, \(\bm{u}\) は \(V(k-1)\) のベクトルである.
+\[
+V(k-1)\subset V(m-2)
+\]
+であるから, 上の議論と同様に \(\bm{u}=\bm{0}\) である. ベクトル空間の直和の定義より
+\[
+a_1T(\bm{u}_{m,1})+\cdots+a_{t_m}T(\bm{u}_{m,t_m})=\bm{0},
+\]
+\[
+b_1\bm{u}_{m-1,1}+\cdots+b_{t_{m-1}}\bm{u}_{m-1,t_{m-1}}=\bm{0}
+\]
+を満たす. よって
+\[
+a_1=\cdots=a_{t_m}=0
+\]
+であり, \(\bm{u}_{m-1,1},\ldots,\bm{u}_{m-1,t_{m-1}}\) は \(1\) 次独立であるから
+\[
+b_1=\cdots=b_{t_{m-1}}=0
+\]
+がわかり, \((**)\) のベクトルの \(1\) 次独立が示された.
+
+一般に,
+\[
+t_k=s_k-s_{k+1}
+\]
+とおき, これを繰り返すと, \(V\) の \(1\) 次独立なベクトル
+\[
+\begin{aligned}
+&\bm{u}_{m,1},\ldots,\bm{u}_{m,t_m},\\
+&T(\bm{u}_{m,1}),\ldots,T(\bm{u}_{m,t_m}),\
+\bm{u}_{m-1,1},\ldots,\bm{u}_{m-1,t_{m-1}},\\
+&T^2(\bm{u}_{m,1}),\ldots,T^2(\bm{u}_{m,t_m}),\
+T(\bm{u}_{m-1,1}),\ldots,T(\bm{u}_{m-1,t_{m-1}}),\
+\bm{u}_{m-2,1},\ldots,\bm{u}_{m-2,t_{m-2}},\\
+&\hspace{35mm}\cdots\cdots\cdots,\\
+&T^{m-1}(\bm{u}_{m,1}),\ldots,T^{m-1}(\bm{u}_{m,t_m}),\
+T^{m-2}(\bm{u}_{m-1,1}),\ldots,T^{m-2}(\bm{u}_{m-1,t_{m-1}}),\ldots,\\
+&\hspace{90mm}\bm{u}_{1,1},\ldots,\bm{u}_{1,t_1}
+\end{aligned}
+\]
+を得る. これらのベクトルは \(V\) を生成し, \(1\) 次独立であることと合わせて, \(V\) の基底となる. \(1\) 次独立なベクトル
+\[
+T^{m-1}(\bm{u}_{m,i}),\ T^{m-2}(\bm{u}_{m,i}),\ldots,\bm{u}_{m,i}
+\]
+（\(i=1\) のときは, 青色の網をかけたベクトル）で生成される \(V\) の部分空間
+\[
+W(m;i)
+=
+\left\langle
+T^{m-1}(\bm{u}_{m,i}),T^{m-2}(\bm{u}_{m,i}),\ldots,\bm{u}_{m,i}
+\right\rangle
+\]
+を考える. \(T\) は部分空間 \(W(m;i)\) を自分自身にうつし, \(T\) を \(W(m;i)\) に制限すると, この基底に関する表現行列は
+\[
+J(0;m)
+=
+\begin{pmatrix}
+0&1&&&\\
+&0&1&O&\\
+&&\ddots&\ddots&\\
+&O&&0&1\\
+&&&&0
+\end{pmatrix}_{m}
+\]
+で, \(T\) の表現行列の直和成分に現れる \(J(0;m)\) の個数は
+\[
+t_m=s_m
+\]
+である.
+
+一般に, \(k\)（\(1\leq k\leq m\)）に対し, \(i\)（\(1\leq i\leq t_k\)）をとり固定する. このとき, 部分空間を
+\[
+W(k;i)
+=
+\left\langle
+T^{k-1}(\bm{u}_{k,i}),T^{k-2}(\bm{u}_{k,i}),\ldots,\bm{u}_{k,i}
+\right\rangle
+\]
+と定義すると, \(T\) は \(W(k;i)\) を自分自身にうつし, \(W(k;i)\) に制限したときの表現行列はジョルダン細胞 \(J(0;k)\) になる. よって, \(T\) の表現行列に現れる \(J(0;k)\) の個数は \(t_k\) である.
+
+特に, 最後の \(k=1\) のときには, \(i\)（\(1\leq i\leq t_1\)）に対して
+\[
+W(1;i)=\langle \bm{u}_{1,i}\rangle
+\]
+となるから,
+\[
+T(\bm{u}_{1,i})=\bm{0}
+\]
+である. よって, \(T\) を \(W(1;i)\)（\(1\leq i\leq t_1\)）に制限したときの表現行列は
+\[
+J(0;1)=[0]
+\]
+で, \(T\) の表現行列に含まれる \(J(0;1)\) の個数は \(t_1\) である.
+
+以上のことから, べき零変換 \(T\) に, 表現行列としてジョルダン標準形が存在する.
+
+\textbf{（一意性）}
+\(T\) の表現行列が, もう \(1\) つのジョルダン標準形 \(C\) になるとする. \(C\) に含まれる \(J(0;k)\) の個数を \(p_k\) とすると, \(V(k)\) の次元は
+\[
+r_k
+=
+k(p_m+\cdots+p_k)
++(k-1)p_{k-1}
++(k-2)p_{k-2}
++\cdots+p_1
+\]
+となる. よって
+\[
+s_k
+=
+\dim(V(k))-\dim(V(k-1))
+=
+p_m+\cdots+p_k
+\]
+である. 従って,
+\[
+t_m=s_m=p_m
+\]
+で, \(m-1\geq k\geq1\) については
+\[
+t_k=s_k-s_{k+1}=p_k
+\]
+となる. すなわち, \(B\) と \(C\) に含まれる \(J(0;k)\) の個数は等しい.
+
+\begin{eg}[例題8.2.1]
+\[
+A=
+\begin{pmatrix}
+0&0&0&0&0\\
+0&0&1&1&0\\
+0&0&0&1&0\\
+0&0&0&0&0\\
+1&0&0&0&0
+\end{pmatrix}
+\]
+とする. べき零変換 \(T_A\) のジョルダン標準形を求めよ.
+
+\textbf{解答}
+
+\(V=\mathbb{C}^5\) とおくと, \(T_A\) の固有多項式は
+\[
+g_A(t)=t^5
+\]
+であるから, \(T_A\) はべき零変換で \(n=5\).
+\[
+A^3=0,\quad A^2\neq0
+\]
+であるから \(m=3\) である. \(1\leq k\leq3\) に対して
+\[
+V(k)=\{\bm{u}\in V\mid A^k\bm{u}=\bm{0}\}
+\]
+とおき, \(V(k)\) と \(V(k-1)\) の次元の差を
+\[
+s_k=\dim(V(k))-\dim(V(k-1))
+\]
+と定義する. \(V(3),V(2)\) は
+\[
+V=V(3),
+\quad
+V(2)=\{\bm{u}\in V\mid A^2\bm{u}=\bm{0}\}
+\]
+となる. \(V(2)\) と, その次元を計算するために, \(A^2\) を簡約化する.
+\[
+A^2
+=
+\begin{pmatrix}
+0&0&0&0&0\\
+0&0&0&1&0\\
+0&0&0&0&0\\
+0&0&0&0&0\\
+0&0&0&0&0
+\end{pmatrix}
+\longrightarrow
+\begin{pmatrix}
+0&0&0&1&0\\
+0&0&0&0&0\\
+0&0&0&0&0\\
+0&0&0&0&0\\
+0&0&0&0&0
+\end{pmatrix}.
+\]
+となるから, \(A^2\bm{u}=\bm{0}\) の解空間 \(V(2)\) は \(\mathbb{C}\) 上の \(4\) 次元ベクトル空間
+\[
+V(2)
+=
+\left\{
+\begin{pmatrix}
+x_1\\
+x_2\\
+x_3\\
+0\\
+x_5
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+x_1,x_2,x_3,x_5\in\mathbb{C}
+\right\}
+\]
+である. よって
+\[
+s_3
+=
+\dim(V(3))-\dim(V(2))
+=
+5-4
+=
+1,
+\quad
+t_3=s_3=1
+\]
+となる. \(V(3)\) に含まれ, \(V(2)\) に含まれないベクトル, 例えば,
+\[
+\bm{u}_{3,1}
+=
+\begin{pmatrix}
+0\\
+0\\
+0\\
+1\\
+0
+\end{pmatrix}
+\]
+をとると,
+\[
+\langle \bm{u}_{3,1}\rangle\cap V(2)=\{\bm{0}\}
+\]
+である.
+
+次に, \(V(1)\) と, その次元を計算する. \(A\) を簡約化すると
+\[
+A=
+\begin{pmatrix}
+0&0&0&0&0\\
+0&0&1&1&0\\
+0&0&0&1&0\\
+0&0&0&0&0\\
+1&0&0&0&0
+\end{pmatrix}
+\longrightarrow
+\begin{pmatrix}
+1&0&0&0&0\\
+0&0&1&0&0\\
+0&0&0&1&0\\
+0&0&0&0&0\\
+0&0&0&0&0
+\end{pmatrix}
+\]
+となる. よって, \(A\bm{u}=\bm{0}\) の解空間は
+\[
+V(1)
+=
+\left\{
+\begin{pmatrix}
+0\\
+y_2\\
+0\\
+0\\
+y_5
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+y_2,y_5\in\mathbb{C}
+\right\}
+\]
+で, 次元は \(2\) である. 従って
+\[
+s_2
+=
+\dim(V(2))-\dim(V(1))
+=
+2,
+\quad
+t_2=s_2-s_3=1
+\]
+である. \(V(2)\) に含まれ, \(V(1)\) に含まれないベクトルとして
+\[
+\bm{u}_{3,1},\ A\bm{u}_{3,1},\ \bm{u}_{2,1}
+\]
+がとれる.
+\[
+A\bm{u}_{3,1}
+=
+\begin{pmatrix}
+0\\
+1\\
+1\\
+0\\
+0
+\end{pmatrix}
+\]
+であるので,
+\[
+\bm{u}_{2,1}
+=
+\begin{pmatrix}
+1\\
+0\\
+0\\
+0\\
+0
+\end{pmatrix}
+\]
+ととれば
+\[
+\langle \bm{u}_{3,1},A\bm{u}_{3,1},\bm{u}_{2,1}\rangle\cap V(1)=\{\bm{0}\}
+\]
+である. さらに,
+\[
+A^2\bm{u}_{3,1},\ A\bm{u}_{2,1}
+\]
+に \(\bm{u}_{3,1},A\bm{u}_{3,1},\bm{u}_{2,1}\) を加えても \(1\) 次独立である. よって, 次元を考慮すると
+\[
+\{\bm{u}_{3,1},A\bm{u}_{3,1},A^2\bm{u}_{3,1},\bm{u}_{2,1},A\bm{u}_{2,1}\}
+\]
+は \(V\) の基底になる. 基底の順序を変えて
+\[
+\{A^2\bm{u}_{3,1},A\bm{u}_{3,1},\bm{u}_{3,1},A\bm{u}_{2,1},\bm{u}_{2,1}\}
+\]
+の順に並べる. この基底に関する表現行列を考えると, \(T_A\) のジョルダン標準形
+\[
+B=
+\left[
+\begin{array}{ccc|cc}
+0&1&0&0&0\\
+0&0&1&0&0\\
+0&0&0&0&0\\ \hline
+0&0&0&0&1\\
+0&0&0&0&0
+\end{array}
+\right]
+=
+J(0;3)\oplus J(0;2)
+\]
+が求まる.
+\end{eg}
+
+\begin{defn}[固有値を差し引いた変換]
+線形変換 \(T\) の全ての相異なる固有値の集合を
+\[
+\{\lambda_1,\ldots,\lambda_r\}
+\]
+とする. 部分空間 \(\widetilde{W}(\lambda_i;T)\) を固有値 \(\lambda_i\) に属する準固有空間とし, \(I_i\) を \(\widetilde{W}(\lambda_i;T)\) の単位変換とする. 線形変換 \(T\) は \(\widetilde{W}(\lambda_i;T)\) を自分自身にうつす. また, \(T\) から線形変換
+\[
+\lambda_1I_1\oplus\cdots\oplus\lambda_rI_r
+\]
+を引いた線形変換の差
+\[
+T-\{\lambda_1I_1\oplus\cdots\oplus\lambda_rI_r\}
+\]
+の固有値は全て \(0\) であるから, 定理8.2.1により, べき零変換である.
+\end{defn}
+
+\begin{thm}[定理8.2.3：線形変換のジョルダン標準形]
+\(T\) をベクトル空間 \(V\) の線形変換とし,
+\[
+\{\lambda_1,\ldots,\lambda_r\}
+\]
+を \(T\) の全ての相異なる固有値の集合とする. 適当な基底をとると, \(T\) の表現行列はジョルダン標準形にジョルダン細胞の順序を除き一意的に表される.
+
+ジョルダン標準形を
+\[
+\begin{aligned}
+B
+={}&J(\lambda_1;k_{1,1})\oplus\cdots\oplus J(\lambda_1;k_{1,m_1})
+\oplus\cdots\\
+&\oplus J(\lambda_r;k_{r,1})\oplus\cdots\oplus J(\lambda_r;k_{r,m_r})
+\end{aligned}
+\]
+と表すと, \(T\) の最小多項式は
+\[
+p_T(t)
+=
+\prod_{i=1}^{r}(t-\lambda_i)^{l_i}
+\]
+である. ここで, \(l_i\) は \(k_{i,1},\ldots,k_{i,m_i}\) の最大値である.
+\end{thm}
+
+\begin{proof}
+\[
+T-\{\lambda_1I_1\oplus\cdots\oplus\lambda_rI_r\}
+\]
+はべき零変換である. よって, この変換を \(\widetilde{W}(\lambda_i;T)\) に制限して得られる変換もべき零変換である. \(T\) を \(\widetilde{W}(\lambda_i;T)\) に制限した線形変換を \(T_i\) と書くことにする. べき零変換のジョルダン標準形（定理8.2.2）により, べき零変換
+\[
+T_i-\lambda_iI_i
+\]
+の表現行列は, いくつかのジョルダン細胞の直和で
+\[
+J(0;k_{i,1})\oplus\cdots\oplus J(0;k_{i,m_i})
+\]
+と表される. \(T_i\) の \(\widetilde{W}(\lambda_i;T)\) における固有値は \(\lambda_i\) なので, \(T_i\) の表現行列は
+\[
+J(\lambda_i;k_{i,j})
+=
+\lambda_iE+J(0;k_{i,j})
+\quad
+(1\leq j\leq m_i)
+\]
+の直和になる. 次に, \(\widetilde{W}(\lambda_i;T)\) を全ての \(i\)（\(1\leq i\leq r\)）に対してとることにより, \(T\) のジョルダン標準形が得られる. よって, ジョルダン標準形の一意性は, べき零変換のジョルダン標準形の一意性（定理8.2.2）よりわかる. また, \(T\) の最小多項式が与えられたものになることは, 最小多項式の定義とジョルダン標準形の形から明らかである.
+\end{proof}
+
+\begin{defn}[行列のジョルダン標準形]
+正方行列 \(A\) がジョルダン標準形 \(B\) に同値であるとき, \(B\) を \(A\) のジョルダン標準形という. 線形変換で基底を取り替えることは, 表現行列では同値な行列を考えることだから, 次の定理8.2.4を得る.
+\end{defn}
+
+\begin{thm}[定理8.2.4：行列のジョルダン標準形]
+\begin{enumerate}
+\item[(1)] 任意の正方行列 \(A\) は, ジョルダン標準形に同値である. すなわち, 適当な正則行列 \(P\) をとると,
+\[
+B=P^{-1}AP
+\]
+がジョルダン標準形になる.
+
+\item[(2)] \(A\) と \(T_A\) のジョルダン標準形は一致する.
+
+\item[(3)] \(A\) の最小多項式は \(T_A\) の最小多項式で, ジョルダン標準形を用いて定理8.2.3のように表される.
+\end{enumerate}
+\end{thm}
+
+\begin{eg}[例題8.2.2]
+次の行列のジョルダン標準形を求めよ.
+\[
+A=
+\begin{pmatrix}
+2&0&0\\
+0&1&0\\
+1&0&2
+\end{pmatrix}.
+\]
+
+\textbf{解答}
+
+固有多項式は
+\[
+g_A(t)=(t-1)(t-2)^2
+\]
+であるから, 固有値は \(\lambda=1,2\) である. よって, 最小多項式 \(p_A(t)\) は \(g_A(t)\) または
+\[
+(t-1)(t-2)
+\]
+のいずれかである. 実際, \((t-1)(t-2)\) に \(A\) を具体的に代入すると
+\[
+\begin{pmatrix}
+0&0&0\\
+0&0&0\\
+1&0&0
+\end{pmatrix}
+\neq0
+\]
+となる. 従って,
+\[
+p_A(t)=g_A(t)=(t-1)(t-2)^2
+\]
+となるから, ジョルダン標準形はジョルダン細胞 \(J(1;1)\) と \(J(2;2)\) の直和で
+\[
+\begin{pmatrix}
+1&0&0\\
+0&2&1\\
+0&0&2
+\end{pmatrix}
+\]
+となる.
+\[
+\text{（\(A\) の次数が小さく, ジョルダン標準形を求めるだけなら, 最小多項式を用いればよい.）}
+\]
+
+\textbf{別解}
+
+行列 \(P\) を求めるには, 次のようにする. \(T=T_A\) とおく. 固有多項式は
+\[
+g_A(t)=(t-1)(t-2)^2
+\]
+であるから, 固有値は \(\lambda=1,2\) である.
+
+\(\lambda=1\) とする.
+\[
+A-E
+=
+\begin{pmatrix}
+1&0&0\\
+0&0&0\\
+1&0&1
+\end{pmatrix}
+\longrightarrow
+\begin{pmatrix}
+1&0&0\\
+0&0&1\\
+0&0&0
+\end{pmatrix}
+\]
+と簡約化すると
+\[
+\widetilde{W}(1;T_A)
+=
+\left\{
+a
+\begin{pmatrix}
+0\\
+1\\
+0
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+a\in\mathbb{C}
+\right\}
+\]
+になるので,
+\[
+\bm{u}_1=
+\begin{pmatrix}
+0\\
+1\\
+0
+\end{pmatrix}
+\]
+とおく.
+
+次に, \(\lambda=2\) とする.
+\[
+A-2E
+=
+\begin{pmatrix}
+0&0&0\\
+0&-1&0\\
+1&0&0
+\end{pmatrix}
+\longrightarrow
+\begin{pmatrix}
+1&0&0\\
+0&1&0\\
+0&0&0
+\end{pmatrix}
+\]
+と簡約化されるから, \(\lambda=2\) の固有ベクトルは
+\[
+b
+\begin{pmatrix}
+0\\
+0\\
+1
+\end{pmatrix}
+\]
+である. また, \((A-2E)^2\) を
+\[
+(A-2E)^2
+=
+\begin{pmatrix}
+0&0&0\\
+0&1&0\\
+0&0&0
+\end{pmatrix}
+\longrightarrow
+\begin{pmatrix}
+0&1&0\\
+0&0&0\\
+0&0&0
+\end{pmatrix}
+\]
+と簡約化すると,
+\[
+\widetilde{W}(2;T_A)
+=
+\left\{
+b
+\begin{pmatrix}
+0\\
+0\\
+1
+\end{pmatrix}
++
+c
+\begin{pmatrix}
+1\\
+0\\
+0
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+b,c\in\mathbb{C}
+\right\}
+\]
+となる. ここで,
+\[
+\bm{u}_2=
+\begin{pmatrix}
+0\\
+0\\
+1
+\end{pmatrix},
+\quad
+\bm{u}_3=
+\begin{pmatrix}
+1\\
+0\\
+0
+\end{pmatrix}
+\]
+とおくと
+\[
+A\bm{u}_2=2\bm{u}_2,
+\quad
+A\bm{u}_3=\bm{u}_2+2\bm{u}_3
+\]
+である. 従って, 次のようなジョルダン標準形 \(B\) を得る.
+\[
+A(\bm{u}_1,\bm{u}_2,\bm{u}_3)
+=
+(\bm{u}_1,\bm{u}_2,\bm{u}_3)B,
+\quad
+B=
+\begin{pmatrix}
+1&0&0\\
+0&2&1\\
+0&0&2
+\end{pmatrix}.
+\]
+正則行列 \(P\) を
+\[
+P=[\bm{u}_1\ \bm{u}_2\ \bm{u}_3]
+=
+\begin{pmatrix}
+0&0&1\\
+1&0&0\\
+0&1&0
+\end{pmatrix}
+\]
+とすると
+\[
+B=P^{-1}AP
+\quad
+\text{（ジョルダン標準形）}
+\]
+になる.
+\end{eg}
+
+\subsection*{問題8.2}
+
+\begin{enumerate}
+\item 次の行列のジョルダン標準形を求めよ.
+\begin{enumerate}
+\item[(1)]
+\[
+A=
+\begin{pmatrix}
+2&1&0\\
+0&3&0\\
+0&0&3
+\end{pmatrix}.
+\]
+
+\item[(2)]
+\[
+A=
+\begin{pmatrix}
+3&0&0\\
+1&3&0\\
+1&1&3
+\end{pmatrix}.
+\]
+
+\item[(3)]
+\[
+A=
+\begin{pmatrix}
+0&0&-1\\
+0&i&0\\
+1&0&0
+\end{pmatrix}.
+\]
+
+\item[(4)]
+\[
+A=
+\begin{pmatrix}
+2&0&-3&1\\
+0&2&0&0\\
+0&0&-1&0\\
+0&0&0&2
+\end{pmatrix}.
+\]
+\end{enumerate}
+
+\item 次の正方行列の最小多項式を求めよ.
+\begin{enumerate}
+\item[(1)]
+\[
+A=J(2;3)\oplus J(2;2).
+\]
+
+\item[(2)]
+\[
+A=J(3;2)\oplus J(3;2)\oplus J(3;1)\oplus J(i;2).
+\]
+
+\item[(3)]
+\[
+A=J(1;1)\oplus J(2;3)\oplus J(i;2)\oplus J(-i;1).
+\]
+\end{enumerate}
+
+\item 正方行列 \(A\) に対して, 次の (1), (2) は同値であることを示せ.
+\begin{enumerate}
+\item[(1)] \(A\) の最小多項式 \(p_A(t)\) は, 固有多項式 \(g_A(t)\) に一致する.
+\item[(2)] 異なる固有値 \(\lambda\) に対して, \(1\) つのジョルダン細胞が定まる.
+\end{enumerate}
+
+\item 正方行列 \(H\) は対角化可能のとき半単純行列という. このとき, 次を示せ.
+\begin{enumerate}
+\item[(1)] 正方行列 \(A\) は, 半単純行列 \(H\) とべき零行列 \(N\) の和で表される.
+\item[(2)] (1) の \(H\) と \(N\) は \(A\) の多項式で表される.
+\item[(3)] \(A\) を与えると (1) の \(H\) と \(N\) は一意的に決まり, 交換可能である.
+\end{enumerate}
+\end{enumerate}
+
+
+
+
+\newpage
+
+\section{エルミート空間  \cite[9章]{M}}
+
+\subsection{エルミート内積  \cite[9.1節]{M}}
+
+この章では実ベクトル空間の代わりに, 複素ベクトル空間にエルミート内積と呼ばれる内積を定義する. エルミート内積も実ベクトル空間の内積と同様の性質をもつ.
+
+\paragraph{エルミート内積}
+複素数体 $\mathbb{C}$ 上のベクトル空間 $V$ のベクトル $\bm{u},\bm{v}$ に対して, 複素数 $(\bm{u},\bm{v})$ を対応させる対応 $(\ ,\ )$ が, 次の4条件を満たすときに, 複素ベクトル空間 $V$ のエルミート内積という. ここで, $\bm{u},\bm{u}',\bm{v},\bm{v}'\in V$, $c\in\mathbb{C}$ で, $\bar c$ は $c$ の複素共役である.
+\begin{enumerate}
+\item[(1)]
+\[
+(\bm{u}+\bm{u}',\bm{v})=(\bm{u},\bm{v})+(\bm{u}',\bm{v}),
+\quad
+(\bm{u},\bm{v}+\bm{v}')=(\bm{u},\bm{v})+(\bm{u},\bm{v}').
+\]
+\item[(2)]
+\[
+(c\bm{u},\bm{v})=c(\bm{u},\bm{v}),
+\quad
+(\bm{u},c\bm{v})=\bar c\,(\bm{u},\bm{v}).
+\]
+\item[(3)]
+\[
+(\bm{v},\bm{u})=\overline{(\bm{u},\bm{v})}.
+\]
+\item[(4)] $\bm{u}\neq\bm{0}$ ならば $(\bm{u},\bm{u})>0$.
+\end{enumerate}
+これがエルミート内積の定義であるが, そのうち (1) と (2) の後半の性質は, (3) とそれぞれの前半の性質からも得られる. また, \S\,6.1と同様に
+\[
+(\bm{u},\bm{0})=(\bm{0},\bm{u})=0
+\]
+がわかる.
+
+\paragraph{エルミート空間}
+エルミート内積をもつ複素ベクトル空間 $V$ をエルミート空間という.
+
+\paragraph{例1}
+$\mathbb{C}^n$ のベクトル
+\[
+\bm{a}=
+\begin{pmatrix}
+a_1\\
+\vdots\\
+a_n
+\end{pmatrix},
+\quad
+\bm{b}=
+\begin{pmatrix}
+b_1\\
+\vdots\\
+b_n
+\end{pmatrix}
+\]
+に対して
+\[
+(\bm{a},\bm{b})={}^{t}\!\bm{a}\bar{\bm{b}}=a_1\bar b_1+\cdots+a_n\bar b_n
+\]
+と定義すると, $\mathbb{C}^n$ のエルミート内積である. これを $\mathbb{C}^n$ の標準エルミート内積という.
+
+\paragraph{例2}
+$\mathbb{C}^n$ のベクトル $\bm{a}$ と $\bm{b}$ は例1と同様とする. $(\ ,\ )$ を
+\[
+(\bm{a},\bm{b})=a_1\bar b_1+2a_2\bar b_2+\cdots+na_n\bar b_n
+\]
+と定義しても, $\mathbb{C}^n$ のエルミート内積である.
+
+\paragraph{エルミート空間のノルム}
+$V$ がエルミート空間のとき, $\bm{u}\in V$ に対して
+\[
+\lVert \bm{u}\rVert=\sqrt{(\bm{u},\bm{u})}
+\]
+とおき, ベクトル $\bm{u}$ のノルム, あるいは長さという.
+
+\begin{thm}[定理9.1.1（シュワルツの不等式と三角不等式）]
+エルミート空間 $V$ のノルムについて, 次が成り立つ $(\bm{u},\bm{v}\in V,\ c\in\mathbb{C})$.
+\begin{enumerate}
+\item[(1)]
+\[
+\lVert c\bm{u}\rVert=\lvert c\rvert\lVert \bm{u}\rVert.
+\]
+\item[(2)]
+\[
+\lvert(\bm{u},\bm{v})\rvert\leq\lVert \bm{u}\rVert\lVert \bm{v}\rVert
+\quad\text{（シュワルツの不等式）}.
+\]
+\item[(3)]
+\[
+\lVert \bm{u}+\bm{v}\rVert\leq\lVert \bm{u}\rVert+\lVert \bm{v}\rVert
+\quad\text{（三角不等式）}.
+\]
+\end{enumerate}
+\end{thm}
+
+\begin{proof}
+(1), (3) は定理6.1.1と同様に示されるから (2) のみ示す. $\bm{u}=\bm{0}$ ならば, 両辺はともに $0$ であるから成立する. $\bm{u}\neq\bm{0}$ と仮定する. 任意の複素数 $a$ と $b$ に対して
+\[
+\lVert a\bm{u}+b\bm{v}\rVert^2\geq0
+\]
+である. さて
+\[
+\lVert a\bm{u}+b\bm{v}\rVert^2
+=
+\lvert a\rvert^2\lVert \bm{u}\rVert^2
++a\bar b\,(\bm{u},\bm{v})
++\bar a b\,\overline{(\bm{u},\bm{v})}
++\lvert b\rvert^2\lVert \bm{v}\rVert^2
+\]
+が成り立つ. ここで,
+\[
+a=-\overline{(\bm{u},\bm{v})},
+\quad
+b=\lVert \bm{u}\rVert^2
+\]
+とおくと
+\[
+\begin{aligned}
+\lVert a\bm{u}+b\bm{v}\rVert^2
+&=
+\lvert(\bm{u},\bm{v})\rvert^2\lVert \bm{u}\rVert^2
+-\lVert \bm{u}\rVert^2\lvert(\bm{u},\bm{v})\rvert^2
+-\lVert \bm{u}\rVert^2\lvert(\bm{u},\bm{v})\rvert^2
++\lVert \bm{u}\rVert^4\lVert \bm{v}\rVert^2\\
+&=
+\lVert \bm{u}\rVert^2
+\left\{
+\lVert \bm{u}\rVert^2\lVert \bm{v}\rVert^2-\lvert(\bm{u},\bm{v})\rvert^2
+\right\}.
+\end{aligned}
+\]
+$\lVert a\bm{u}+b\bm{v}\rVert^2\geq0$ であるから, 最後の項は $\geq0$ となる. この両辺を $\lVert \bm{u}\rVert^2(>0)$ で割れば (2) が示される.
+\end{proof}
+
+以下では, $V$ はエルミート空間とし, そのエルミート内積を $(\ ,\ )$ と書く. また, 断らないかぎり, $\mathbb{C}^n$ のエルミート内積は標準エルミート内積とする.
+
+\paragraph{ベクトルの直交}
+$V$ の2つのベクトル $\bm{u},\bm{v}$ が直交するとは
+\[
+(\bm{u},\bm{v})=0
+\]
+が成り立つときにいい, $\bm{u}\perp \bm{v}$ と書く.
+
+次の定理9.1.2は定理6.1.2と同様に証明できる.
+
+\begin{thm}[定理9.1.2（直交するベクトルの1次独立）]
+$V$ のベクトル $\bm{u}_1,\ldots,\bm{u}_n\ (\bm{u}_k\neq\bm{0},\ 1\leq k\leq n)$ が互いに直交すれば, $\mathbb{C}$ 上に1次独立である.
+\end{thm}
+
+\paragraph{直交補空間}
+$W$ を $V$ の部分空間とする. このとき
+\[
+W^\perp
+=
+\{\bm{u}\in V\mid (\bm{u},\bm{v})=0\text{ が全ての }\bm{v}\in W\text{ に対して成り立つ}\}
+\]
+と定義し, $W^\perp$ を $W$ の直交補空間という.
+
+\paragraph{部分空間が直交する}
+$V$ の部分空間 $W_1$ と $W_2$ が直交するとは, 任意のベクトル $\bm{w}_1\in W_1$, $\bm{w}_2\in W_2$ に対して,
+\[
+(\bm{w}_1,\bm{w}_2)=0
+\]
+が成り立つときにいう.
+
+\paragraph{例3}
+$V=\mathbb{C}^3$ の部分空間
+\[
+W=
+\left\{
+\begin{pmatrix}
+a_1\\
+0\\
+a_3
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+a_1,a_3\in\mathbb{C}
+\right\}
+\]
+とすると
+\[
+W^\perp
+=
+\left\{
+\begin{pmatrix}
+0\\
+a_2\\
+0
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+a_2\in\mathbb{C}
+\right\}.
+\]
+
+\paragraph{正規直交基底}
+$V$ の $\mathbb{C}$ 上の基底 $\{\bm{u}_1,\ldots,\bm{u}_n\}$ が正規直交基底であるとは
+\[
+(\bm{u}_i,\bm{u}_j)=\delta_{ij}
+\quad(1\leq i,j\leq n)
+\]
+が成り立つときにいう.
+
+\paragraph{標準基底}
+エルミート空間 $\mathbb{C}^n$ の基本ベクトル $\{\bm{e}_1,\ldots,\bm{e}_n\}$ は標準エルミート内積に関して正規直交基底である. これを $\mathbb{C}^n$ の標準基底という.
+
+内積空間の場合（定理6.2.1）と同様にして, 次の定理9.1.3が成り立つ.
+
+\begin{thm}[定理9.1.3（エルミート空間のシュミットの正規直交化）]
+$V$ の1組の基底を $\{\bm{v}_1,\ldots,\bm{v}_n\}$ とすると, 正規直交基底 $\{\bm{u}_1,\ldots,\bm{u}_n\}$ で
+\[
+\langle \bm{u}_1,\ldots,\bm{u}_r\rangle_{\mathbb{C}}
+=
+\langle \bm{v}_1,\ldots,\bm{v}_r\rangle_{\mathbb{C}}
+\quad(1\leq r\leq n)
+\]
+となるものが存在する. 特に, 有限次元エルミート空間は正規直交基底をもつ.
+\end{thm}
+
+$W$ とその直交補空間 $W^\perp$ には, 次の定理9.1.4が成り立つ.
+
+\begin{thm}[定理9.1.4（直交補空間）]
+$V$ の部分空間に対して, 次の (1), (2), (3) が成り立つ.
+\begin{enumerate}
+\item[(1)]
+\[
+V=W\oplus W^\perp.
+\]
+\item[(2)]
+\[
+\dim(W)+\dim(W^\perp)=n.
+\]
+\item[(3)]
+\[
+(W^\perp)^\perp=W.
+\]
+\end{enumerate}
+\end{thm}
+
+\begin{proof}
+\begin{enumerate}
+\item[(1)] $\dim(W)=r$ とし, $W$ の正規直交基底 $\{\bm{u}_1,\ldots,\bm{u}_r\}$ をとる. 任意の $\bm{v}\in V$ に対して
+\[
+\bm{w}=\sum_{i=1}^{r}(\bm{v},\bm{u}_i)\bm{u}_i,
+\quad
+\bm{w}'=\bm{v}-\bm{w}
+\]
+とおく. $\bm{w}\in W$ であり, 任意の $\bm{u}_j\ (1\leq j\leq r)$ に対して
+\[
+\begin{aligned}
+(\bm{w}',\bm{u}_j)
+&=(\bm{v}-\bm{w},\bm{u}_j)\\
+&=
+\left(
+\bm{v}-\sum_{i=1}^{r}(\bm{v},\bm{u}_i)\bm{u}_i,\bm{u}_j
+\right)\\
+&=(\bm{v},\bm{u}_j)-\sum_{i=1}^{r}(\bm{v},\bm{u}_i)(\bm{u}_i,\bm{u}_j)\\
+&=(\bm{v},\bm{u}_j)-(\bm{v},\bm{u}_j)=0
+\end{aligned}
+\]
+となるから, $\bm{w}'\in W^\perp$ がわかる. 定義より
+\[
+\bm{v}=\bm{w}+\bm{w}'
+\quad(\bm{w}\in W,\ \bm{w}'\in W^\perp)
+\]
+であり, $W\cap W^\perp=\{\bm{0}\}$ は明らかに成り立つから, 定理7.2.3により
+\[
+V=W\oplus W^\perp
+\]
+がわかる.
+
+\item[(2)] (1) より明らかである.
+
+\item[(3)] $W\subset(W^\perp)^\perp$ である. $W$ と $(W^\perp)^\perp$ の $\mathbb{C}$ 上の次元を考えると, (2) より $W$ と $(W^\perp)^\perp$ は一致する.
+\end{enumerate}
+\end{proof}
+
+\paragraph{射影子}
+$V$ は $W$ と $W^\perp$ の直和になるから, $\bm{v}\in V$ は
+\[
+\bm{v}=\bm{w}+\bm{w}'
+\quad(\bm{w}\in W,\ \bm{w}'\in W^\perp)
+\]
+と一意に表される. $\bm{v}\in V$ に対して, $\bm{w}\in W$ を対応させる線形写像を $P_{V/W}$ と書き, この $P_{V/W}$ をエルミート空間 $V$ から $W$ への射影子という. $W$ の正規直交基底を $\{\bm{u}_1,\ldots,\bm{u}_r\}$ とすると, $W$ への射影子は, 定理9.1.4(1)の証明中に示したように
+\[
+P_{V/W}(\bm{v})=\bm{w}=\sum_{i=1}^{r}(\bm{v},\bm{u}_i)\bm{u}_i
+\quad(\bm{v}\in V)
+\]
+で与えられる.
+
+\begin{eg}[例題9.1.1]
+$V=\mathbb{C}^2$ とし,
+\[
+W=
+\left\{
+c
+\begin{pmatrix}
+1\\
+-i
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+c\in\mathbb{C}
+\right\}
+\]
+とする. $V$ から $W$ への射影子を求めよ.
+\end{eg}
+
+\paragraph{解答}
+\[
+\begin{pmatrix}
+1\\
+-i
+\end{pmatrix}
+\]
+を正規直交化すると
+\[
+\bm{w}=
+\frac{1}{\sqrt{2}}
+\begin{pmatrix}
+1\\
+-i
+\end{pmatrix}
+\]
+となるから
+\[
+P_{V/W}\colon
+V\ni \bm{x}=
+\begin{pmatrix}
+x_1\\
+x_2
+\end{pmatrix}
+\longmapsto
+(\bm{x},\bm{w})\bm{w}
+=
+\frac{x_1+ix_2}{2}
+\begin{pmatrix}
+1\\
+-i
+\end{pmatrix}
+\in W
+\]
+が $V$ から $W$ への射影子である.
+
+\paragraph{随伴変換}
+$V$ の線形変換 $T$ に対して, $T^*$ が $T$ の随伴変換であるとは
+\[
+(T(\bm{u}),\bm{v})=(\bm{u},T^*(\bm{v}))
+\quad(\bm{u},\bm{v}\in V)
+\]
+を満たすときにいう.
+
+\paragraph{随伴行列}
+正方行列 $A$ に対して
+\[
+A^*={}^{t}\!\bar A
+\]
+とおき, 随伴行列という. 行列式をとると
+\[
+\lvert A^*\rvert=\overline{\lvert A\rvert}
+\]
+である.
+
+\paragraph{例4}
+\[
+A=
+\begin{pmatrix}
+i&1+2i\\
+3&5-i
+\end{pmatrix}
+\]
+とすると
+\[
+A^*
+=
+\begin{pmatrix}
+-i&3\\
+1-2i&5+i
+\end{pmatrix}
+\]
+となる.
+
+随伴変換と随伴行列の関係について, 次の定理9.1.5が成り立つ.
+
+\begin{thm}[定理9.1.5（随伴変換と随伴行列）]
+\begin{enumerate}
+\item[(1)] $V$ の正規直交基底を $\{\bm{u}_1,\ldots,\bm{u}_n\}$ とする. $V$ の線形変換 $T$ の表現行列を $A$ とすると, $\{\bm{u}_1,\ldots,\bm{u}_n\}$ に関する $T^*$ の表現行列は $A^*$ になる.
+\item[(2)] $T$ の随伴変換は一意的に存在する. また, $T$ が同型変換ならば $T^*$ も同型変換である.
+\item[(3)] $V=\mathbb{C}^n$ において
+\[
+(T_A)^*=T_{A^*}
+\]
+が成り立つ.
+\end{enumerate}
+\end{thm}
+
+\begin{proof}
+\begin{enumerate}
+\item[(1)] $B=[b_{ij}]$ を $T^*$ の $\{\bm{u}_1,\ldots,\bm{u}_n\}$ に関する表現行列とする. $T(\bm{u}_i)$ と $\bm{u}_j$ のエルミート内積をとると, $T^*$ の定義より
+\[
+\tag{$*$}
+(T(\bm{u}_i),\bm{u}_j)=(\bm{u}_i,T^*(\bm{u}_j))
+\]
+と表される. $T(\bm{u}_i)=a_{1i}\bm{u}_1+\cdots+a_{ni}\bm{u}_n$ であるから, $(*)$ の左辺は $a_{ji}$ である. また, $T^*(\bm{u}_j)=b_{1j}\bm{u}_1+\cdots+b_{nj}\bm{u}_n$ より, $(*)$ の右辺は $\overline{b_{ij}}$ となる. よって,
+\[
+\overline{b_{ij}}=a_{ji}
+\quad(1\leq i,j\leq n)
+\]
+である. 従って, $B^*=A$, すなわち $B=A^*$ がわかる.
+
+\item[(2)] (1) のように $V$ の基底をとる. $\operatorname{End}_{\mathbb{C}}(V)\cong M_{n\times n}(\mathbb{C})$ は常に成り立つから, $T^*$ の表現行列は $A^*$ で, 線形変換 $T^*$ は一意的に存在する. $T$ が同型変換ならば $A$ は正則行列であるので, $A^*={}^{t}\!\bar A$ も正則行列となり, $T^*$ は同型変換となる.
+
+\item[(3)] (1) の特別な場合である.
+\end{enumerate}
+\end{proof}
+
+\begin{thm}[定理9.1.6（随伴変換）]
+$T^*$ の随伴変換は $T$ である. すなわち,
+\[
+(T^*)^*=T
+\]
+である.
+\end{thm}
+
+\begin{proof}
+定理7.1.6により, 任意の正規直交基底に対して
+\[
+\operatorname{End}_{\mathbb{C}}(V)\cong M_{n\times n}(\mathbb{C})
+\]
+が成り立つ. $(T_A)^*=T_{A^*}$ であるから, $(A^*)^*=A$ が示されればよいが, これは定義より明らかである.
+\end{proof}
+
+\begin{thm}[定理9.1.7（線形変換の積の随伴変換）]
+$V$ の線形変換 $T_1,T_2$ に対して, 次の等式が成り立つ.
+\[
+(T_1T_2)^*=T_2^*T_1^*.
+\]
+\end{thm}
+
+\begin{proof}
+この定理も $V$ の正規直交基底を固定して, 同型
+\[
+\operatorname{End}_{\mathbb{C}}(V)\cong M_{n\times n}(\mathbb{C})
+\]
+を考えれば $V=\mathbb{C}^n$ のときに帰着されるが, これは行列の等式
+\[
+(AB)^*=B^*A^*
+\]
+を示すことに他ならず, 定義より明らかである.
+\end{proof}
+
+\paragraph{問題9.1}
+
+$\mathbb{C}^n$ のエルミート内積は, 断らないかぎり標準エルミート内積を考える.
+
+\begin{enumerate}
+\item 次の $\mathbb{C}^2$ のベクトルのノルムを求めよ.
+\begin{enumerate}
+\item
+\[
+\begin{pmatrix}
+2+3i\\
+-1+i
+\end{pmatrix}.
+\]
+\item
+\[
+\begin{pmatrix}
+1+2i\\
+-5-i
+\end{pmatrix}.
+\]
+\end{enumerate}
+
+\item 次の $\mathbb{C}^2$ のベクトルの標準エルミート内積を計算せよ.
+\begin{enumerate}
+\item
+\[
+\left(
+\begin{pmatrix}
+1+i\\
+2-i
+\end{pmatrix},
+\begin{pmatrix}
+2-3i\\
+1+2i
+\end{pmatrix}
+\right).
+\]
+\item
+\[
+\left(
+\begin{pmatrix}
+i\\
+1-i
+\end{pmatrix},
+\begin{pmatrix}
+1+2i\\
+3-i
+\end{pmatrix}
+\right).
+\]
+\end{enumerate}
+
+\item 次の $\mathbb{C}^2$ のベクトルは直交することを示せ.
+\begin{enumerate}
+\item
+\[
+\begin{pmatrix}
+3+i\\
+1+i
+\end{pmatrix},
+\quad
+\begin{pmatrix}
+2-i\\
+-5
+\end{pmatrix}.
+\]
+\item
+\[
+\begin{pmatrix}
+-1+i\\
+-1
+\end{pmatrix},
+\quad
+\begin{pmatrix}
+i\\
+1-i
+\end{pmatrix}.
+\]
+\end{enumerate}
+
+\item $\mathbb{C}^3$ のベクトル
+\[
+\begin{pmatrix}
+1-i\\
+3\\
+8-i
+\end{pmatrix}
+\quad\text{と}\quad
+\begin{pmatrix}
+2\\
+-1+2i\\
+-i
+\end{pmatrix}
+\]
+は直交することを示せ.
+
+\item $\mathbb{C}^2$ のベクトル
+\[
+\bm{a}=
+\begin{pmatrix}
+a_1\\
+a_2
+\end{pmatrix},
+\quad
+\bm{b}=
+\begin{pmatrix}
+b_1\\
+b_2
+\end{pmatrix}
+\]
+に対して
+\[
+(\bm{a},\bm{b})=a_1\bar b_1+3a_2\bar b_2
+\]
+と定義すると, これは $\mathbb{C}^2$ のエルミート内積であるが標準エルミート内積でないことを示せ.
+
+\item エルミート空間 $V$ のベクトル $\bm{v}$ は正規直交基底 $\{\bm{u}_1,\ldots,\bm{u}_n\}$ に対して,
+\[
+(\bm{v},\bm{u}_k)\quad(1\leq k\leq n)
+\]
+の値で決まることを示せ.
+
+\item $W_1,W_2$ をエルミート空間 $V$ の部分空間とする. 次を示せ.
+\begin{enumerate}
+\item
+\[
+(W_1+W_2)^\perp=W_1^\perp\cap W_2^\perp.
+\]
+\item
+\[
+(W_1\cap W_2)^\perp=W_1^\perp+W_2^\perp.
+\]
+\end{enumerate}
+
+\item $V$ をエルミート空間とし, $W_1,W_2$ を $V$ の部分空間とする.
+\[
+I_1=P_{V/W_1},
+\quad
+I_2=P_{V/W_2}
+\]
+をそれぞれ $W_1,W_2$ への射影子とする. このとき, $W_1$ と $W_2$ が直交するための必要十分条件は,
+\[
+I_1I_2=0
+\]
+であることを示せ.
+\end{enumerate}
+
+\subsection{エルミート変換, ユニタリ変換, 正規変換  \cite[9.2節]{M}}
+
+\paragraph{エルミート変換}
+$V$ の線形変換 $T$ がエルミート変換であるとは,
+\[
+T^*=T
+\]
+であるときにいう. 言い換えると, $T$ がエルミート変換であることは, $T$ が
+\[
+(T(\bm{u}),\bm{v})=(\bm{u},T(\bm{v}))
+\quad(\bm{u},\bm{v}\in V)
+\]
+を満たす線形変換のときである. 定理9.1.7により, $V$ の線形変換 $T$ に対して, $TT^*$ および $T^*T$ はともにエルミート変換である.
+
+\paragraph{エルミート行列}
+正方行列 $A$ がエルミート行列であるとは, $A$ が随伴行列に等しいとき, つまり
+\[
+A=A^*
+\quad(={}^{t}\!\bar A)
+\]
+となるときにいう.
+
+\begin{thm}[定理9.2.1（エルミート変換とエルミート行列）]
+\begin{enumerate}
+\item[(1)] $A$ を正方行列とする. $\mathbb{C}^n$ の標準エルミート内積について
+\[
+T_A\text{ がエルミート変換}
+\quad\Longleftrightarrow\quad
+A\text{ がエルミート行列}.
+\]
+\item[(2)] $T$ を $V$ の線形変換とする. $V$ の正規直交基底に対して
+\[
+T\text{ がエルミート変換}
+\quad\Longleftrightarrow\quad
+T\text{ の表現行列がエルミート行列}.
+\]
+\end{enumerate}
+\end{thm}
+
+\begin{proof}
+いずれも, 定理9.1.5(1)により明らかである.
+\end{proof}
+
+\begin{thm}[定理9.2.2（エルミート変換（行列）の固有値）]
+エルミート変換（行列）の全ての固有値は実数である.
+\end{thm}
+
+\begin{proof}
+定理6.3.1の証明と同様であるが, 定理6.3.1では行列についてのみ述べたので, $T$ が線形変換の場合に証明を繰り返しておく.
+
+エルミート空間 $V$ のエルミート変換 $T$ が, 固有値 $\lambda\in\mathbb{C}$ をもつならば
+\[
+T(\bm{u})=\lambda \bm{u}
+\]
+となる固有ベクトル $\bm{u}\neq\bm{0}$ が存在する. このとき
+\[
+(T(\bm{u}),\bm{u})
+=
+(\lambda \bm{u},\bm{u})
+=
+\lambda(\bm{u},\bm{u})
+=
+\lambda\lVert \bm{u}\rVert^2
+\]
+である. $T$ はエルミート変換だから
+\[
+(T(\bm{u}),\bm{u})
+=
+(\bm{u},T(\bm{u}))
+=
+(\bm{u},\lambda \bm{u})
+=
+\bar\lambda(\bm{u},\bm{u})
+=
+\bar\lambda\lVert \bm{u}\rVert^2
+\]
+となる. 従って
+\[
+\lambda\lVert \bm{u}\rVert^2
+=
+\bar\lambda\lVert \bm{u}\rVert^2
+\]
+で, 両辺を $\lVert \bm{u}\rVert^2(\neq0)$ で割って
+\[
+\lambda=\bar\lambda
+\]
+を得る. すなわち, $\lambda$ は実数である.
+\end{proof}
+
+
+\paragraph{ユニタリ変換}
+$V$ の線形変換 $T$ がエルミート内積の値を変えないときにユニタリ変換という. すなわち, $T$ がユニタリ変換とは
+\[
+(T(\bm{u}),T(\bm{v}))=(\bm{u},\bm{v})
+\quad(\bm{u},\bm{v}\in V)
+\]
+のときにいう. ユニタリ変換である必要十分条件は, 次のようにも書き表される.
+\[
+T^*T=I_V.
+\]
+
+\paragraph{ユニタリ行列}
+正方行列 $U$ がユニタリ行列であるとは
+\[
+U^*U=E
+\quad
+\left(U^*={}^{t}\!\overline{U}\right)
+\]
+のときにいう. この条件は $UU^*=E$ あるいは ${}^{t}\!\overline{U}U=E$ といってもよい. この行列式をとると, ユニタリ行列 $U$ の行列式は絶対値が $1$ である複素数である.
+
+\paragraph{例1}
+\[
+U=
+\begin{pmatrix}
+\cos\theta&i\sin\theta\\
+i\sin\theta&\cos\theta
+\end{pmatrix}
+\]
+は $U^*U=E$ を満たすからユニタリ行列である.
+
+\begin{thm}[定理9.2.3（ユニタリ変換の表現行列）]
+$T$ を $V$ の線形変換とする. $V$ の正規直交基底に対して
+\[
+T\text{ がユニタリ変換}
+\quad\Longleftrightarrow\quad
+T\text{ の表現行列がユニタリ行列}.
+\]
+\end{thm}
+
+\begin{proof}
+$T$ を線形変換とする. $T$ の $V$ の正規直交基底 $\{\bm{u}_1,\ldots,\bm{u}_n\}$ に関する表現行列を
+\[
+U=[\,\bm{a}_1\ \cdots\ \bm{a}_n\,]
+\]
+とすると
+\[
+(T(\bm{u}_i),T(\bm{u}_j))
+={}^{t}\!\bm{a}_i\overline{\bm{a}_j}
+\quad(1\leq i,j\leq n)
+\]
+であるから, $T$ がユニタリ変換である必要十分条件は, $\{T(\bm{u}_1),\ldots,T(\bm{u}_n)\}$ が $\mathbb{C}^n$ の標準エルミート内積に関する正規直交基底になることである.
+\end{proof}
+
+また, 定理6.2.5と同様に, 次の定理が成り立つ.
+
+\begin{thm}[定理9.2.4（ユニタリ行列）]
+$n$ 次正方行列を
+\[
+U=[\,\bm{a}_1\ \cdots\ \bm{a}_n\,]
+\]
+と列ベクトル表示する. このとき, 次の3条件は同値である.
+\begin{enumerate}
+\item[(1)] $U$ はユニタリ行列である.
+\item[(2)] $T_U$ は $\mathbb{C}^n$ の標準エルミート内積に関してユニタリ変換である.
+\item[(3)] $\{\bm{a}_1,\ldots,\bm{a}_n\}$ は $\mathbb{C}^n$ の標準エルミート内積に関して正規直交基底である.
+\end{enumerate}
+\end{thm}
+
+\begin{eg}[例題9.2.1]
+次の行列はユニタリ行列であることを示せ.
+\[
+U=
+\begin{pmatrix}
+1/2&i/\sqrt{2}&1/2\\
+(1+i)/2&0&-(1+i)/2\\
+i/2&-1/\sqrt{2}&i/2
+\end{pmatrix}.
+\]
+\end{eg}
+
+\paragraph{解答}
+行列を列ベクトル表示で
+\[
+U=[\,\bm{a}_1\ \bm{a}_2\ \bm{a}_3\,]
+\]
+とすると
+\[
+(\bm{a}_i,\bm{a}_j)=\delta_{ij}
+\quad(1\leq i,j\leq3)
+\]
+であるから, $\{\bm{a}_1,\bm{a}_2,\bm{a}_3\}$ は正規直交基底となる. よって, $U$ はユニタリ行列である.
+
+また, $T$ がユニタリ変換であることは, 次のようにも表される.
+
+\begin{thm}[定理9.2.5（ユニタリ変換）]
+\[
+T\text{ が }V\text{ のユニタリ変換}
+\quad\Longleftrightarrow\quad
+\lVert T(\bm{u})\rVert=\lVert \bm{u}\rVert
+\quad(\bm{u}\in V).
+\]
+\end{thm}
+
+\begin{proof}
+$(\Rightarrow)$ 明らかである.
+
+$(\Leftarrow)$ $\bm{u},\bm{v}\in V$ とすると
+\[
+\lVert \bm{u}+\bm{v}\rVert^2
+=
+\lVert \bm{u}\rVert^2+(\bm{u},\bm{v})+\overline{(\bm{u},\bm{v})}+\lVert \bm{v}\rVert^2,
+\]
+\[
+\lVert T(\bm{u}+\bm{v})\rVert^2
+=
+\lVert T(\bm{u})\rVert^2+(T(\bm{u}),T(\bm{v}))
++\overline{(T(\bm{u}),T(\bm{v}))}
++\lVert T(\bm{v})\rVert^2
+\]
+であるから
+\[
+(\bm{u},\bm{v})+\overline{(\bm{u},\bm{v})}
+=
+(T(\bm{u}),T(\bm{v}))+\overline{(T(\bm{u}),T(\bm{v}))}
+\]
+となる. よって
+\[
+\operatorname{Re}\{(\bm{u},\bm{v})\}
+=
+\operatorname{Re}\{(T(\bm{u}),T(\bm{v}))\}
+\]
+がわかる. 一方, $\bm{u}$ として $-i\bm{u}$ をとると
+\[
+\operatorname{Re}\{-i(\bm{u},\bm{v})\}
+=
+\operatorname{Im}\{(\bm{u},\bm{v})\},
+\]
+\[
+\operatorname{Re}\{-i(T(\bm{u}),T(\bm{v}))\}
+=
+\operatorname{Im}\{(T(\bm{u}),T(\bm{v}))\}
+\]
+となるので
+\[
+\operatorname{Im}\{(\bm{u},\bm{v})\}
+=
+\operatorname{Im}\{(T(\bm{u}),T(\bm{v}))\}
+\]
+も示される. 従って, 任意の $\bm{u},\bm{v}\in V$ に対して
+\[
+(\bm{u},\bm{v})=(T(\bm{u}),T(\bm{v}))
+\]
+が成り立つ.
+\end{proof}
+
+\paragraph{正規変換}
+$V$ の線形変換 $T$ が正規変換とは, $T$ と $T^*$ が交換可能, すなわち
+\[
+T^*T=TT^*
+\]
+を満たすときにいう.
+
+\paragraph{正規行列}
+正方行列 $A$ が正規行列であるとは, $A$ と $A^*$ が交換可能, すなわち
+\[
+A^*A=AA^*
+\]
+を満たすときにいう.
+
+次の定理9.2.6は, 定理9.2.1と同様にして示される.
+
+\begin{thm}[定理9.2.6（正規変換と正規行列）]
+\begin{enumerate}
+\item[(1)] $A$ を正方行列とする. $\mathbb{C}^n$ の標準エルミート内積について
+\[
+T_A\text{ が正規変換}
+\quad\Longleftrightarrow\quad
+A\text{ が正規行列}.
+\]
+\item[(2)] $T$ を $V$ の線形変換とする. $V$ の正規直交基底に対して
+\[
+T\text{ が正規変換}
+\quad\Longleftrightarrow\quad
+T\text{ の表現行列が正規行列}.
+\]
+\end{enumerate}
+\end{thm}
+
+\paragraph{例2}
+エルミート変換 $T$ は正規変換である. 実際, $T$ がエルミート変換ならば, 定義により $T^*=T$ である. よって,
+\[
+T^*T=TT=TT^*
+\]
+が成り立つ.
+
+\paragraph{例3}
+ユニタリ変換 $T$ は正規変換である. 実際, $T$ がユニタリ変換ならば
+\[
+(\bm{u},\bm{v})=(T(\bm{u}),T(\bm{v}))=(\bm{u},T^*T(\bm{v}))
+\]
+である. よって, $\bm{u}$ として1組の基底のベクトルを動くと, $T^*T(\bm{v})=\bm{v}$ が成り立つから,
+\[
+T^*T=I_V
+\]
+である. よって, $T^*=T^{-1}$ で,
+\[
+T^*T=I_V=TT^*
+\]
+が成り立つ.
+
+\paragraph{例4}
+例2ではエルミート変換, 例3ではユニタリ変換は正規変換であることを示した. しかし, それ以外にも正規変換は存在する. 例えば, ユニタリ変換の2倍はもはやユニタリ変換ではないが, 正規変換である. さらに
+\[
+A=
+\begin{pmatrix}
+3&i\\
+1&3
+\end{pmatrix}
+\]
+はエルミート行列でもユニタリ行列でもない行列であるが, 正規行列である. 定理9.2.6(1)により, $T_A$ は $\mathbb{C}^2$ の標準エルミート内積に関し正規変換である.
+
+\begin{thm}[定理9.2.7（交換可能な線形変換）]
+$\dim(V)=n$ とする. $T_1,T_2$ が交換可能な $V$ の線形変換ならば, 次のような $T_1,T_2$ の変換で不変な $V$ の部分空間の集合
+\[
+\{W(0),\ldots,W(n)\}
+\]
+が存在して, 次の性質をもつ.
+\begin{enumerate}
+\item[(1)]
+\[
+\{\bm{0}\}=W(0)\subset W(1)\subset\cdots\subset W(n-1)\subset W(n)=V.
+\]
+\item[(2)]
+\[
+\dim(W(k))=k
+\quad(1\leq k\leq n).
+\]
+\end{enumerate}
+\end{thm}
+
+\begin{proof}
+$n$ に関する帰納法を用いて示す.
+
+$n=1$ のときには, 明らかに成り立つ. エルミート空間の次元が $n-1$ までのときには成り立つと仮定し, $\dim(V)=n$ のときに示す. $T_1$ と $T_2$ の随伴変換 $T_1^*$ と $T_2^*$ は交換可能である. 実際
+\[
+T_1^*T_2^*
+=
+(T_2T_1)^*
+=
+(T_1T_2)^*
+=
+T_2^*T_1^*
+\]
+となるからである. 従って, 定理7.2.7(1)により, $T_1^*,T_2^*$ に共通の固有ベクトル $\bm{u}$ が存在する.
+\[
+T_i^*(\bm{u})=\overline{\lambda_i}\bm{u}
+\quad(i=1,2)
+\]
+とし,
+\[
+W(n-1)=\{\bm{u}\}^{\perp}
+\]
+とおく. 定理9.1.4(2)により,
+\[
+\dim(W(n-1))=n-1
+\]
+であり, 線形変換 $T_1$ および $T_2$ は $W(n-1)$ を $W(n-1)$ にうつす. 実際, 任意に $\bm{v}\in W(n-1)$ をとると
+\[
+(\bm{u},T_i(\bm{v}))
+=
+(T_i^*(\bm{u}),\bm{v})
+=
+(\overline{\lambda_i}\bm{u},\bm{v})
+=
+\overline{\lambda_i}(\bm{u},\bm{v})
+=
+0
+\]
+となるから, $T_1,T_2$ はともに
+\[
+W(n-1)=\{\bm{u}\}^{\perp}
+\]
+を $W(n-1)$ にうつす. $\dim(W(n-1))=n-1$ であるから, この $W(n-1)$ に帰納法の仮定を用いると
+\begin{enumerate}
+\item[(1)]
+\[
+\{\bm{0}\}=W(0)\subset W(1)\subset\cdots\subset W(n-1),
+\]
+\item[(2)]
+\[
+\dim(W(k))=k
+\quad(1\leq k\leq n-1)
+\]
+\end{enumerate}
+を満たし, $T_1,T_2$ の変換で自分自身にうつる部分空間
+\[
+W(k)\quad(0\leq k\leq n-2)
+\]
+が存在する. $W(n)=V$ とおくと, $W(n-1)\subset W(n)$ で $\dim(W(n))=n$ となるから, 定理9.2.7が示される.
+\end{proof}
+
+\begin{thm}[定理9.2.8（交換可能な線形変換の表現行列）]
+$T_1,T_2$ が交換可能な $V$ の線形変換とする. $T_1,T_2$ の表現行列が同時に上三角行列となる $V$ の正規直交基底が存在する.
+\end{thm}
+
+\begin{proof}
+定理9.2.7とシュミットの正規直交化（定理9.1.3）により, $V$ の正規直交基底 $\{\bm{u}_1,\ldots,\bm{u}_n\}$ を
+\[
+\bm{u}_k\in W(k),
+\quad
+\bm{u}_k\notin W(k-1)
+\]
+にとると, この基底に関する $T_1,T_2$ の表現行列 $A_1,A_2$ は上三角行列である.
+\end{proof}
+
+\paragraph{下三角行列}
+上三角行列と同様に, 正方行列 $A=[a_{ij}]$ が
+\[
+a_{ij}=0
+\quad(i<j)
+\]
+のときに, 行列 $A$ は下三角行列という.
+
+次の定理9.2.9は, 問題6.3--3の一般化である.
+
+\begin{thm}[定理9.2.9（線形変換の対角化と正規変換）]
+$V$ の線形変換 $T$ に対し, 次の3条件は同値である.
+\begin{enumerate}
+\item[(1)] $T$ は正規変換である.
+\item[(2)] $T$ の表現行列が対角行列であるような, 正規直交基底が存在する.
+\item[(3)] $T$ の固有ベクトルからなる正規直交基底が存在する.
+\end{enumerate}
+\end{thm}
+
+\begin{proof}
+$(1)\Rightarrow(2)$
+$T$ が正規変換であると仮定する. $T,T^*$ は交換可能であるから, $T,T^*$ に定理9.2.8を用いる. $V$ に $T$ と $T^*$ の表現行列 $A$ および $A^*$ がともに上三角行列となるような正規直交基底がとれる. このとき,
+\[
+A^*={}^{t}\!\overline{A}
+\]
+であるから, $A^*$ が上三角行列ならば $A$ は下三角行列になる. よって, $A$ と ${}^{t}\!\overline{A}$ は上三角行列でかつ下三角行列であるから, いずれも対角行列でなければならない.
+
+$(2)\Rightarrow(1)$
+$T$ の適当な正規直交基底に関する表現行列 $A$ が対角行列であると仮定する. 定理9.1.5(1)により, $T^*$ の表現行列は
+\[
+A^*={}^{t}\!\overline{A}
+\]
+である. $A$ と ${}^{t}\!\overline{A}$ はいずれも対角行列であるから交換可能である. よって, $T$ と $T^*$ は交換可能である.
+
+$(2)\Longleftrightarrow(3)$
+明らかである.
+\end{proof}
+
+この定理9.2.9を行列の言葉で言い表すと, 次のようになる.
+
+\begin{thm}[定理9.2.10（正規行列の対角化）]
+$A$ を $n$ 次正方行列とすると, 次の3条件は同値である.
+\begin{enumerate}
+\item[(1)] $A$ は正規行列である.
+\item[(2)] $A$ はユニタリ行列を用いて対角化される.
+\item[(3)] $T_A$ は $\mathbb{C}^n$ の標準エルミート内積に関して正規変換である.
+\end{enumerate}
+\end{thm}
+
+\begin{proof}
+$(2)\Rightarrow(1)$ は明らかである.
+
+$(1)\Rightarrow(3)$ は定理9.2.6(1)により, $\mathbb{C}^n$ の標準エルミート内積に関して, $T_A$ は正規変換である.
+
+$(3)\Rightarrow(2)$
+$\mathbb{C}^n$ の正規直交基底 $\{\bm{a}_1,\ldots,\bm{a}_n\}$ を定理9.2.9(1)のようにとる.
+\[
+U=[\,\bm{a}_1\ \cdots\ \bm{a}_n\,]
+\]
+はユニタリ行列であり, $T_A$ のこの基底に関する表現行列
+\[
+U^{-1}AU
+\]
+は対角行列である.
+\end{proof}
+
+\begin{eg}[例題9.2.2]
+行列
+\[
+A=
+\begin{pmatrix}
+0&i&0\\
+-i&0&0\\
+0&0&1
+\end{pmatrix}
+\]
+を, ユニタリ行列を用いて対角化せよ.
+\end{eg}
+
+\paragraph{解答}
+行列 $A$ はエルミート行列であるから正規行列で, ユニタリ行列で対角化される. 固有値を計算する. 固有多項式は
+\[
+\begin{aligned}
+g_A(t)
+&=
+\begin{vmatrix}
+t&-i&0\\
+i&t&0\\
+0&0&t-1
+\end{vmatrix}\\
+&=(t-1)^2(t+1)
+\end{aligned}
+\]
+であるから, 固有値は $\lambda=1$（重根）, $-1$ である.
+
+$\lambda=1$ とする. $A\bm{x}=\lambda \bm{x}$ を行列 $A-\lambda E$ の簡約化を用いて解くと
+\[
+W(1;A)
+=
+\left\{
+c_1
+\begin{pmatrix}
+i\\
+1\\
+0
+\end{pmatrix}
++
+c_2
+\begin{pmatrix}
+0\\
+0\\
+1
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+c_1,c_2\in\mathbb{C}
+\right\}
+\]
+である. $W(1;A)$ の基底にシュミットの方法（定理9.1.3）を用いて正規直交化する. この場合にはベクトルは直交しているから, ノルムを $1$ にすればよい.
+
+次に, $\lambda=-1$ とすると, 同様の計算で
+\[
+W(-1;A)
+=
+\left\{
+c_3
+\begin{pmatrix}
+-i\\
+1\\
+0
+\end{pmatrix}
+\mathrel{}\middle|\mathrel{}
+c_3\in\mathbb{C}
+\right\}
+\]
+を得る. よって,
+\[
+U=
+\begin{pmatrix}
+i/\sqrt{2}&0&-i/\sqrt{2}\\
+1/\sqrt{2}&0&1/\sqrt{2}\\
+0&1&0
+\end{pmatrix}
+\]
+はユニタリ行列で,
+\[
+U^{-1}AU
+=
+\begin{pmatrix}
+1&0&0\\
+0&1&0\\
+0&0&-1
+\end{pmatrix}.
+\]
+
+\paragraph{スペクトル分解}
+$T$ を $V$ の正規変換とし, $\lambda_1,\ldots,\lambda_r$ を全ての異なる固有値とすると, $W(\lambda_k;T)$ は互いに直交する. このとき, $k\ (1\leq k\leq r)$ に対して, $W(\lambda_k;T)$ への射影子を $I_k$ とすると, $\{I_k\}$ は定理7.2.4の3条件を満たすから,
+\[
+\dim(W(\lambda_k;T))=n_k
+\]
+とすると
+\[
+V=W(\lambda_1;T)\oplus\cdots\oplus W(\lambda_r;T)
+\]
+であり, この直和に関して
+\[
+T=\lambda_1I_1+\cdots+\lambda_rI_r
+\]
+と表される. これを $T$ のスペクトル分解という. スペクトル分解は $\lambda_kI_k$ の順序を除いて一意的に決まる. また, 定理9.1.5により, $T^*$ のスペクトル分解は
+\[
+T^*
+=
+\overline{\lambda_1}I_1+\cdots+\overline{\lambda_r}I_r.
+\]
+
+これを行列で表現する. $n$ 次の正規行列 $A$ は適当なユニタリ行列 $U$ により
+\[
+\begin{aligned}
+U^{-1}AU
+&=
+\lambda_1E_{n_1}\oplus\cdots\oplus\lambda_rE_{n_r}\\
+&=
+\operatorname{diag}
+\left(
+\underbrace{\lambda_1,\ldots,\lambda_1}_{n_1},
+\ldots,
+\underbrace{\lambda_r,\ldots,\lambda_r}_{n_r}
+\right)
+\end{aligned}
+\]
+と対角化される. ここで, $E_k$ は $k$ 次の単位行列である.
+
+\paragraph{正定値エルミート変換, 半正定値エルミート変換}
+エルミート変換 $T$ の全ての固有値が正のとき, 正定値エルミート変換という. エルミート変換 $T$ が正定値エルミート変換であることは, $V\times V$ から $\mathbb{C}$ への写像
+\[
+V\times V\ni(\bm{u},\bm{v})
+\longmapsto
+(T(\bm{u}),\bm{v})\in\mathbb{C}
+\]
+がエルミート内積になることを意味する（定理9.2.11）. また, 全ての固有値が非負（正または $0$）であるエルミート変換を半正定値エルミート変換という.
+
+\paragraph{正定値エルミート行列, 半正定値エルミート行列}
+エルミート行列 $A$ の全ての固有値は実数であるが（定理9.2.2）, その固有値が全て正のとき, 正定値エルミート行列という. また, 全ての固有値が非負であるエルミート行列を半正定値エルミート行列という.
+
+\begin{thm}[定理9.2.11（正定値（半正定値）エルミート変換）]
+$V$ のエルミート変換 $T$ について, 次が成り立つ.
+\begin{enumerate}
+\item[(1)]
+\[
+T\text{ が正定値エルミート変換}
+\quad\Longleftrightarrow\quad
+(T(\bm{u}),\bm{v})\quad(\bm{u},\bm{v}\in V)
+\text{ が }V\text{ のエルミート内積}.
+\]
+\item[(2)]
+\[
+T\text{ が半正定値エルミート変換}
+\quad\Longleftrightarrow\quad
+(T(\bm{u}),\bm{u})\geq0
+\quad(\bm{u}\in V).
+\]
+\end{enumerate}
+\end{thm}
+
+\begin{proof}
+エルミート変換は正規変換であるから, $T$ の固有ベクトルからなる正規直交基底 $\{\bm{u}_1,\ldots,\bm{u}_n\}$ が存在し,
+\[
+T(\bm{u}_k)=\lambda_k\bm{u}_k
+\]
+とする.
+\[
+\bm{u}=a_1\bm{u}_1+\cdots+a_n\bm{u}_n
+\quad
+(a_i\in\mathbb{C},\ 1\leq i\leq n)
+\]
+とすると
+\[
+(T(\bm{u}),\bm{u})
+=
+\lambda_1\lvert a_1\rvert^2+\cdots+\lambda_n\lvert a_n\rvert^2
+\]
+であるから
+\[
+T\text{ が正定値エルミート変換}
+\quad\Longleftrightarrow\quad
+(T(\bm{u}),\bm{u})>0
+\quad(\bm{u}\neq\bm{0})
+\]
+となる. 半正定値エルミート変換の場合も同様である.
+\end{proof}
+
+この定理9.2.11を行列に言い換えると, 次の定理9.2.12になる.
+
+\begin{thm}[定理9.2.12（正定値（半正定値）エルミート行列）]
+$n$ 次エルミート行列 $A$ について, 次が成り立つ.
+\begin{enumerate}
+\item[(1)]
+\[
+A\text{ が正定値エルミート行列}
+\quad\Longleftrightarrow\quad
+(A\bm{u},\bm{v})\quad(\bm{u},\bm{v}\in\mathbb{C}^n)
+\text{ が }\mathbb{C}^n\text{ のエルミート内積}.
+\]
+\item[(2)]
+\[
+A\text{ が半正定値エルミート行列}
+\quad\Longleftrightarrow\quad
+(A\bm{u},\bm{u})\geq0
+\quad(\bm{u}\in\mathbb{C}^n).
+\]
+\end{enumerate}
+\end{thm}
+
+次の2つの定理も, 変換と行列の違いで同値な命題である.
+
+\begin{thm}[定理9.2.13（正定値（半正定値）エルミート変換）]
+$T$ が正定値（半正定値）エルミート変換ならば,
+\[
+T=S^2
+\]
+を満たす正定値（半正定値）エルミート変換 $S$ がただ1つ存在する.
+\end{thm}
+
+\begin{proof}
+エルミート変換 $T$ のスペクトル分解を
+\[
+T=\lambda_1I_1+\cdots+\lambda_rI_r,
+\quad
+\lambda_i\geq0
+\quad(1\leq i\leq r)
+\]
+とする（半正定値なら等号も現れる）. ここで
+\[
+S=
+\sqrt{\lambda_1}I_1+\cdots+\sqrt{\lambda_r}I_r
+\]
+
+
+とおく.
+\[
+W(\lambda_k;T)=W(\sqrt{\lambda_k};S)
+\quad
+(1\leq k\leq r)
+\]
+であるから, \(S\) も正定値（半正定値）エルミート変換であり
+\[
+T=S^2
+\]
+を満たす. \(S\) の一意性を示す. \(S'\) が正定値（半正定値）エルミート変換で
+\[
+S'^2=T
+\]
+を満たすとする. \(S'\) の異なる固有値を \(\mu_1,\ldots,\mu_s\) とし, \(I'_1,\ldots,I'_s\) を \(V\) から \(W(\mu_k;S')\) への射影子とする. \(S'\) のスペクトル分解を
+\[
+S'=\mu_1I'_1+\cdots+\mu_sI'_s
+\]
+と表す. \(\mu_1,\ldots,\mu_s\) が \(S'\) の固有値であり \(S'^2=T\) を満たすから \(r=s\) であり, 必要なら順番を取り替えると
+\[
+\mu_1^2=\lambda_1,\ldots,\mu_r^2=\lambda_r
+\]
+である. よって, \(I'_k\) も \(I_k\) もともに \(V\) から
+\[
+W(\mu_k;S')=W(\lambda_k;T)
+\]
+への射影子であるので
+\[
+I'_k=I_k
+\quad
+(1\leq k\leq r)
+\]
+がわかる. さらに, \(\mu_k\geq0\), \(\sqrt{\lambda_k}\geq0\) であり, \(\mu_k\) も \(\sqrt{\lambda_k}\) も \(2\) 乗すれば \(\lambda_k\) となるから
+\[
+\mu_k=\sqrt{\lambda_k}
+\quad
+(1\leq k\leq r)
+\]
+がわかり, \(S'=S\) である. よって, \(S^2=T\) となる \(S\) は一意的に定まる.
+\end{proof}
+
+この定理9.2.13は, 次のようにエルミート行列の定理に言い換えられる.
+
+\begin{thm}[定理9.2.14：正定値（半正定値）エルミート行列]
+\(A\) が正定値（半正定値）エルミート行列ならば, \(A\) がエルミート行列で
+\[
+A=B^2
+\]
+となる正定値（半正定値）エルミート行列 \(B\) が一意的に存在する.
+\end{thm}
+
+\begin{proof}
+正規直交基底をとれば, エルミート変換はエルミート行列で表現される.
+\end{proof}
+
+\begin{defn}[エルミート変換 \(T\) の平方根 \(\sqrt{T}\)]
+正定値および半正定値エルミート変換 \(T\) に対して, 定理9.2.13の線形変換 \(S\) を
+\[
+\sqrt{T}
+\]
+と書く.
+\end{defn}
+
+\begin{defn}[エルミート行列 \(A\) の平方根 \(\sqrt{A}\)]
+正定値および半正定値エルミート行列に対して, 定理9.2.14の行列 \(B\) を
+\[
+\sqrt{A}
+\]
+と書く.
+\end{defn}
+
+最後に, エルミート空間のベクトル空間としての同型変換は, 正定値エルミート変換とユニタリ変換の積として表されること, および \(n\) 次正則行列は正定値エルミート行列とユニタリ行列の積で表されることを示そう.
+
+\begin{thm}[定理9.2.15：同型変換と正則行列]
+\begin{enumerate}
+\item[(1)] エルミート空間の任意のベクトル空間としての同型変換は, 正定値エルミート変換とユニタリ変換の積として一意的に表される.
+\item[(2)] 任意の正則行列は, 正定値エルミート行列とユニタリ行列の積で一意的に表される.
+\end{enumerate}
+\end{thm}
+
+\begin{proof}
+(1)
+エルミート空間のベクトル空間としての同型変換 \(T\) をとる. \(T\) は同型であるから, \(T\) の固有値は \(0\) ではない. 線形変換 \(TT^*\) はエルミート変換で, 定理9.2.2により, \(TT^*\) の全ての固有値は実数である. また, \(T\) が同型変換ならば, 定理9.1.5 (2) により \(T^*\) も同型変換であるから
+\[
+(TT^*(\bm{u}),\bm{u})=(T^*(\bm{u}),T^*(\bm{u}))>0
+\]
+となるので, \(TT^*\) は正定値エルミート変換である. よって, 定理9.2.13より
+\[
+\sqrt{TT^*}
+\]
+が存在し,
+\[
+H=\sqrt{TT^*}
+\]
+とおくと正定値エルミート変換である. ここで,
+\[
+U=H^{-1}T
+\]
+とおけば
+\[
+\begin{aligned}
+UU^*
+&=(H^{-1}T)(H^{-1}T)^*\\
+&=H^{-1}TT^*H^{-1}\\
+&=H^{-1}H^2H^{-1}\\
+&=I
+\end{aligned}
+\]
+となり, \(U\) はユニタリ変換である. よって
+\[
+T=HU
+\]
+と表される.
+
+一意性を示す.
+\[
+T=H_1U_1=H_2U_2
+\]
+と仮定すると
+\[
+H_2=H_1U_1U_2^{-1},
+\quad
+H_2=H_2^*=(U_2^{-1})^*U_1^*H_1^*
+=U_2U_1^{-1}H_1
+\]
+であるから
+\[
+\begin{aligned}
+H_2^2
+&=(H_1U_1U_2^{-1})(U_2U_1^{-1}H_1)\\
+&=H_1^2
+\end{aligned}
+\]
+となる. \(H_1,H_2\) はともに正定値エルミート変換であるから
+\[
+H_1=\sqrt{H_1^2}=\sqrt{H_2^2}=H_2
+\]
+となる. 従って,
+\[
+U_1=U_2
+\]
+もわかる.
+
+(2)
+同型変換の表現行列は正則行列であるから, (1) を行列の命題に言い換えたものである.
+\end{proof}
+
+\subsection*{問題9.2}
+
+\begin{enumerate}
+\item エルミート行列であることを確かめ, ユニタリ行列を用いて対角化せよ.
+\begin{enumerate}
+\item[(1)]
+\[
+\begin{pmatrix}
+1&i&0\\
+-i&1&0\\
+0&0&2
+\end{pmatrix}.
+\]
+
+\item[(2)]
+\[
+\begin{pmatrix}
+3&0&i\\
+0&2&0\\
+-i&0&1
+\end{pmatrix}.
+\]
+\end{enumerate}
+
+\item ユニタリ行列であることを確かめ, ユニタリ行列を用いて対角化せよ.
+\begin{enumerate}
+\item[(1)]
+\[
+\begin{pmatrix}
+\dfrac{1+i}{2}&\dfrac{-1+i}{2}&0\\[2mm]
+\dfrac{-1+i}{2}&\dfrac{1+i}{2}&0\\[2mm]
+0&0&-i
+\end{pmatrix}.
+\]
+
+\item[(2)]
+\[
+\begin{pmatrix}
+\dfrac{1+3i}{4}&0&\dfrac{\sqrt{3}}{4}(-1+i)\\[2mm]
+0&\dfrac{\sqrt{2}}{2}(1+i)&0\\[2mm]
+\dfrac{\sqrt{3}}{4}(-1+i)&0&\dfrac{3+i}{4}
+\end{pmatrix}.
+\]
+\end{enumerate}
+
+\item 正規行列であることを確かめ, ユニタリ行列を用いて対角化せよ.
+\begin{enumerate}
+\item[(1)]
+\[
+\begin{pmatrix}
+0&\sqrt{2}i\\
+\sqrt{2}&0
+\end{pmatrix}.
+\]
+
+\item[(2)]
+\[
+\begin{pmatrix}
+i&0&2\\
+0&2i&0\\
+-2&0&i
+\end{pmatrix}.
+\]
+\end{enumerate}
+
+\item 次の正規変換 \(T\) のスペクトル分解を, 行列の言葉に言い換えよ.
+\begin{enumerate}
+\item[(1)]
+\[
+T=2I_1+3I_2,
+\quad
+\dim(W(2;T))=1,
+\quad
+\dim(W(3;T))=2.
+\]
+
+\item[(2)]
+\[
+T=3I_1+(-1)I_2+5I_3,
+\]
+\[
+\dim(W(3;T))=2,
+\quad
+\dim(W(-1;T))=2,
+\quad
+\dim(W(5;T))=3.
+\]
+\end{enumerate}
+
+\item 交換可能な正規変換 \(T_1,T_2\) は, 共通の正規直交基底で対角化されることを示せ.
+
+\item 正規変換 \(T\) について, 次を示せ.
+\begin{enumerate}
+\item[(1)]
+\[
+T\text{ がエルミート変換}
+\quad\Longleftrightarrow\quad
+T\text{ の全ての固有値が実数}.
+\]
+
+\item[(2)]
+\[
+T\text{ がユニタリ変換}
+\quad\Longleftrightarrow\quad
+T\text{ の全ての固有値は絶対値が \(1\) である複素数}.
+\]
+\end{enumerate}
+
+\item
+\[
+A=
+\begin{pmatrix}
+0&i\\
+2&0
+\end{pmatrix}
+\]
+を正定値エルミート行列とユニタリ行列の積で表せ.
+\end{enumerate}
+
+
+\end{comment}
+%%%%%%%%%%%%%%%%%%%%
+
+\bibliographystyle{alpha}
+\bibliography{ref_Yau_merged.bib}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
