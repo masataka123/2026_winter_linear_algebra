@@ -164,7 +164,7 @@
 - 第3回 (2026/10/21) [第3回授業板書](https://masataka123.github.io/2026_winter_linear_algebra/material/3_授業板書.pdf)
 - 第4回 (2026/10/28)  [第4回授業板書](https://masataka123.github.io/2026_winter_linear_algebra/material/4_授業板書.pdf)
 - 第5回 (2026/11/11) [第5回授業板書](https://masataka123.github.io/2026_winter_linear_algebra/material/5_授業板書.pdf)
-- 第6回 (2026/11/18) 演習1回目
+- 第6回 (2026/11/18) 演習1回目 [演習1回目問題](https://masataka123.github.io/2026_winter_linear_algebra/material/線形代数演習1_20261118_問題.pdf) [演習1回目解答](https://masataka123.github.io/2026_winter_linear_algebra/material/線形代数演習1_20261118_解答.pdf)
 -  (2026/11/25) 休講 
 - 第7回 (2026/12/02)
 - 第8回 (2026/12/09)
